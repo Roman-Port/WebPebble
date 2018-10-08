@@ -1,0 +1,11 @@
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Debug\netcoreapp2.0\WebPebble.deps.json
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Debug\netcoreapp2.0\WebPebble.runtimeconfig.json
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Debug\netcoreapp2.0\WebPebble.runtimeconfig.dev.json
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Debug\netcoreapp2.0\WebPebble.dll
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Debug\netcoreapp2.0\WebPebble.csprojAssemblyReference.cache
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Debug\netcoreapp2.0\WebPebble.csproj.CoreCompileInputs.cache
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Debug\netcoreapp2.0\WebPebble.AssemblyInfoInputs.cache
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Debug\netcoreapp2.0\WebPebble.AssemblyInfo.cs
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Debug\netcoreapp2.0\WebPebble.pdb
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Debug\netcoreapp2.0\WebPebble.dll
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Debug\netcoreapp2.0\WebPebble.pdb
