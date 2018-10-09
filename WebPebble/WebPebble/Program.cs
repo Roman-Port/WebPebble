@@ -37,18 +37,10 @@ namespace WebPebble
             Console.WriteLine("Starting WebPebble");
             //Set everything up
             //Get the config.
-            string pathname = "/root/webpebble/conf.json";
-            //Janky
-            bool change = true;
-            try
-            {
-                change = !File.Exists(pathname);
-            } catch
-            {
+            string pathname = "E:/RPWS_Production/WebPebble/conf.json";
+            if(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
+                pathname = "/root/webpebble/conf.json"; //Assume this is my server.
 
-            }
-            if (change)
-                pathname = "E:/RPWS_Production/WebPebble/conf.json";
             config = JsonConvert.DeserializeObject<WebPebbleConfig>(File.ReadAllText(pathname));
             //Get database
             database = new LiteDatabase(config.database_file);
