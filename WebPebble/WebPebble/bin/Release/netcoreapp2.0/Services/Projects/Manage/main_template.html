@@ -440,10 +440,17 @@
                 var ee = document.createElement('div');
                 ee.className = "tab btn";
                 var name = d.filename.split('/');
-                ee.innerText = name[name.length - 1];
-                e.appendChild(ee);
+                name = name[name.length - 1];
+                ee.innerText = name;
+                e.insertBefore(ee, e.lastChild);
                 //Set data on dom.
                 e.x_asset = d;
+                e.x_asset.shortName = name;
+                //Add the event listener to view this.
+                e.addEventListener('click', function () {
+                    var asset = this.x_asset;
+                    filemanager.LoadFile(asset.id, asset.shortName);
+                });
                 //Append to the list.
                 document.getElementById('assets_' + d.type).appendChild(e);
             }
