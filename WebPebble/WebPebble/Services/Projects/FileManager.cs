@@ -14,7 +14,7 @@ namespace WebPebble.Services.Projects
             string[] split = e.Request.Path.ToString().Split('/');
             string fileType = split[4];
             string fileFolder = split[5];
-            string fileId = split[6];
+            string fileId = split[6].Replace('_','.'); //For some reason, Kestrel doesn't like periods in it.
             string action = split[7];
             string mimeType = split[8].Replace('_','/');
             if(action == "get")

@@ -99,6 +99,14 @@ namespace WebPebble.Entities.PebbleProject
             proj.package.author = author;
             proj.package.pebble.displayName = name;
             proj.package.pebble.watchapp.watchface = isWatchface;
+            //Rename the main.c. 
+            try
+            {
+                File.Move(proj.pathnane + "src/c/" + id + ".c", proj.pathnane + "src/c/main.c");
+            } catch
+            {
+
+            }
             //Save it
             proj.SavePackage();
 
