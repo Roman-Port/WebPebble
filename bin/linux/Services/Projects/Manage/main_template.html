@@ -399,8 +399,10 @@
             var target = tab.x_tab.content;
             target.parentElement.removeChild(target);
             //Close tab.
-            console.log("todo");
+            tabManager.closeTab(tab);
         });
+        //Now, switch to this tab.
+        tabManager.switchToTab(tab);
     }
 
     tabManager.compareCurrentTab = function (tab) {
@@ -465,6 +467,36 @@
         if (tab.x_tab.content != null) {
             tab.x_tab.content.style.display = "block";
         }
+    }
+
+    tabManager.closeTab = function (tab) {
+        //Assume cleanup has already been done.
+        //If this is the active tab, switch to the first one.
+        if (tabManager.compareCurrentTab(tab)) {
+            //If there are no other tabs, collapse the view.
+            if (tabManager.activeTabs.length == 1) {
+                //Last one.
+                console.log("todo");
+            } else {
+                //Switch to the first one that isn't us.
+                var i = 0;
+                while (true) {
+                    var target = tabManager.activeTabs[i];
+                    if (tabManager.compareCurrentTab(target)) {
+                        //This is us. Skip.
+                        i += 1;
+                    } else {
+                        //Switch to this one.
+                        tabManager.switchToTab(target);
+                        break;
+                    }
+                }
+            }
+        }
+        //Now, it is safe to do what we want with this tab.
+        //Remove it from the list at the top and the internal list.
+        tabManager.activeTabs.splice(tabManager.activeTabs.indexOf(tab), 1);
+        tab.parentElement.removeChild(tab);
     }
 </script>
 
