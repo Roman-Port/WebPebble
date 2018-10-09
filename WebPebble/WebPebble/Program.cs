@@ -47,7 +47,7 @@ namespace WebPebble
             //Add services that are out of the project.
             AddService(false, Services.CreateProject.CreateProject.OnRequest, "/create", true);
             //Add services that are in the project.
-            AddService(true, null, "/manage", true);
+            AddService(true, Services.Projects.Manage.ManageProject.HandleRequest, "/manage", true);
             AddService(true, Services.Projects.FileManager.OnRequest, "/media/", true);
             AddService(true, Services.Projects.FileList.ListFiles, "/media_list/", true);
             //Start
