@@ -38,7 +38,16 @@ namespace WebPebble
             //Set everything up
             //Get the config.
             string pathname = "/root/webpebble/conf.json";
-            if (!File.Exists(pathname))
+            //Janky
+            bool change = true;
+            try
+            {
+                change = !File.Exists(pathname);
+            } catch
+            {
+
+            }
+            if (change)
                 pathname = "E:/RPWS_Production/WebPebble/conf.json";
             config = JsonConvert.DeserializeObject<WebPebbleConfig>(File.ReadAllText(pathname));
             //Get database

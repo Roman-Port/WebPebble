@@ -8,3 +8,4 @@ C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Release\netcoreapp
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Release\netcoreapp2.0\WebPebble.AssemblyInfo.cs
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Release\netcoreapp2.0\WebPebble.dll
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Release\netcoreapp2.0\WebPebble.pdb
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Release\netcoreapp2.0\WebPebble.csprojAssemblyReference.cache
