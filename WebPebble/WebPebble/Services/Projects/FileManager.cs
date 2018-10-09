@@ -12,7 +12,7 @@ namespace WebPebble.Services.Projects
     {
         public static void OnRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
-            e.Request.Headers.Add("Access-Control-Allow-Origin", "*");
+            e.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
             string[] split = e.Request.Path.ToString().Split('/');
             string fileId = split[4];
