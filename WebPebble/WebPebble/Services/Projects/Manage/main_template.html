@@ -389,7 +389,7 @@
             var ti = this.dom.lastChild;
             ti.src = "https://romanport.com/static/icons/baseline-close.svg";
             //Set callback.
-            this.dom.firstChild.addEventListener('click', exitCallback);
+            this.dom.lastChild.addEventListener('click', exitCallback);
         }
 
         tab.x_tab.switchTo = function () {
