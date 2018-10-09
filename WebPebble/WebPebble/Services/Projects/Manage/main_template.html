@@ -310,12 +310,13 @@
         //Switch to this tab.
         filemanager.SwitchFile(id);
 
-        //Start the server request for the content. For now, use some of our temporary data.
-        window.setTimeout(function () {
-            var content = "";
-            var type = "c_cpp";
+        //Start the server request for the content. 
+        project.serverRequest("media/"+id+"/get/application_json/", function (data) {
+            var content = data.content;
+            var type = data.type;
             //Update data.
             filemanager.loadedFiles[id].state = 1;
+            filemanager.loadedFiles[id].saveUrl = data.saveUrl;
             //Update IDE.
             filemanager.loadedFiles[id].session.setMode("ace/mode/" + type);
             filemanager.loadedFiles[id].session.setValue(content);
@@ -326,7 +327,7 @@
                 var id = this.parentElement.x_file_id;
                 filemanager.CloseFile(id);
             })
-        }, 3000);
+        }, null, true);
     }
 
     filemanager.SwitchFile = function (id) {
