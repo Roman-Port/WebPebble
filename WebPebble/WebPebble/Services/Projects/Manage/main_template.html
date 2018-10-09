@@ -361,6 +361,59 @@
 </script>
 
 <script>
+    var tabManager = {};
+    tabManager.activeTabs = [];
+    tabManager.currentTab = null;
+
+    tabManager.addTab = function (title, clickCallback) {
+        //Get the DOM.
+        var tabs = document.getElementById('tabs');
+        //Create object.
+        var tab = document.createElement('div');
+        tab.className = "tab";
+        //Set inner img
+        var tabNameInner = document.createElement('span');
+        tabNameInner.innerText = title;
+        tab.appendChild(tabNameInner);
+        //Add image
+        var tabImg = document.createElement('img');
+        //Use a loader until this image is downloaded from the server. You'll call our function for that.
+        tabImg.src = "https://romanport.com/static/icons/loader.svg";
+        tab.appendChild(tabImg);
+
+        //Add the functions to the tab. The first one is going to be for finishing the loading process.
+        tab.x_tab = {};
+        tab.x_tab.dom = tab;
+        tab.x_tab.finishLoad = function (exitCallback) {
+            //Find the image.
+            var ti = this.dom.firstChild.firstChild;
+            ti.src = "https://romanport.com/static/icons/baseline-close.svg";
+            //Set callback.
+            this.dom.firstChild.addEventListener('click', exitCallback);
+        }
+
+        tab.x_tab.switchTo = function () {
+            //First, deactive the current tab.
+            if (tabManager.currentTab != null) {
+                tabManager.currentTab.className = "tab";
+            }
+            //Set this as the current tab.
+            tabManager.currentTab = this.dom;
+            this.dom.className = "tab tab_active";
+        }
+
+        //Append this to the dom.
+        tabs.appendChild(tab);
+
+        //Add to active tabs.
+        tabManager.activeTabs.push(tab);
+
+        //Return tab
+        return tab;
+    }
+</script>
+
+<script>
     var filemanager = {};
 
     filemanager.loadedFiles = {};
@@ -374,20 +427,13 @@
             return;
         }
         //First, add a tab.
-        var tabs = document.getElementById('tabs');
-        //Create the element on the DOM.
-        var tab = document.createElement('div');
+        //Create the element on the DOM and add the load callback.
+        var tab = tabManager.addTab(name, function () {
+            filemanager.SwitchFile(this.x_file_id);
+        });
         tab.x_file_id = id;
-        tab.className = "tab";
 
-        var tabNameInner = document.createElement('span');
-        tabNameInner.innerText = name;
-        tab.appendChild(tabNameInner);
-
-        var tabImg = document.createElement('img');
-        //Use a loader until this image is downloaded from the server.
-        tabImg.src = "https://romanport.com/static/icons/loader.svg";
-        tab.appendChild(tabImg);
+        
 
         //Insert into loaded files.
         var tabData = {};
@@ -401,12 +447,6 @@
         tabData.shortName = name.split('/');
         tabData.shortName = tabData.shortName[tabData.shortName.length - 1];
         filemanager.loadedFiles[id] = tabData;
-
-        //Add event listener.
-        tab.addEventListener('click', function () {
-            //Switch to this tab
-            filemanager.SwitchFile(this.x_file_id);
-        });
 
         //Set up IDE
         var EditSession = require("ace/edit_session").EditSession;
@@ -423,9 +463,6 @@
             filemanager.loadedFiles[tabData.id].editCount += 1;
         });
 
-        //Add this.
-        tabs.appendChild(tab);
-
         //Switch to this tab.
         filemanager.SwitchFile(id);
 
@@ -439,13 +476,11 @@
             //Update IDE.
             filemanager.loadedFiles[id].session.setMode("ace/mode/" + type);
             filemanager.loadedFiles[id].session.setValue(content);
-            //Set the loader icon back.
-            tabImg.src = "https://romanport.com/static/icons/baseline-close.svg";
             //Add an event listener to close a file to the close icon.
-            tabImg.addEventListener('click', function () {
+            tab.x_tab.finishLoad(function () {
                 var id = this.parentElement.x_file_id;
                 filemanager.CloseFile(id);
-            })
+            });
         }, null, true);
     }
 
@@ -457,12 +492,9 @@
             if (filemanager.lastFile.id == id) {
                 return;
             }
-            if (filemanager.lastFile.dom != null) {
-                filemanager.lastFile.dom.className = "tab";
-            }
         }
-        //Mark this file.
-        file.dom.className = "tab tab_active";
+        //Switch to this tab.
+        filemanager.loadedFiles[id].dom.x_tab.switchTo();
         //Set up IDE.
         editor.setSession(file.session);
         //Set the active file.
