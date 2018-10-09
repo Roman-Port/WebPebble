@@ -14,14 +14,17 @@ namespace WebPebble.Services.Projects
             string[] split = e.Request.Path.ToString().Split('/');
             string fileType = split[4];
             string fileFolder = split[5];
-            string fileId = split[6].Replace('_','.'); //For some reason, Kestrel doesn't like periods in it.
+            string fileId = split[6];
             string action = split[7];
             string mimeType = split[8].Replace('_','/');
             if(action == "get")
             {
                 //Fetch the file.
                 PebbleProject pp = new PebbleProject(proj.projectId);
-                string fileName = fileType+"/"+fileFolder+"/" + fileId.Replace(".", "").Replace("/", "");
+                string fileName = fileType + "/" + fileFolder + "/" + fileId;
+                //Check if this is ok and not above this path.
+                if (fileName.Contains(".."))
+                    throw new Exception("Invalid pathname.");
                 Console.WriteLine(fileName);
                 //Check if the file exists
                 bool exists = pp.CheckIfExists(fileName);
