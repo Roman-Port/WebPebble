@@ -272,6 +272,16 @@
             margin-right: 4px;
             cursor:pointer;
         }
+
+        .fillEditor {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            background-color: #1B2432;
+            z-index:900;
+        }
     </style>
 
     <title>WebPebble</title>
@@ -328,6 +338,8 @@
         <!--<div>Settings</div>-->
     </div>
 
+    <div id="tmp">test</div>
+
     <!-- Assets sidebar -->
     <div class="assets_window open_sans">
         <div class="assets_type_container" style="margin-top:0;">
@@ -365,11 +377,38 @@
     tabManager.activeTabs = [];
     tabManager.currentTab = null;
 
+    tabManager.addDomTab = function (title, ele, exitCallback) {
+        //Copy an element into this tab's dedicated HTML. Automates things.
+        var tab = tabManager.addTab(title, function () {
+            tabManager.switchToTab(this);
+        });
+        tab.x_tab.exitCallback = exitCallback;
+        //Copy this element.
+        var copy = ele.cloneNode(true);
+        copy.className = "fillEditor";
+        copy.id = "";
+        document.getElementById('editor').appendChild(copy);
+        tab.x_tab.content = copy;
+        //Instantly "finish loading".
+        tabManager.finishTabLoad(tab, function () {
+            //Clean up by deleting the html. First, call the callback in case it needs it.
+            if (tab.x_tab.exitCallback != null) {
+                tab.x_tab.exitCallback();
+            }
+            //Do cleanup.
+            var target = tab.x_tab.content;
+            target.parentElement.removeChild(target);
+            //Close tab.
+            console.log("todo");
+        });
+    }
+
     tabManager.addTab = function (title, clickCallback) {
         //Get the DOM.
         var tabs = document.getElementById('tabs');
         //Create object.
         var tab = document.createElement('div');
+        tab.dom = tab; //janky
         tab.className = "tab";
         //Set inner img
         var tabNameInner = document.createElement('span');
@@ -384,23 +423,6 @@
         //Add the functions to the tab. The first one is going to be for finishing the loading process.
         tab.x_tab = {};
         tab.x_tab.dom = tab;
-        tab.x_tab.finishLoad = function (exitCallback) {
-            //Find the image.
-            var ti = this.dom.lastChild;
-            ti.src = "https://romanport.com/static/icons/baseline-close.svg";
-            //Set callback.
-            this.dom.lastChild.addEventListener('click', exitCallback);
-        }
-
-        tab.x_tab.switchTo = function () {
-            //First, deactive the current tab.
-            if (tabManager.currentTab != null) {
-                tabManager.currentTab.className = "tab";
-            }
-            //Set this as the current tab.
-            tabManager.currentTab = this.dom;
-            this.dom.className = "tab tab_active";
-        }
 
         //Add event listner to the tab.
         tab.addEventListener('click', clickCallback);
@@ -413,6 +435,32 @@
 
         //Return tab
         return tab;
+    }
+
+    tabManager.finishTabLoad = function (tab, exitCallback) {
+        //Find the image.
+        var ti = tab.lastChild;
+        ti.src = "https://romanport.com/static/icons/baseline-close.svg";
+        //Set callback.
+        tab.lastChild.addEventListener('click', exitCallback);
+    }
+
+    tabManager.switchToTab = function (tab) {
+        //First, deactive the current tab.
+        if (tabManager.currentTab != null) {
+            tabManager.currentTab.className = "tab";
+            //If this tab has dedicated html, hide it.
+            if (tabManager.currentTab.x_tab.content != null) {
+                tabManager.currentTab.x_tab.content.style.display = "none";
+            }
+        }
+        //Set this as the current tab.
+        tabManager.currentTab = tab;
+        tab.className = "tab tab_active";
+        //If we have dedicated html, show it.
+        if (tab.x_tab.content != null) {
+            tab.x_tab.content.style.display = "block";
+        }
     }
 </script>
 
@@ -480,7 +528,7 @@
             filemanager.loadedFiles[id].session.setMode("ace/mode/" + type);
             filemanager.loadedFiles[id].session.setValue(content);
             //Add an event listener to close a file to the close icon.
-            tab.x_tab.finishLoad(function () {
+            tabManager.finishTabLoad(tab, function () {
                 var id = this.parentElement.x_file_id;
                 filemanager.CloseFile(id);
             });
@@ -497,7 +545,7 @@
             }
         }
         //Switch to this tab.
-        filemanager.loadedFiles[id].dom.x_tab.switchTo();
+        tabManager.switchToTab(filemanager.loadedFiles[id].dom);
         //Set up IDE.
         editor.setSession(file.session);
         //Set the active file.
