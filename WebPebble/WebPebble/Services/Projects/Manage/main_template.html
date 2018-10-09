@@ -215,7 +215,7 @@
     </div>
 
     <!-- Ide view, where text entry happens. -->
-    <div class="ide_window open_sans" id="editor">
+    <div class="ide_window" id="editor">
     </div>
 
     <!-- Sidebar options button -->
@@ -292,6 +292,8 @@
         tabData.session = null; //Will be set to the session.
         tabData.saved = true;
         tabData.dom = tab;
+        tabData.shortName = name.split('/');
+        tabData.shortName = tabData.shortName[tabData.shortName.length - 1];
         filemanager.loadedFiles[id] = tabData;
 
         //Add event listener.
@@ -303,6 +305,17 @@
         //Set up IDE
         var EditSession = require("ace/edit_session").EditSession;
         tabData.session = new EditSession("");
+        tabData.session.on("change", function () {
+            //Mark this as "edited".
+            console.log("edited");
+            //Add a little star to the filename if we haven't already.
+            if (filemanager.loadedFiles[tabData.x_file_id].saved) {
+                filemanager.loadedFiles[tabData.x_file_id].saved = false;
+                filemanager.loadedFiles[tabData.x_file_id].dom.firstChild.innerText = filemanager.loadedFiles[tabData.x_file_id].shortName + "*";
+            }
+            
+            
+        });
 
         //Add this.
         tabs.appendChild(tab);
