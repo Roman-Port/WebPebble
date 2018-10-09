@@ -246,6 +246,7 @@
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://romanport.com/static/webpebble/external/ace/src/ace.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
 <script>
     //Init editor
@@ -422,6 +423,7 @@
         }
         //Todo: Add timeout error.
         xmlhttp.open("GET", url, true);
+        xmlhttp.setRequestHeader("Authorization", Cookies.get('access-token'));
         xmlhttp.send();
     };
 

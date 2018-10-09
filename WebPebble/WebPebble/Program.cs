@@ -57,6 +57,16 @@ namespace WebPebble
         public static Task OnHttpRequest(Microsoft.AspNetCore.Http.HttpContext e)
         {
             /* Main code happens here! */
+
+            //Manage CORS by responding with the preflight header request.
+            if(e.Request.Method.ToLower() == "options")
+            {
+                e.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                e.Response.Headers.Add("Access-Control-Allow-Headers", "*");
+                QuickWriteToDoc(e, "Preflight OK");
+                return null;
+            }
+
             //Try to find a service to handle the request. Ew.
 
             //This is ugly and was written wayyyyy too quickly to be such a core part of the program.
@@ -105,6 +115,10 @@ namespace WebPebble
                 if(e.Request.Cookies.ContainsKey("access-token"))
                 {
                     user = Oauth.RpwsAuth.AuthenticateUser(e.Request.Cookies["access-token"]);
+                }
+                if(e.Request.Headers.ContainsKey("Authorization") && user == null)
+                {
+                    user = Oauth.RpwsAuth.AuthenticateUser(e.Request.Headers["Authorization"]);
                 }
                 //Check if you must be logged in to do this.
                 if (service.requiresAuth && user == null)

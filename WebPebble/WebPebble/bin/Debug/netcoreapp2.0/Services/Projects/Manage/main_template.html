@@ -231,13 +231,11 @@
             <div><div class="btn" style="margin-bottom:0;">Timeline</div></div>
         </div>
         <div class="line"></div>
-        <div class="assets_type_container" >
-            <div><div class="btn">main.c</div></div>
-            <div><div class="btn">helper.c</div></div>
+        <div class="assets_type_container" id="assets_0">
             <div><div class="btn btn_active" style="margin-bottom:0;">Add new source</div></div>
         </div>
         <div class="line"></div>
-        <div class="assets_type_container">
+        <div class="assets_type_container" id="assets_1">
             <div><div class="btn btn_active">Add new resource</div></div>
         </div>
     </div>
@@ -248,6 +246,7 @@
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="https://romanport.com/static/webpebble/external/ace/src/ace.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
 
 <script>
     //Init editor
@@ -353,4 +352,108 @@
     filemanager.CloseFile = function (id) {
         console.log("Close " + id);
     }
+</script>
+
+
+<script>
+    var project = {};
+    project.id = "2ca12e56dd024781";
+    project.serverRequest = function (url, run_callback, fail_callback, isJson) {
+        url = "http://10.0.1.13/project/" + project.id + "/" + url;
+        //This is the main server request function. Please change all other ones to use this.
+        if (isJson == null) { isJson = true; }
+
+        if (fail_callback == null) {
+            //Just create a dumb function
+
+        }
+        var xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.timeout = 10000;
+
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if (isJson) {
+                    //This is JSON.
+                    //This is most likely to be valid, but check for errors.
+                    var JSON_Data;
+                    try {
+                        JSON_Data = JSON.parse(this.responseText);
+                    } catch (e) {
+                        fail_callback("JSON Parse Error", true);
+                        return;
+                    }
+                    if (JSON_Data["maintenance"] != null) {
+                        if (JSON_Data["maintenance"] == true) {
+                            //Stop and show maintance mode message.
+                            DisplayApiMaintenanceMsg(JSON_Data["maintenance_msg"]);
+                        }
+
+                    }
+                    if (JSON_Data.error != null) {
+                        //Server-side error!
+                        fail_callback(JSON_Data.error + " - Check Console", true);
+                        console.log("A server error (" + JSON_Data.error + ") occurred and data could not be grabbed. Error: " + JSON_Data.raw_error);
+                        return;
+                    } else {
+                        //Aye okay here. Call the callback.
+                        run_callback(JSON_Data);
+                        return;
+                    }
+                } else {
+                    //Just return it
+                    run_callback(this.responseText);
+                }
+            } else if (this.readyState == 4) {
+                //Got an invalid request.
+                fail_callback("HTTP Error " + this.status, true);
+            }
+        }
+
+        xmlhttp.ontimeout = function () {
+            fail_callback("No Connection", false);
+        }
+
+        xmlhttp.onerror = function () {
+            fail_callback("No Connection", false);
+        }
+
+        xmlhttp.onabort = function () {
+            fail_callback("Abort", false);
+        }
+        //Todo: Add timeout error.
+        xmlhttp.open("GET", url, true);
+        xmlhttp.setRequestHeader("Authorization", Cookies.get('access-token'));
+        xmlhttp.send();
+    };
+
+    project.assets = [];
+
+    project.init = function () {
+        //Get assets from server.
+        project.serverRequest("media_list/", function (data) {
+            //Set assets and add tabs.
+            project.assets = data;
+            for (var i = 0; i < data.length; i+=1) {
+                var d = data[i];
+                var e = document.createElement('div');
+                var ee = document.createElement('div');
+                ee.className = "tab btn";
+                var name = d.filename.split('/');
+                ee.innerText = name[name.length - 1];
+                e.appendChild(ee);
+                //Set data on dom.
+                e.x_asset = d;
+                //Append to the list.
+                document.getElementById('assets_' + d.type).appendChild(e);
+            }
+        }, null, true);
+    }
+</script>
+
+
+
+<!-- BOOT -->
+<script>
+    project.init();
 </script>
