@@ -54,7 +54,10 @@ namespace WebPebble.Entities
             string id = LibRpws.LibRpwsCore.GenerateRandomHexString(8);
             //Save
             a.id = id;
+            if (assets == null)
+                assets = new List<WebPebbleProjectAsset>();
             assets.Add(a);
+
             SaveProject();
             return a;
         }
