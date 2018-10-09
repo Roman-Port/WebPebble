@@ -52,8 +52,6 @@ namespace WebPebble.Entities
             a.innerType = inner;
             //Generate an ID.
             string id = LibRpws.LibRpwsCore.GenerateRandomHexString(8);
-            while (assets.Where(x => x.id == id).ToArray().Length != 0)
-                id = LibRpws.LibRpwsCore.GenerateRandomHexString(8);
             //Save
             a.id = id;
             assets.Add(a);
