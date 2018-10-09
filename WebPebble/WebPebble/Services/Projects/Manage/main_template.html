@@ -386,7 +386,7 @@
         tab.x_tab.dom = tab;
         tab.x_tab.finishLoad = function (exitCallback) {
             //Find the image.
-            var ti = this.dom.firstChild.lastChild;
+            var ti = this.dom.lastChild;
             ti.src = "https://romanport.com/static/icons/baseline-close.svg";
             //Set callback.
             this.dom.firstChild.addEventListener('click', exitCallback);
@@ -401,6 +401,9 @@
             tabManager.currentTab = this.dom;
             this.dom.className = "tab tab_active";
         }
+
+        //Add event listner to the tab.
+        tab.addEventListener('click', clickCallback);
 
         //Append this to the dom.
         tabs.appendChild(tab);
