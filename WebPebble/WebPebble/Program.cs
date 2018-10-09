@@ -48,6 +48,7 @@ namespace WebPebble
             AddService(false, Services.CreateProject.CreateProject.OnRequest, "/create", true);
             //Add services that are in the project.
             AddService(true, null, "/manage", true);
+            AddService(true, Services.Projects.FileManager.OnRequest, "/media/", true);
             //Start
             MainAsync().GetAwaiter().GetResult();
         }
@@ -121,6 +122,7 @@ namespace WebPebble
                         id = id.Substring(0, id.IndexOf('/'));
                         //Now, use this ID to load it from the database.
                         var collect = database.GetCollection<WebPebbleProject>("projects");
+                        Console.WriteLine(id);
                         var projects = collect.Find(x => x.projectId == id && x.authorId == user.uuid);
                         if (projects.Count() == 1)
                             proj = projects.ToArray()[0];
@@ -134,6 +136,12 @@ namespace WebPebble
                 //Run the code.
                 try
                 {
+                    if(service.inProject == (proj==null))
+                    {
+                        //Requires a project, but none was found.
+                        QuickWriteToDoc(e, "you don't own that project or it didn't exist");
+                        return null;
+                    }
                     service.code(e, user, proj);
                     
                 } catch (Exception ex)
@@ -180,6 +188,26 @@ namespace WebPebble
                 response.Body.Write(data, 0, data.Length);
                 //Console.WriteLine(html);
             } catch
+            {
+
+            }
+        }
+
+        public static void QuickWriteBytesToDoc(Microsoft.AspNetCore.Http.HttpContext context, byte[] content, string type = "text/html", int code = 200)
+        {
+            try
+            {
+                var response = context.Response;
+                response.StatusCode = code;
+                response.ContentType = type;
+
+                //Load the template.
+                var data = content;
+                response.ContentLength = data.Length;
+                response.Body.Write(data, 0, data.Length);
+                //Console.WriteLine(html);
+            }
+            catch
             {
 
             }

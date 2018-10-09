@@ -28,6 +28,16 @@ namespace WebPebble.Entities.PebbleProject
             return File.ReadAllText(pathnane + localPath);
         }
 
+        public bool CheckIfExists(string localPath)
+        {
+            return File.Exists(pathnane + localPath);
+        }
+
+        public byte[] ReadFileBytes(string localPath)
+        {
+            return File.ReadAllBytes(pathnane + localPath);
+        }
+
         public void WriteFile(string localPath, string data)
         {
             File.WriteAllText(pathnane + localPath,data);
@@ -42,7 +52,7 @@ namespace WebPebble.Entities.PebbleProject
                 NullValueHandling = NullValueHandling.Ignore
             };
             //Save it to the disk.
-            WriteFile("package", JsonConvert.SerializeObject(package, settings));
+            WriteFile("package.json", JsonConvert.SerializeObject(package, settings));
         }
 
         /* DOING FUNCTIONS */

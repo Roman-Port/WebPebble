@@ -9,3 +9,4 @@ C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Debug\netcoreapp2.
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Debug\netcoreapp2.0\WebPebble.pdb
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Debug\netcoreapp2.0\WebPebble.dll
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Debug\netcoreapp2.0\WebPebble.pdb
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Debug\netcoreapp2.0\Services\Projects\Manage\main_template.html

@@ -1,0 +1,356 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+
+    <!-- Imports -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <style>
+        /* Custom scrollbars */
+
+        body::-webkit-scrollbar {
+            width: 1em;
+        }
+
+        body::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background-color: darkgrey;
+            outline: 1px solid slategrey;
+        }
+
+        body {
+            background-color: #121420;
+            margin: 0;
+            padding: 0;
+        }
+
+        .open_sans {
+            font-family: 'Open Sans', sans-serif;
+            color:white;
+        }
+
+        .header {
+            height: 40px;
+            padding: 20px;
+            background-color: #1B2432;
+            color: white;
+            -webkit-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.46);
+            -moz-box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.46);
+            box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.46);
+        }
+
+        .header .title {
+            font-size:30px;
+            font-weight:800;
+            line-height:40px;
+            display:inline-block;
+            float:left;
+        }
+
+        .header .big_button {
+            height:24px;
+            line-height:24px;
+            padding:8px;
+            background-color:#4F6272;
+            border-radius:5px;
+            float:right;
+            display:inline-block;
+            margin-left:8px;
+        }
+
+        .header .big_button img {
+            width:24px;
+            height:24px;
+        }
+
+        .header .line {
+            height:100%; 
+            background-color:#4F6272;
+            width:2px;
+            border-radius:2px;
+            display:inline-block;
+            float:right;
+            margin-left:8px;
+        }
+
+        .ide_window {
+            position: fixed;
+            top: 135px;
+            bottom: 15px;
+            right: 15px;
+            left: 315px;
+            background-color: #1B2432;
+            -webkit-box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);
+            -moz-box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);
+            box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);
+        }
+
+        .ide_window_tabs {
+            top: 95px;
+            right: 25px;
+            left: 325px;
+            height:40px;
+            position:fixed;
+        }
+
+        .ide_window_tabs .tab {
+            display:inline-block;
+            height: 30px;
+            font-size:15px;
+            line-height:15px;
+            padding-top:11px;
+            padding-left:16px;
+            padding-right:16px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            border:2px solid #1B2432;
+            background-color: #1B2432;
+            margin-left:10px;
+        }
+
+        .ide_window_tabs .tab_active {
+            border:2px solid #B76D68;
+        }
+
+        .tab img {
+            height: 16px;
+            margin-left: 5px;
+            vertical-align: top;
+            border-radius:50%;
+        }
+
+        .assets_window {
+            top: 135px;
+            top:95px;
+            bottom: 15px;
+            left: 15px;
+            width: 285px;
+            position: fixed;
+        }
+
+        .assets_options_window {
+            top: 95px;
+            height:30px;
+            left: 15px;
+            width: 285px;
+            position: fixed;
+        }
+
+        .assets_options_window div {
+            height:24px;
+            line-height:24px;
+            padding:8px;
+            padding-left:16px;
+            padding-right:16px;
+            background-color:#4F6272;
+            border-radius:5px;
+            display:inline-block;
+        }
+
+        .assets_options_window span {
+            padding:10px;
+            font-size:18px;
+        }
+
+        .assets_type_container {
+            margin-bottom:8px;
+            margin-top:8px;
+        }
+
+        .assets_type_container .btn {
+            padding:10px;
+            border-radius:8px;
+            display:inline-block;
+            margin-bottom:5px;
+            font-size:15px;
+        }
+
+        .assets_type_container .btn:hover {
+            background-color:#1B2432;
+        }
+
+        .assets_type_container .btn_active {
+            background-color:#1B2432;
+        }
+
+        .assets_window .line {
+            width:100%;
+            height: 2px;
+            background-color: #1B2432;
+            border-radius: 1px;
+        }
+
+        .ace_print-margin {
+            display:none;
+        }
+    </style>
+
+    <title>WebPebble</title>
+</head>
+<body>
+    <div class="header open_sans">
+        <!-- Header content -->
+        <div class="title">WebPebble</div>
+        <!-- Compiler buttons -->
+        <div class="big_button"><img src="https://romanport.com/static/icons/white/baseline-play_arrow.svg" /></div>
+        <div class="big_button"><img src="https://romanport.com/static/icons/white/baseline-save.svg" /></div>
+        <div class="big_button"><img src="https://romanport.com/static/icons/white/baseline-delete.svg" /></div>
+        <div class="line"></div>
+        <div class="big_button">Log Out</div>
+        <div class="big_button">Projects</div>
+        <div class="big_button">Settings</div>
+        <div class="big_button">Documentation</div>
+    </div>
+
+    <!-- Ide tabs -->
+    <div class="ide_window_tabs open_sans" id="tabs">
+        <!--<div class="tab tab_active">main.c <img src="https://romanport.com/static/icons/baseline-close.svg" /></div>
+        <div class="tab">helper.c <img src="https://romanport.com/static/icons/baseline-close.svg" /></div>-->
+    </div>
+
+    <!-- Ide view, where text entry happens. -->
+    <div class="ide_window open_sans" id="editor">
+    </div>
+
+    <!-- Sidebar options button -->
+    <div class="assets_options_window open_sans">
+        <!--<div>Settings</div>-->
+    </div>
+
+    <!-- Assets sidebar -->
+    <div class="assets_window open_sans">
+        <div class="assets_type_container" style="margin-top:0;">
+            <div><div class="btn btn_active" style="font-size:18px;">Project Name</div></div>
+            <div><div class="btn">Options</div></div>
+            <div><div class="btn" style="margin-bottom:0;">Timeline</div></div>
+        </div>
+        <div class="line"></div>
+        <div class="assets_type_container" >
+            <div><div class="btn">main.c</div></div>
+            <div><div class="btn">helper.c</div></div>
+            <div><div class="btn btn_active" style="margin-bottom:0;">Add new source</div></div>
+        </div>
+        <div class="line"></div>
+        <div class="assets_type_container">
+            <div><div class="btn btn_active">Add new resource</div></div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://romanport.com/static/webpebble/external/ace/src/ace.js"></script>
+
+<script>
+    //Init editor
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/dracula");
+    editor.session.setMode("ace/mode/c_cpp");
+</script>
+
+<script>
+    var filemanager = {};
+
+    filemanager.loadedFiles = {};
+    filemanager.lastFile = null;
+
+    filemanager.LoadFile = function (id, name) {
+        //Check if this file is already loaded.
+        if (filemanager.loadedFiles[id] != null) {
+            //Instead, switch to this file.
+            filemanager.SwitchFile(id);
+            return;
+        }
+        //First, add a tab.
+        var tabs = document.getElementById('tabs');
+        //Create the element on the DOM.
+        var tab = document.createElement('div');
+        tab.x_file_id = id;
+        tab.className = "tab";
+
+        var tabNameInner = document.createElement('span');
+        tabNameInner.innerText = name;
+        tab.appendChild(tabNameInner);
+
+        var tabImg = document.createElement('img');
+        //Use a loader until this image is downloaded from the server.
+        tabImg.src = "https://romanport.com/static/icons/loader.svg";
+        tab.appendChild(tabImg);
+
+        //Insert into loaded files.
+        var tabData = {};
+        tabData.name = name;
+        tabData.id = id;
+        tabData.state = 0;
+        tabData.session = null; //Will be set to the session.
+        tabData.saved = true;
+        tabData.dom = tab;
+        filemanager.loadedFiles[id] = tabData;
+
+        //Add event listener.
+        tab.addEventListener('click', function () {
+            //Switch to this tab
+            filemanager.SwitchFile(this.x_file_id);
+        });
+
+        //Set up IDE
+        var EditSession = require("ace/edit_session").EditSession;
+        tabData.session = new EditSession("");
+
+        //Add this.
+        tabs.appendChild(tab);
+
+        //Switch to this tab.
+        filemanager.SwitchFile(id);
+
+        //Start the server request for the content. For now, use some of our temporary data.
+        window.setTimeout(function () {
+            var content = "";
+            var type = "c_cpp";
+            //Update data.
+            filemanager.loadedFiles[id].state = 1;
+            //Update IDE.
+            filemanager.loadedFiles[id].session.setMode("ace/mode/" + type);
+            filemanager.loadedFiles[id].session.setValue(content);
+            //Set the loader icon back.
+            tabImg.src = "https://romanport.com/static/icons/baseline-close.svg";
+            //Add an event listener to close a file to the close icon.
+            tabImg.addEventListener('click', function () {
+                var id = this.parentElement.x_file_id;
+                filemanager.CloseFile(id);
+            })
+        }, 3000);
+    }
+
+    filemanager.SwitchFile = function (id) {
+        //Set this file as the active tab.
+        var file = filemanager.loadedFiles[id];
+        //Unmark the last file and check to see if we are the last file.
+        if (filemanager.lastFile != null) {
+            if (filemanager.lastFile.id == id) {
+                return;
+            }
+            if (filemanager.lastFile.dom != null) {
+                filemanager.lastFile.dom.className = "tab";
+            }
+        }
+        //Mark this file.
+        file.dom.className = "tab tab_active";
+        //Set up IDE.
+        editor.setSession(file.session);
+        //Set the active file.
+        filemanager.lastFile = file;
+    }
+
+    filemanager.CloseFile = function (id) {
+        console.log("Close " + id);
+    }
+</script>

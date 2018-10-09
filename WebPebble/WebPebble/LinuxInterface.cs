@@ -33,7 +33,6 @@ namespace WebPebble
             process.Start();
             string result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
-            Console.WriteLine(result);
             return result;
         }
 
