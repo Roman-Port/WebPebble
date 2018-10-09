@@ -7,5 +7,6 @@ namespace WebPebble
     public class WebPebbleConfig
     {
         public string user_project_dir;
+        public string database_file;
     }
 }
