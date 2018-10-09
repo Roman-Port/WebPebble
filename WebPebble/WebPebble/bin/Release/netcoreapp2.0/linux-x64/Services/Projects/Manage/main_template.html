@@ -386,7 +386,7 @@
         tab.x_tab.dom = tab;
         tab.x_tab.finishLoad = function (exitCallback) {
             //Find the image.
-            var ti = this.dom.firstChild.firstChild;
+            var ti = this.dom.firstChild.lastChild;
             ti.src = "https://romanport.com/static/icons/baseline-close.svg";
             //Set callback.
             this.dom.firstChild.addEventListener('click', exitCallback);
