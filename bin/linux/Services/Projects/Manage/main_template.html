@@ -291,6 +291,7 @@
         tabData.state = 0;
         tabData.session = null; //Will be set to the session.
         tabData.saved = true;
+        tabData.editCount = 0;
         tabData.dom = tab;
         tabData.shortName = name.split('/');
         tabData.shortName = tabData.shortName[tabData.shortName.length - 1];
@@ -309,12 +310,12 @@
             //Mark this as "edited".
             console.log("edited");
             //Add a little star to the filename if we haven't already.
-            if (filemanager.loadedFiles[tabData.x_file_id].saved) {
-                filemanager.loadedFiles[tabData.x_file_id].saved = false;
-                filemanager.loadedFiles[tabData.x_file_id].dom.firstChild.innerText = filemanager.loadedFiles[tabData.x_file_id].shortName + "*";
+            //If this is the first edit, ignore it. It's us setting the value.
+            if (filemanager.loadedFiles[tabData.id].saved && filemanager.loadedFiles[tabData.id] != 0) {
+                filemanager.loadedFiles[tabData.id].saved = false;
+                filemanager.loadedFiles[tabData.id].dom.firstChild.innerText = filemanager.loadedFiles[tabData.id].shortName + "*";
             }
-            
-            
+            filemanager.loadedFiles[tabData.id].editCount += 1;
         });
 
         //Add this.
