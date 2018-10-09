@@ -442,7 +442,7 @@
                 var name = d.filename.split('/');
                 name = name[name.length - 1];
                 ee.innerText = name;
-                e.insertBefore(ee, e.lastChild);
+                e.appendChild(ee);
                 //Set data on dom.
                 e.x_asset = d;
                 e.x_asset.shortName = name;
@@ -452,7 +452,8 @@
                     filemanager.LoadFile(asset.id, asset.shortName);
                 });
                 //Append to the list.
-                document.getElementById('assets_' + d.type).appendChild(e);
+                var list = document.getElementById('assets_' + d.type);
+                list.insertBefore(e, list.lastChild);
             }
         }, null, true);
     }

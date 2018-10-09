@@ -9,3 +9,4 @@ C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Release\netcoreapp
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Release\netcoreapp2.0\linux-x64\WebPebble.dll
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Release\netcoreapp2.0\linux-x64\WebPebble.pdb
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\Services\Projects\Manage\main_template.html
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\obj\Release\netcoreapp2.0\linux-x64\WebPebble.csprojAssemblyReference.cache
