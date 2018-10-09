@@ -12,9 +12,6 @@ namespace WebPebble
         {
             //Run the Linux command.
             //Thanks to https://loune.net/2017/06/running-shell-bash-commands-in-net-core/ for telling me how to do this in the .NET Core world.
-            //First, CD into what we'd like.
-            cmd = "cd " + pathname + "\n";
-            //Now, escape it.
             var escapedArgs = cmd.Replace("\"", "\\\"");
             //Now, run it and redirect output.
             var process = new Process()
@@ -22,6 +19,7 @@ namespace WebPebble
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "/bin/bash",
+                    WorkingDirectory = pathname,
                     Arguments = $"-c \"{escapedArgs}\"",
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
@@ -31,6 +29,7 @@ namespace WebPebble
             process.Start();
             string result = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
+            Console.WriteLine(result);
             return result;
         }
     }

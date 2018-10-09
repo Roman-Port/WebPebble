@@ -39,7 +39,7 @@ namespace WebPebble
             //Get the config.
             string pathname = "E:/RPWS_Production/WebPebble/conf.json";
             if(System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
-                pathname = "/root/webpebble/conf.json"; //Assume this is my server.
+                pathname = "/root/webpebble/conf.json"; //Assume this is my server. FWI: You aren't running as root. Oopsies.
 
             config = JsonConvert.DeserializeObject<WebPebbleConfig>(File.ReadAllText(pathname));
             //Get database
