@@ -43,6 +43,11 @@ namespace WebPebble.Entities.PebbleProject
             File.WriteAllText(pathnane + localPath,data);
         }
 
+        public void WriteFile(string localPath, byte[] data)
+        {
+            File.WriteAllBytes(pathnane + localPath, data);
+        }
+
         /* SAVING FUNCTIONS */
         public void SavePackage()
         {
