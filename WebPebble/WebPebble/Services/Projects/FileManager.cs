@@ -13,14 +13,16 @@ namespace WebPebble.Services.Projects
         {
             string[] split = e.Request.Path.ToString().Split('/');
             string fileType = split[4];
-            string fileId = split[5];
-            string action = split[6];
-            string mimeType = split[7].Replace('_','/');
+            string fileFolder = split[5];
+            string fileId = split[6];
+            string action = split[7];
+            string mimeType = split[8].Replace('_','/');
             if(action == "get")
             {
                 //Fetch the file.
                 PebbleProject pp = new PebbleProject(proj.projectId);
-                string fileName = fileType+"/" + fileId.Replace(".", "").Replace("/", "");
+                string fileName = fileType+"/"+fileFolder+"/" + fileId.Replace(".", "").Replace("/", "");
+                Console.WriteLine(fileName);
                 //Check if the file exists
                 bool exists = pp.CheckIfExists(fileName);
                 if(!exists)
