@@ -403,6 +403,10 @@
         });
     }
 
+    tabManager.compareCurrentTab = function (tab) {
+        return tab == tabManager.currentTab;
+    }
+
     tabManager.addTab = function (title, clickCallback) {
         //Get the DOM.
         var tabs = document.getElementById('tabs');
@@ -539,10 +543,9 @@
         //Set this file as the active tab.
         var file = filemanager.loadedFiles[id];
         //Unmark the last file and check to see if we are the last file.
-        if (filemanager.lastFile != null) {
-            if (filemanager.lastFile.id == id) {
-                return;
-            }
+        if (tabManager.compareCurrentTab(file.dom)) {
+            //This is the same one.
+            return;
         }
         //Switch to this tab.
         tabManager.switchToTab(filemanager.loadedFiles[id].dom);
