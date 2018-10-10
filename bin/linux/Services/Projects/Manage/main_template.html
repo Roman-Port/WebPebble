@@ -680,6 +680,7 @@
         //Check if any need saving.
         if (toSave.length == 0) {
             project.showDialog("Saved", "No files needed saving.", ["Close"], [closeCallback]);
+            if (totalCallback != null) { totalCallback(); }
         } else {
             //Save all.
             for (var i = 0; i < toSave.length; i++) {

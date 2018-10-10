@@ -13,6 +13,7 @@ namespace WebPebble.Entities
         public string authorId { get; set; } //RPWS author id.
 
         public List<WebPebbleProjectAsset> assets { get; set; }
+        public List<WebPebbleProjectBuild> builds { get; set; }
 
         //Functions for creation.
         public static WebPebbleProject CreateProject(string name, string authorName, string authorId, bool isWatchface)
@@ -70,6 +71,14 @@ namespace WebPebble.Entities
 
         public AssetType type { get; set; }
         public InnerAssetType innerType { get; set; }
+    }
+
+    public class WebPebbleProjectBuild
+    {
+        public string id { get; set; }
+        public long time { get; set; }
+        public bool passed { get; set; }
+        public string log { get; set; }
     }
 
     public enum AssetType
