@@ -352,8 +352,6 @@
         <!--<div>Settings</div>-->
     </div>
 
-    <div id="tmp">test</div>
-
     <!-- Assets sidebar -->
     <div class="assets_window open_sans">
         <div class="assets_type_container" style="margin-top:0;">
@@ -369,6 +367,11 @@
         <div class="assets_type_container" id="assets_1">
             <div><div class="btn btn_active">Add new resource</div></div>
         </div>
+    </div>
+
+    <!-- Hidden templates. -->
+    <div style="display:none;">
+        <textarea id="template_bigtext"></textarea>
     </div>
 </body>
 
@@ -818,24 +821,26 @@
             project.assets = data;
             for (var i = 0; i < data.length; i+=1) {
                 var d = data[i];
-                var e = document.createElement('div');
-                var ee = document.createElement('div');
-                ee.className = "tab btn";
-                var name = d.filename.split('/');
-                name = name[name.length - 1];
-                ee.innerText = name;
-                e.appendChild(ee);
-                //Set data on dom.
-                e.x_asset = d;
-                e.x_asset.shortName = name;
-                //Add the event listener to view this.
-                e.addEventListener('click', function () {
-                    var asset = this.x_asset;
-                    filemanager.LoadFile(asset.id, asset.shortName);
-                });
-                //Append to the list.
-                var list = document.getElementById('assets_' + d.type);
-                list.insertBefore(e, list.firstChild);
+                if (d.type == 0 || d.type == 1) {
+                    var e = document.createElement('div');
+                    var ee = document.createElement('div');
+                    ee.className = "tab btn";
+                    var name = d.filename.split('/');
+                    name = name[name.length - 1];
+                    ee.innerText = name;
+                    e.appendChild(ee);
+                    //Set data on dom.
+                    e.x_asset = d;
+                    e.x_asset.shortName = name;
+                    //Add the event listener to view this.
+                    e.addEventListener('click', function () {
+                        var asset = this.x_asset;
+                        filemanager.LoadFile(asset.id, asset.shortName);
+                    });
+                    //Append to the list.
+                    var list = document.getElementById('assets_' + d.type);
+                    list.insertBefore(e, list.firstChild);
+                }
             }
         }, null, true);
     }
@@ -871,11 +876,21 @@
                     //OK.
                     project.showDialog("Build Finished", "The build finished successfully.", ["Dismiss", "Get PBW", "View Log"], [function () { },
                         function () { },
-                        function () { } ]);
+                        function () {
+                            //Set the template and apply it. This is a bit ugly.
+                            var t = document.getElementById('template_bigtext');
+                            t.value = data.log;
+                            tabManager.addDomTab("Build Log " + data.id, t, null);
+                        }]);
                 } else {
                     //Failed.
                     project.showDialog("Build Failed", "The build failed to compile. Take a look at the log to see what went wrong.", ["Dismiss", "View Log"], [function () { },
-                        function () { }
+                        function () {
+                            //Set the template and apply it. This is a bit ugly.
+                            var t = document.getElementById('template_bigtext');
+                            t.value = data.log;
+                            tabManager.addDomTab("Build Log " + data.id, t, null);
+                        }
                     ]);
                 }
             }, function () {
