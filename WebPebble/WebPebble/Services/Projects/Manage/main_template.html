@@ -627,16 +627,60 @@
             function () { /* Nothing */ }
         ]);
     }
+
+    filemanager.SaveFile = function (id, callback) {
+        var data = filemanager.loadedFiles[id];
+        //Send to the server.
+        project.serverRequest("media/" + data.id + "/put/", callback, null, false, "POST", data.session.getValue());
+    }
+
+    filemanager.SaveAll = function () {
+        //This could take a bit, so show a dialog.
+        project.showDialog("Saving...", "One moment, please.", [], []);
+        var saveCount = 0;
+        //Count how many need saving.
+        var keys = Object.keys(filemanager.loadedFiles);
+        var toSave = [];
+        for (var i = 0; i < keys; i++) {
+            var d = filemanager.loadedFiles[keys[i]];
+            if (d.saved == false) {
+                //Set it to saved and update the dom, then add it to the save pile.
+                d.saved = true;
+                toSave.push(d);
+            }
+        }
+        var closeCallback = function () {
+            //Let auto cleanup do it.
+        };
+        //Check if any need saving.
+        if (toSave.length == 0) {
+            project.showDialog("Saved.", "No files needed saving.", ["Close"], [closeCallback]);
+        } else {
+            //Save all.
+            for (var i = 0; i < toSave.length; i++) {
+                filemanager.SaveFile(toSave[i].id, function () {
+                    //Increment the value and check if all are saved.
+                    saveCount += 1;
+                    if (toSave.length == saveCount) {
+                        //Done.
+                        project.showDialog("Saved.", "Saved " + toSave.length+" files!", ["Close"], [closeCallback]);
+                    }
+                });
+            }
+        }
+    }
 </script>
 
 
 <script>
     var project = {};
     project.id = "2ca12e56dd024781";
-    project.serverRequest = function (url, run_callback, fail_callback, isJson) {
+    project.serverRequest = function (url, run_callback, fail_callback, isJson, type, body) {
         url = "http://10.0.1.52/project/" + project.id + "/" + url;
         //This is the main server request function. Please change all other ones to use this.
         if (isJson == null) { isJson = true; }
+
+        if (type == null) { type = "GET";}
 
         if (fail_callback == null) {
             //Just create a dumb function
@@ -697,9 +741,9 @@
             fail_callback("Abort", false);
         }
         //Todo: Add timeout error.
-        xmlhttp.open("GET", url, true);
+        xmlhttp.open(type, url, true);
         xmlhttp.setRequestHeader("Authorization", Cookies.get('access-token'));
-        xmlhttp.send();
+        xmlhttp.send(body);
     };
 
     project.showDialog = function (title, text, buttonTextArray, buttonCallbackArray, data) {

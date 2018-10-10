@@ -63,6 +63,7 @@ namespace WebPebble
             {
                 e.Response.Headers.Add("Access-Control-Allow-Origin", "*");
                 e.Response.Headers.Add("Access-Control-Allow-Headers", "*");
+                e.Response.Headers.Add("Access-Control-Allow-Methods", "GET, PUT, POST");
                 QuickWriteToDoc(e, "Preflight OK");
                 return null;
             }

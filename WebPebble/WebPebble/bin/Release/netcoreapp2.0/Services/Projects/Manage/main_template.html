@@ -107,15 +107,16 @@
             padding-top:11px;
             padding-left:16px;
             padding-right:16px;
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
             border:2px solid #1B2432;
             background-color: #1B2432;
-            margin-left:10px;
+            margin-left:4px;
         }
 
         .ide_window_tabs .tab_active {
-            border:2px solid #B76D68;
+            background-color: #2e3b4e;
+            border: 2px solid #2e3b4e;
         }
 
         .tab img {
@@ -189,11 +190,136 @@
         .ace_print-margin {
             display:none;
         }
+
+        .popup_background {
+            opacity:0.5;
+            position:fixed;
+            top:0;
+            right:0;
+            left:0;
+            bottom:0;
+            background-color:black;
+            z-index:1000;
+        }
+
+        .popup_window_container {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 1001;
+            transition: all 200ms;
+        }
+
+        .hide {
+            opacity:0;
+            pointer-events:none;
+        }
+
+        .popup_window {
+            width: calc(100% - 20px);
+            display: inline-block;
+            margin-left: 10px;
+            margin-right: 10px;
+            max-width: 600px;
+            background-color: #364958;
+            border-radius: 10px;
+            overflow: hidden;
+            transition:all 300ms;
+        }
+
+        .popup_window_hide {
+            opacity:0;
+        }
+
+        .popup_window_top {
+            padding: 10px;
+            text-align: center;
+            font-size: 18px;
+            background-color: #4F6272;
+            padding-bottom:15px;
+            padding-top:15px;
+        }
+
+        .popup_window_content {
+            padding:10px;
+            font-size:15px;
+            padding-top:20px;
+        }
+
+        .popup_window_buttons {
+            padding: 10px;
+            text-align: center;
+            font-size:15px;
+            padding-bottom: 15px;
+        }
+
+        .popup_window_buttons_content {
+            margin:auto;
+        }
+
+        .popup_window_buttons_content div {
+            height: 24px;
+            line-height: 24px;
+            padding: 8px;
+            padding-left:16px;
+            padding-right:16px;
+            background-color: #4F6272;
+            border-radius: 5px;
+            display: inline-block;
+            margin-left: 4px;
+            margin-right: 4px;
+            cursor:pointer;
+        }
+
+        .fillEditor {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            background-color: #1B2432;
+            z-index:900;
+        }
+
+        #editor_inner {
+            position:relative;
+            top:0;
+            bottom:0;
+            left:0;
+            right:0;
+            z-index:100;
+            width:100%;
+            height:100%;
+        }
     </style>
 
     <title>WebPebble</title>
 </head>
 <body>
+    <!-- Popup window for important messages -->
+    <div class="popup_background hide" id="popup_window_bg"></div>
+    <div class="popup_window_container hide" id="popup_window">
+        <table style="width: 100%; height:100%;">
+            <tr>
+                <td style="text-align: center; vertical-align: middle;">
+                    <div class="popup_window open_sans">
+                        <div class="popup_window_top" id="popup_title">Save Changes?</div>
+                        <div class="popup_window_content" id="popup_text">Your changes to this file will be lost if they aren't saved.</div>
+                        <div class="popup_window_buttons">
+                            <div class="popup_window_buttons_content" id="popup_btns">
+                                <div>Save</div>
+                                <div>Don't Save</div>
+                                <div>Cancel</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
     <div class="header open_sans">
         <!-- Header content -->
         <div class="title">WebPebble</div>
@@ -215,13 +341,16 @@
     </div>
 
     <!-- Ide view, where text entry happens. -->
-    <div class="ide_window open_sans" id="editor">
+    <div class="ide_window hide" id="editor">
+        <div id="editor_inner"></div>
     </div>
 
     <!-- Sidebar options button -->
     <div class="assets_options_window open_sans">
         <!--<div>Settings</div>-->
     </div>
+
+    <div id="tmp">test</div>
 
     <!-- Assets sidebar -->
     <div class="assets_window open_sans">
@@ -250,9 +379,153 @@
 
 <script>
     //Init editor
-    var editor = ace.edit("editor");
+    var editor = ace.edit("editor_inner");
     editor.setTheme("ace/theme/dracula");
     editor.session.setMode("ace/mode/c_cpp");
+</script>
+
+<script>
+    var tabManager = {};
+    tabManager.activeTabs = [];
+    tabManager.currentTab = null;
+
+    tabManager.addDomTab = function (title, ele, exitCallback) {
+        //Copy an element into this tab's dedicated HTML. Automates things.
+        var tab = tabManager.addTab(title, function () {
+            if (!this.x_tab.ignoreClick) {
+                tabManager.switchToTab(this);
+            }
+        });
+        tab.x_tab.exitCallback = exitCallback;
+        //Copy this element.
+        var copy = ele.cloneNode(true);
+        copy.className = "fillEditor";
+        copy.id = "";
+        document.getElementById('editor').appendChild(copy);
+        tab.x_tab.content = copy;
+        //Instantly "finish loading".
+        tabManager.finishTabLoad(tab, function () {
+            var tab = this.parentElement;
+            tab.x_tab.ignoreClick = true; //Used to prevent clicking after a tab is closed.
+            //Clean up by deleting the html. First, call the callback in case it needs it.
+            if (tab.x_tab.exitCallback != null) {
+                tab.x_tab.exitCallback();
+            }
+            //Do cleanup.
+            var target = tab.x_tab.content;
+            target.parentElement.removeChild(target);
+            //Close tab.
+            tabManager.closeTab(tab);
+        });
+        //Now, switch to this tab.
+        tabManager.switchToTab(tab);
+    }
+
+    tabManager.compareCurrentTab = function (tab) {
+        return tab == tabManager.currentTab;
+    }
+
+    tabManager.addTab = function (title, clickCallback) {
+        //Get the DOM.
+        var tabs = document.getElementById('tabs');
+        //Create object.
+        var tab = document.createElement('div');
+        tab.dom = tab; //janky
+        tab.className = "tab";
+        //Set inner img
+        var tabNameInner = document.createElement('span');
+        tabNameInner.innerText = title;
+        tab.appendChild(tabNameInner);
+        //Add image
+        var tabImg = document.createElement('img');
+        //Use a loader until this image is downloaded from the server. You'll call our function for that.
+        tabImg.src = "https://romanport.com/static/icons/loader.svg";
+        tab.appendChild(tabImg);
+
+        //Add the functions to the tab. The first one is going to be for finishing the loading process.
+        tab.x_tab = {};
+        tab.x_tab.dom = tab;
+        tab.x_tab.ignoreClick = false;
+
+        //Add event listner to the tab.
+        tab.addEventListener('click', clickCallback);
+
+        //Append this to the dom.
+        tabs.appendChild(tab);
+
+        //Add to active tabs.
+        tabManager.activeTabs.push(tab);
+
+        //Ensure that the ide can be seen
+        document.getElementById('editor').className = "ide_window";
+
+        //Return tab
+        return tab;
+    }
+
+    tabManager.finishTabLoad = function (tab, exitCallback) {
+        //Find the image.
+        var ti = tab.lastChild;
+        ti.src = "https://romanport.com/static/icons/baseline-close.svg";
+        //Set callback.
+        tab.lastChild.addEventListener('click', exitCallback);
+    }
+
+    tabManager.switchToTab = function (tab) {
+        //First, deactive the current tab.
+        if (tabManager.currentTab != null) {
+            tabManager.currentTab.className = "tab";
+            //If this tab has dedicated html, hide it.
+            if (tabManager.currentTab.x_tab.content != null) {
+                tabManager.currentTab.x_tab.content.style.display = "none";
+            }
+        }
+        //Set this as the current tab.
+        tabManager.currentTab = tab;
+        tab.className = "tab tab_active";
+        //If we have dedicated html, show it.
+        if (tab.x_tab.content != null) {
+            tab.x_tab.content.style.display = "block";
+        }
+    }
+
+    tabManager.closeTab = function (tab) {
+        //Assume cleanup has already been done.
+        //If this is the active tab, switch to the first one.
+        var nextTab = null;
+        if (tabManager.compareCurrentTab(tab)) {
+            //If there are no other tabs, collapse the view.
+            if (tabManager.activeTabs.length == 1) {
+                //Last one.
+                //Hide the entire editor.
+                document.getElementById('editor').className = "ide_window hide";
+            } else {
+                //Switch to the first one that isn't us.
+                var i = 0;
+                while (true) {
+                    var target = tabManager.activeTabs[i];
+                    if (tabManager.compareCurrentTab(target)) {
+                        //This is us. Skip.
+                        i += 1;
+                    } else {
+                        //Switch to this one.
+                        nextTab = target;
+                        break;
+                    }
+                }
+            }
+        } else {
+            console.log("keep this tab active");
+        }
+        //Now, it is safe to do what we want with this tab.
+        //Remove it from the list at the top and the internal list.
+        tabManager.activeTabs.splice(tabManager.activeTabs.indexOf(tab), 1);
+        tab.parentElement.removeChild(tab);
+        //Switch to
+        if (nextTab != null) {
+            tabManager.switchToTab(nextTab);
+        }
+    }
 </script>
 
 <script>
@@ -269,20 +542,15 @@
             return;
         }
         //First, add a tab.
-        var tabs = document.getElementById('tabs');
-        //Create the element on the DOM.
-        var tab = document.createElement('div');
+        //Create the element on the DOM and add the load callback.
+        var tab = tabManager.addTab(name, function () {
+            if (!this.x_tab.ignoreClick) {
+                filemanager.SwitchFile(this.x_file_id);
+            }
+        });
         tab.x_file_id = id;
-        tab.className = "tab";
 
-        var tabNameInner = document.createElement('span');
-        tabNameInner.innerText = name;
-        tab.appendChild(tabNameInner);
-
-        var tabImg = document.createElement('img');
-        //Use a loader until this image is downloaded from the server.
-        tabImg.src = "https://romanport.com/static/icons/loader.svg";
-        tab.appendChild(tabImg);
+        
 
         //Insert into loaded files.
         var tabData = {};
@@ -291,58 +559,59 @@
         tabData.state = 0;
         tabData.session = null; //Will be set to the session.
         tabData.saved = true;
+        tabData.editCount = 0;
         tabData.dom = tab;
+        tabData.shortName = name.split('/');
+        tabData.shortName = tabData.shortName[tabData.shortName.length - 1];
         filemanager.loadedFiles[id] = tabData;
-
-        //Add event listener.
-        tab.addEventListener('click', function () {
-            //Switch to this tab
-            filemanager.SwitchFile(this.x_file_id);
-        });
 
         //Set up IDE
         var EditSession = require("ace/edit_session").EditSession;
         tabData.session = new EditSession("");
-
-        //Add this.
-        tabs.appendChild(tab);
+        tabData.session.on("change", function () {
+            //Mark this as "edited".
+            console.log("edited");
+            //Add a little star to the filename if we haven't already.
+            //If this is the first edit, ignore it. It's us setting the value.
+            if (filemanager.loadedFiles[tabData.id].saved && filemanager.loadedFiles[tabData.id].editCount != 0) {
+                filemanager.loadedFiles[tabData.id].saved = false;
+                filemanager.loadedFiles[tabData.id].dom.firstChild.innerText = filemanager.loadedFiles[tabData.id].shortName + "*";
+            }
+            filemanager.loadedFiles[tabData.id].editCount += 1;
+        });
 
         //Switch to this tab.
         filemanager.SwitchFile(id);
 
-        //Start the server request for the content. For now, use some of our temporary data.
-        window.setTimeout(function () {
-            var content = "";
-            var type = "c_cpp";
+        //Start the server request for the content. 
+        project.serverRequest("media/"+id+"/get/application_json/", function (data) {
+            var content = data.content;
+            var type = data.type;
             //Update data.
             filemanager.loadedFiles[id].state = 1;
+            filemanager.loadedFiles[id].saveUrl = data.saveUrl;
             //Update IDE.
             filemanager.loadedFiles[id].session.setMode("ace/mode/" + type);
             filemanager.loadedFiles[id].session.setValue(content);
-            //Set the loader icon back.
-            tabImg.src = "https://romanport.com/static/icons/baseline-close.svg";
             //Add an event listener to close a file to the close icon.
-            tabImg.addEventListener('click', function () {
+            tabManager.finishTabLoad(tab, function () {
                 var id = this.parentElement.x_file_id;
+                this.parentElement.x_tab.ignoreClick = true;
                 filemanager.CloseFile(id);
-            })
-        }, 3000);
+            });
+        }, null, true);
     }
 
     filemanager.SwitchFile = function (id) {
         //Set this file as the active tab.
         var file = filemanager.loadedFiles[id];
         //Unmark the last file and check to see if we are the last file.
-        if (filemanager.lastFile != null) {
-            if (filemanager.lastFile.id == id) {
-                return;
-            }
-            if (filemanager.lastFile.dom != null) {
-                filemanager.lastFile.dom.className = "tab";
-            }
+        if (tabManager.compareCurrentTab(file.dom)) {
+            //This is the same one.
+            return;
         }
-        //Mark this file.
-        file.dom.className = "tab tab_active";
+        //Switch to this tab.
+        tabManager.switchToTab(filemanager.loadedFiles[id].dom);
         //Set up IDE.
         editor.setSession(file.session);
         //Set the active file.
@@ -350,7 +619,55 @@
     }
 
     filemanager.CloseFile = function (id) {
-        console.log("Close " + id);
+        var data = filemanager.loadedFiles[id];
+        //Ask for confirmation.
+        project.showDialog("Save " + data.shortName+"?", "If you don't save changes to this file, they will be lost.", ["Save", "Don't Save", "Cancel"], [
+            function () { console.log('1'); },
+            function () { console.log('2'); },
+            function () { /* Nothing */ }
+        ]);
+    }
+
+    filemanager.SaveFile = function (id, callback) {
+        var data = filemanager.loadedFiles[id];
+        //Send to the server.
+        project.serverRequest("media/" + data.id + "/put/", callback, null, false, "POST", data.session.getValue());
+    }
+
+    filemanager.SaveAll = function () {
+        //This could take a bit, so show a dialog.
+        project.showDialog("Saving...", "One moment, please.", [], []);
+        var saveCount = 0;
+        //Count how many need saving.
+        var keys = Object.keys(filemanager.loadedFiles);
+        var toSave = [];
+        for (var i = 0; i < keys; i++) {
+            var d = filemanager.loadedFiles[keys[i]];
+            if (d.saved == false) {
+                //Set it to saved and update the dom, then add it to the save pile.
+                d.saved = true;
+                toSave.push(d);
+            }
+        }
+        var closeCallback = function () {
+            //Let auto cleanup do it.
+        };
+        //Check if any need saving.
+        if (toSave.length == 0) {
+            project.showDialog("Saved.", "No files needed saving.", ["Close"], [closeCallback]);
+        } else {
+            //Save all.
+            for (var i = 0; i < toSave.length; i++) {
+                filemanager.SaveFile(toSave[i].id, function () {
+                    //Increment the value and check if all are saved.
+                    saveCount += 1;
+                    if (toSave.length == saveCount) {
+                        //Done.
+                        project.showDialog("Saved.", "Saved " + toSave.length+" files!", ["Close"], [closeCallback]);
+                    }
+                });
+            }
+        }
     }
 </script>
 
@@ -358,10 +675,12 @@
 <script>
     var project = {};
     project.id = "2ca12e56dd024781";
-    project.serverRequest = function (url, run_callback, fail_callback, isJson) {
+    project.serverRequest = function (url, run_callback, fail_callback, isJson, type, body) {
         url = "http://10.0.1.52/project/" + project.id + "/" + url;
         //This is the main server request function. Please change all other ones to use this.
         if (isJson == null) { isJson = true; }
+
+        if (type == null) { type = "GET";}
 
         if (fail_callback == null) {
             //Just create a dumb function
@@ -422,10 +741,39 @@
             fail_callback("Abort", false);
         }
         //Todo: Add timeout error.
-        xmlhttp.open("GET", url, true);
+        xmlhttp.open(type, url, true);
         xmlhttp.setRequestHeader("Authorization", Cookies.get('access-token'));
-        xmlhttp.send();
+        xmlhttp.send(body);
     };
+
+    project.showDialog = function (title, text, buttonTextArray, buttonCallbackArray, data) {
+        //Data can be whatever you want to pass into the callbacks.
+        //Set text first.
+        document.getElementById('popup_title').innerText = title;
+        document.getElementById('popup_text').innerText = text;
+        //Erase old buttons now.
+        document.getElementById('popup_btns').innerHTML = "";
+        //Add new buttons.
+        for (var i = 0; i < buttonTextArray.length; i += 1) {
+            var b_text = buttonTextArray[i];
+            var b_callback = buttonCallbackArray[i];
+            var e = document.createElement('div');
+            e.innerText = b_text;
+            e.x_callback = b_callback;
+            e.x_callback_data = data;
+            e.addEventListener('click', function () {
+                //Hide
+                document.getElementById('popup_window_bg').className = "popup_background hide";
+                document.getElementById('popup_window').className = "popup_window_container hide";
+                //Call
+                this.x_callback(this.x_callback_data, this);
+            });
+            document.getElementById('popup_btns').appendChild(e);
+        }
+        //Show.
+        document.getElementById('popup_window_bg').className = "popup_background";
+        document.getElementById('popup_window').className = "popup_window_container";
+    }
 
     project.assets = [];
 
@@ -442,7 +790,7 @@
                 var name = d.filename.split('/');
                 name = name[name.length - 1];
                 ee.innerText = name;
-                e.insertBefore(ee, e.lastChild);
+                e.appendChild(ee);
                 //Set data on dom.
                 e.x_asset = d;
                 e.x_asset.shortName = name;
@@ -452,7 +800,8 @@
                     filemanager.LoadFile(asset.id, asset.shortName);
                 });
                 //Append to the list.
-                document.getElementById('assets_' + d.type).appendChild(e);
+                var list = document.getElementById('assets_' + d.type);
+                list.insertBefore(e, list.firstChild);
             }
         }, null, true);
     }
