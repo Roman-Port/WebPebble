@@ -28,10 +28,12 @@ namespace WebPebble
                     RedirectStandardOutput = true,
                     UseShellExecute = false,
                     CreateNoWindow = true,
+                    RedirectStandardError = true
                 }
+                
             };
             process.Start();
-            string result = process.StandardOutput.ReadToEnd();
+            string result = process.StandardOutput.ReadToEnd() + process.StandardError.ReadToEnd();
             process.WaitForExit();
             return result;
         }
