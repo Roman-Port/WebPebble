@@ -11,6 +11,7 @@ using WebPebble.Entities;
 using WebPebble.Oauth;
 using System.Linq;
 using System.IO;
+using System.Reflection;
 
 namespace WebPebble
 {
@@ -66,6 +67,24 @@ namespace WebPebble
                 e.Response.Headers.Add("Access-Control-Allow-Headers", "*");
                 e.Response.Headers.Add("Access-Control-Allow-Methods", "GET, PUT, POST");
                 QuickWriteToDoc(e, "Preflight OK");
+                return null;
+            }
+
+            //Check to see if this is a request for static files.
+            if(e.Request.Path.ToString().StartsWith("/static/"))
+            {
+                //Serve from the "static" directory.
+                //Partially thanks to https://stackoverflow.com/questions/52797/how-do-i-get-the-path-of-the-assembly-the-code-is-in
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                UriBuilder uri = new UriBuilder(codeBase);
+                string name =  Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path))+"Static/";
+                //Now, add the requested path.
+                name += e.Request.Path.ToString().Substring("/static/".Length);
+                //***I already know the secruity implications of this, I'll fix it before production***
+                if (File.Exists(name))
+                    QuickWriteToDoc(e, File.ReadAllText(name), "text");
+                else
+                    QuickWriteToDoc(e, "Not Found", "text/plain", 404);
                 return null;
             }
 
