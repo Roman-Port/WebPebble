@@ -659,7 +659,7 @@
         }, null, false, "POST", data.session.getValue());
     }
 
-    filemanager.SaveAll = function () {
+    filemanager.SaveAll = function (totalCallback) {
         //This could take a bit, so show a dialog.
         project.showDialog("Saving...", "One moment, please.", [], []);
         var saveCount = 0;
@@ -688,7 +688,8 @@
                     saveCount += 1;
                     if (toSave.length == saveCount) {
                         //Done.
-                        project.showDialog("Saved", "Saved " + toSave.length+" files.", ["Close"], [closeCallback]);
+                        project.showDialog("Saved", "Saved " + toSave.length + " files.", ["Close"], [closeCallback]);
+                        if (totalCallback != null) { totalCallback(); }
                     }
                 });
             }
@@ -835,6 +836,25 @@
             }
         }, null, true);
     }
+
+    project.initKeybinds = function () {
+        //Lock onto keybinds.
+        $(window).keypress(function (event) {
+            if ((event.which == 115 && event.ctrlKey) || (event.which == 19)) {
+                //Save control+s or command+s.
+                filemanager.SaveAll(function () {
+                    //Hide the dialog after a moment.
+                    window.setTimeout(function () {
+                        project.hideDialog();
+                    }, 2000);
+                })
+                event.preventDefault();
+                return false;
+            }
+            
+            return true;
+        });
+    }
 </script>
 
 
@@ -842,4 +862,5 @@
 <!-- BOOT -->
 <script>
     project.init();
+    project.initKeybinds();
 </script>
