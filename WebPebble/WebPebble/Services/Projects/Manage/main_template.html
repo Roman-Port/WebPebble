@@ -641,7 +641,7 @@
         //Count how many need saving.
         var keys = Object.keys(filemanager.loadedFiles);
         var toSave = [];
-        for (var i = 0; i < keys; i++) {
+        for (var i = 0; i < keys.length; i++) {
             var d = filemanager.loadedFiles[keys[i]];
             if (d.saved == false) {
                 //Set it to saved and update the dom, then add it to the save pile.
