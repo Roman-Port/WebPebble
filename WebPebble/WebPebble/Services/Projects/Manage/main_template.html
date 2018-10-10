@@ -651,7 +651,12 @@
     filemanager.SaveFile = function (id, callback) {
         var data = filemanager.loadedFiles[id];
         //Send to the server.
-        project.serverRequest("media/" + data.id + "/put/", callback, null, false, "POST", data.session.getValue());
+        project.serverRequest("media/" + data.id + "/put/", function () {
+            //Update the tab info.
+            filemanager.loadedFiles[id].dom.firstChild.innerText = filemanager.loadedFiles[id].shortName;
+            //Run callback
+            callback();
+        }, null, false, "POST", data.session.getValue());
     }
 
     filemanager.SaveAll = function () {
