@@ -838,21 +838,22 @@
     }
 
     project.initKeybinds = function () {
-        //Lock onto keybinds.
-        $(window).keypress(function (event) {
-            if ((event.which == 115 && event.ctrlKey) || (event.which == 19)) {
-                //Save control+s or command+s.
-                filemanager.SaveAll(function () {
-                    //Hide the dialog after a moment.
-                    window.setTimeout(function () {
-                        project.hideDialog();
-                    }, 2000);
-                })
-                event.preventDefault();
-                return false;
+        //thanks to https://stackoverflow.com/questions/93695/best-cross-browser-method-to-capture-ctrls-with-jquery
+        $(window).bind('keydown', function (event) {
+            if (event.ctrlKey || event.metaKey) {
+                switch (String.fromCharCode(event.which).toLowerCase()) {
+                    case 's':
+                        event.preventDefault();
+                        //Control + S. Save.
+                        filemanager.SaveAll(function () {
+                            //Hide the dialog after a moment.
+                            window.setTimeout(function () {
+                                project.hideDialog();
+                            }, 2000);
+                        })
+                        break;
+                }
             }
-            
-            return true;
         });
     }
 </script>
