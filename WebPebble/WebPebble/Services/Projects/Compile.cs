@@ -34,7 +34,8 @@ namespace WebPebble.Services.Projects
             proj.SaveProject();
             //If this build passed, move the pbw into a project folder.
             Directory.CreateDirectory(Program.config.user_project_build_dir + proj.projectId + "/" + id + "/");
-            File.Move(pp.pathnane + "build/" + proj.projectId + ".pbw", Program.config.user_project_build_dir + proj.projectId + "/" + id + "/" + "build.pbw");
+            if(ok)
+                File.Move(pp.pathnane + "build/" + proj.projectId + ".pbw", Program.config.user_project_build_dir + proj.projectId + "/" + id + "/" + "build.pbw");
             //Clean up.
             Directory.Delete(pp.pathnane + "build/", true);
             //Create a reply.
