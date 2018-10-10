@@ -79,7 +79,20 @@ namespace WebPebble
                 name += e.Request.Path.ToString().Substring("/static/".Length);
                 //***I already know the secruity implications of this, I'll fix it before production***
                 if (File.Exists(name))
+                {
+                    string mime = "text/plain";
+                    string ext = name.Split('.')[name.Split('.').Length - 1];
+                    switch(ext)
+                    {
+                        case "css":
+                            mime = "text/css";
+                            break;
+                        case "js":
+                            mime = "application/javascript";
+                            break;
+                    }
                     QuickWriteToDoc(e, File.ReadAllText(name), "text");
+                }
                 else
                     QuickWriteToDoc(e, "Not Found", "text/plain", 404);
                 return null;
