@@ -28,6 +28,7 @@
             background-color: #121420;
             margin: 0;
             padding: 0;
+            min-width:900px;
         }
 
         .open_sans {
@@ -62,6 +63,7 @@
             float:right;
             display:inline-block;
             margin-left:8px;
+            cursor:pointer;
         }
 
         .header .big_button img {
@@ -325,7 +327,7 @@
         <div class="title">WebPebble</div>
         <!-- Compiler buttons -->
         <div class="big_button"><img src="https://romanport.com/static/icons/white/baseline-play_arrow.svg" /></div>
-        <div class="big_button"><img src="https://romanport.com/static/icons/white/baseline-save.svg" /></div>
+        <div class="big_button" onclick="filemanager.SaveAll();"><img src="https://romanport.com/static/icons/white/baseline-save.svg" /></div>
         <div class="big_button"><img src="https://romanport.com/static/icons/white/baseline-delete.svg" /></div>
         <div class="line"></div>
         <div class="big_button">Log Out</div>
@@ -620,10 +622,22 @@
 
     filemanager.CloseFile = function (id) {
         var data = filemanager.loadedFiles[id];
+        var endFunction = function () {
+            //Actually do the closing.
+            //Hide dialog
+            project.hideDialog();
+            //Close it's tab.
+            tabManager.closeTab(filemanager.loadedFiles[id].dom);
+            //Get rid of it from inside the list of open files.
+            delete filemanager.loadedFiles[id];
+        }
         //Ask for confirmation.
         project.showDialog("Save " + data.shortName+"?", "If you don't save changes to this file, they will be lost.", ["Save", "Don't Save", "Cancel"], [
-            function () { console.log('1'); },
-            function () { console.log('2'); },
+            function () {
+                project.showDialog("Saving...", "One moment, please.", [], []);
+                filemanager.SaveFile(id, endFunction);
+            },
+            function () { endFunction(); },
             function () { /* Nothing */ }
         ]);
     }
@@ -654,7 +668,7 @@
         };
         //Check if any need saving.
         if (toSave.length == 0) {
-            project.showDialog("Saved.", "No files needed saving.", ["Close"], [closeCallback]);
+            project.showDialog("Saved", "No files needed saving.", ["Close"], [closeCallback]);
         } else {
             //Save all.
             for (var i = 0; i < toSave.length; i++) {
@@ -663,7 +677,7 @@
                     saveCount += 1;
                     if (toSave.length == saveCount) {
                         //Done.
-                        project.showDialog("Saved.", "Saved " + toSave.length+" files!", ["Close"], [closeCallback]);
+                        project.showDialog("Saved", "Saved " + toSave.length+" files.", ["Close"], [closeCallback]);
                     }
                 });
             }
@@ -680,11 +694,12 @@
         //This is the main server request function. Please change all other ones to use this.
         if (isJson == null) { isJson = true; }
 
-        if (type == null) { type = "GET";}
+        if (type == null) { type = "GET"; }
 
         if (fail_callback == null) {
-            //Just create a dumb function
-
+            fail_callback = function () {
+                project.showDialog("Error", "You aren't online, or the server had an issue. Try again later.", ["Close"], [function () { }]);
+            }
         }
         var xmlhttp = new XMLHttpRequest();
 
@@ -763,8 +778,7 @@
             e.x_callback_data = data;
             e.addEventListener('click', function () {
                 //Hide
-                document.getElementById('popup_window_bg').className = "popup_background hide";
-                document.getElementById('popup_window').className = "popup_window_container hide";
+                project.hideDialog();
                 //Call
                 this.x_callback(this.x_callback_data, this);
             });
@@ -773,6 +787,11 @@
         //Show.
         document.getElementById('popup_window_bg').className = "popup_background";
         document.getElementById('popup_window').className = "popup_window_container";
+    }
+
+    project.hideDialog = function () {
+        document.getElementById('popup_window_bg').className = "popup_background hide";
+        document.getElementById('popup_window').className = "popup_window_container hide";
     }
 
     project.assets = [];
