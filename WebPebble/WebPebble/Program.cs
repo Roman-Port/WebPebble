@@ -91,7 +91,7 @@ namespace WebPebble
                             mime = "application/javascript";
                             break;
                     }
-                    QuickWriteToDoc(e, File.ReadAllText(name), "text");
+                    QuickWriteToDoc(e, File.ReadAllText(name), mime);
                 }
                 else
                     QuickWriteToDoc(e, "Not Found", "text/plain", 404);
