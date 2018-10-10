@@ -35,51 +35,57 @@ body {
     box-shadow: 0px 5px 20px 0px rgba(0,0,0,0.46);
 }
 
-    .header .title {
-        font-size: 30px;
-        font-weight: 800;
-        line-height: 40px;
-        display: inline-block;
-        float: left;
-    }
+.header .title {
+    font-size: 30px;
+    font-weight: 800;
+    line-height: 40px;
+    display: inline-block;
+    float: left;
+}
 
-    .header .big_button {
+.header .big_button {
+    height: 24px;
+    line-height: 24px;
+    padding: 8px;
+    background-color: #4F6272;
+    border-radius: 5px;
+    float: right;
+    display: inline-block;
+    margin-left: 8px;
+    cursor: pointer;
+}
+
+    .header .big_button img {
+        width: 24px;
         height: 24px;
-        line-height: 24px;
-        padding: 8px;
-        background-color: #4F6272;
-        border-radius: 5px;
-        float: right;
-        display: inline-block;
-        margin-left: 8px;
-        cursor: pointer;
     }
 
-        .header .big_button img {
-            width: 24px;
-            height: 24px;
-        }
-
-    .header .line {
-        height: 100%;
-        background-color: #4F6272;
-        width: 2px;
-        border-radius: 2px;
-        display: inline-block;
-        float: right;
-        margin-left: 8px;
-    }
+.header .line {
+    height: 100%;
+    background-color: #4F6272;
+    width: 2px;
+    border-radius: 2px;
+    display: inline-block;
+    float: right;
+    margin-left: 8px;
+}
 
 .ide_window {
     position: fixed;
-    top: 135px;
+    /*top: 135px;
     bottom: 15px;
     right: 15px;
     left: 315px;
-    background-color: #1B2432;
+    
     -webkit-box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);
     -moz-box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);
-    box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);
+    box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);*/
+
+    background-color: #1B2432;
+    top:80px;
+    bottom:0;
+    right:0;
+    left:315px;
 }
 
 .ide_window_tabs {
@@ -88,27 +94,28 @@ body {
     left: 325px;
     height: 40px;
     position: fixed;
+    display:none;
 }
 
-    .ide_window_tabs .tab {
-        display: inline-block;
-        height: 30px;
-        font-size: 15px;
-        line-height: 15px;
-        padding-top: 11px;
-        padding-left: 16px;
-        padding-right: 16px;
-        border-top-left-radius: 4px;
-        border-top-right-radius: 4px;
-        border: 2px solid #1B2432;
-        background-color: #1B2432;
-        margin-left: 4px;
-    }
+.ide_window_tabs .tab {
+    display: inline-block;
+    height: 30px;
+    font-size: 15px;
+    line-height: 15px;
+    padding-top: 11px;
+    padding-left: 16px;
+    padding-right: 16px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border: 2px solid #1B2432;
+    background-color: #1B2432;
+    margin-left: 4px;
+}
 
-    .ide_window_tabs .tab_active {
-        background-color: #2e3b4e;
-        border: 2px solid #2e3b4e;
-    }
+.ide_window_tabs .tab_active {
+    background-color: #2e3b4e;
+    border: 2px solid #2e3b4e;
+}
 
 .tab img {
     height: 16px;
@@ -124,6 +131,7 @@ body {
     left: 15px;
     width: 285px;
     position: fixed;
+    width:300px;
 }
 
 .assets_options_window {
@@ -134,45 +142,52 @@ body {
     position: fixed;
 }
 
-    .assets_options_window div {
-        height: 24px;
-        line-height: 24px;
-        padding: 8px;
-        padding-left: 16px;
-        padding-right: 16px;
-        background-color: #4F6272;
-        border-radius: 5px;
-        display: inline-block;
-    }
+.assets_options_window div {
+    height: 24px;
+    line-height: 24px;
+    padding: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    background-color: #4F6272;
+    border-radius: 5px;
+    display: inline-block;
+}
 
-    .assets_options_window span {
-        padding: 10px;
-        font-size: 18px;
-    }
+.assets_options_window span {
+    padding: 10px;
+    font-size: 18px;
+}
 
 .assets_type_container {
     margin-bottom: 8px;
     margin-top: 8px;
 }
 
-    .assets_type_container .btn {
-        padding: 10px;
-        border-radius: 8px;
-        display: inline-block;
-        margin-bottom: 5px;
-        font-size: 15px;
-    }
+.assets_type_container .btn {
+    padding: 10px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-bottom: 5px;
+    font-size: 15px;
+}
 
-        .assets_type_container .btn:hover {
-            background-color: #1B2432;
-        }
+.assets_type_container .btn:hover {
+    background-color: #1B2432;
+}
 
-    .assets_type_container .btn_active {
-        background-color: #1B2432;
-    }
+.assets_type_container .btn_active {
+    background-color: #1B2432;
+}
+
+.assets_type_container .btn_fill_active {
+    background-color: #1B2432;
+    display:block;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
+}
 
 .assets_window .line {
-    width: 100%;
+    margin-right:15px;
     height: 2px;
     background-color: #1B2432;
     border-radius: 1px;
@@ -250,19 +265,19 @@ body {
     margin: auto;
 }
 
-    .popup_window_buttons_content div {
-        height: 24px;
-        line-height: 24px;
-        padding: 8px;
-        padding-left: 16px;
-        padding-right: 16px;
-        background-color: #4F6272;
-        border-radius: 5px;
-        display: inline-block;
-        margin-left: 4px;
-        margin-right: 4px;
-        cursor: pointer;
-    }
+.popup_window_buttons_content div {
+    height: 24px;
+    line-height: 24px;
+    padding: 8px;
+    padding-left: 16px;
+    padding-right: 16px;
+    background-color: #4F6272;
+    border-radius: 5px;
+    display: inline-block;
+    margin-left: 4px;
+    margin-right: 4px;
+    cursor: pointer;
+}
 
 .fillEditor {
     position: absolute;
