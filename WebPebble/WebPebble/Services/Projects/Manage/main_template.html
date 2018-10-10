@@ -631,15 +631,21 @@
             //Get rid of it from inside the list of open files.
             delete filemanager.loadedFiles[id];
         }
-        //Ask for confirmation.
-        project.showDialog("Save " + data.shortName+"?", "If you don't save changes to this file, they will be lost.", ["Save", "Don't Save", "Cancel"], [
-            function () {
-                project.showDialog("Saving...", "One moment, please.", [], []);
-                filemanager.SaveFile(id, endFunction);
-            },
-            function () { endFunction(); },
-            function () { /* Nothing */ }
-        ]);
+        //Ask for confirmation if this file is unsaved.
+        if (filemanager.loadedFiles[id].saved) {
+            //Just do it.
+            endFunction();
+        } else {
+            project.showDialog("Save " + data.shortName + "?", "If you don't save changes to this file, they will be lost.", ["Save", "Don't Save", "Cancel"], [
+                function () {
+                    project.showDialog("Saving...", "One moment, please.", [], []);
+                    filemanager.SaveFile(id, endFunction);
+                },
+                function () { endFunction(); },
+                function () { /* Nothing */ }
+            ]);
+        }
+        
     }
 
     filemanager.SaveFile = function (id, callback) {
