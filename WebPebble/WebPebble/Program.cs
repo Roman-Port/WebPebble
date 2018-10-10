@@ -74,10 +74,7 @@ namespace WebPebble
             if(e.Request.Path.ToString().StartsWith("/static/"))
             {
                 //Serve from the "static" directory.
-                //Partially thanks to https://stackoverflow.com/questions/52797/how-do-i-get-the-path-of-the-assembly-the-code-is-in
-                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-                UriBuilder uri = new UriBuilder(codeBase);
-                string name =  Path.GetDirectoryName(Uri.UnescapeDataString(uri.Path))+"Static/";
+                string name = config.static_files_dir;
                 //Now, add the requested path.
                 name += e.Request.Path.ToString().Substring("/static/".Length);
                 //***I already know the secruity implications of this, I'll fix it before production***
