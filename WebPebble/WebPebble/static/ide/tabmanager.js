@@ -46,6 +46,11 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     //Add an event listener to this object.
     tab.addEventListener('click', sidebarmanager.private_click);
 
+    //Deactive old items
+    if (sidebarmanager.activeItem != null) {
+        sidebarmanager.hide_content(sidebarmanager.activeItem);
+    }
+
     //Switch to this
     sidebarmanager.show_content(sidebarmanager.items[internalId]);
 
