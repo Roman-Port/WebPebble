@@ -330,3 +330,10 @@ body {
     width: calc(50% - 16px);
     text-align:left;
 }
+
+.selectFix {
+    background-color:white;
+    display:inline-block;
+    padding:5px;
+    height:21px;
+}

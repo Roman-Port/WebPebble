@@ -250,7 +250,7 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
             }
             //Move this into an inner div.
             formEle = document.createElement('div');
-            formEle.style.display = "inline-block";
+            formEle.className = "selectFix ";
             formEle.appendChild(inner);
         }
         //If it's null, complain.
@@ -259,7 +259,7 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
             continue;
         } 
         //Fill out the rest of the data and append.
-        formEle.className = "formItem";
+        formEle.className += "formItem";
         formEle.id = "formele_id_" + i;
         formHtml.appendChild(formEle);
         //Append all
