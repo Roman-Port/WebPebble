@@ -149,7 +149,7 @@ project.init = function () {
                         console.log(this);
                     });
                     //Hide the loader symbol.
-                    dd.tab_ele.firstChild.innerText = dd.shortName;
+                    dd.tab.tab_ele.firstChild.innerText = dd.shortName;
                 }, null, true);
             }
         }
