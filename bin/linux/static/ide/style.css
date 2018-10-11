@@ -328,4 +328,5 @@ body {
 .formCol {
     display: inline-block;
     width: calc(50% - 16px);
+    text-align:left;
 }

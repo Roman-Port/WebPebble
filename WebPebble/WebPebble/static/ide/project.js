@@ -241,7 +241,7 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
         if (d.type == "select") {
             formEle = document.createElement('select');
             //Add options.
-            for (var ii = 0; ii < d.options; ii += 1) {
+            for (var ii = 0; ii < d.options.length; ii += 1) {
                 var dd = d.options[ii];
                 var ele = document.createElement('option');
                 ele.value = dd.value;
