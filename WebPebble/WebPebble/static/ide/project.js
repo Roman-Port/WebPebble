@@ -254,7 +254,7 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
             }
             //Add change event listerer if needed
             if (d.onChange != null) {
-                inner.addEventListener('input', d.onChange);
+                inner.addEventListener('change', d.onChange);
             }
             //Move this into an inner div.
             formEle = document.createElement('div');
