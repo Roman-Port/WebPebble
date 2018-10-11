@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace WebPebble.Entities
 {
@@ -61,6 +63,30 @@ namespace WebPebble.Entities
 
             SaveProject();
             return a;
+        }
+
+        public WebPebbleProjectAsset CreateSafeAsset(string filename, AssetType type, InnerAssetType inner, byte[] data)
+        {
+            //Safely store a file somewhere. Protect the name against injection attacks.
+            foreach(char invalidC in System.IO.Path.GetInvalidFileNameChars())
+            {
+                filename = filename.Replace(invalidC, '_');
+            }
+            //If it starts with a period, stop.
+            if (filename.StartsWith('.'))
+                throw new Exception("Rejected pathname.");
+            //Create a relative pathname now.
+            string relPath = type.ToString() + "/" + inner.ToString() + "/" + filename;
+            //Save the file here.
+            string absolutePath = Program.config.user_project_dir + projectId + "/"+relPath;
+            //Check if it already exists.
+            if(File.Exists(absolutePath))
+            {
+                throw new Exception("Already exists.");
+            }
+            File.WriteAllBytes(absolutePath, data);
+            //Add it as an asset.
+            return AddAsset(relPath, type, inner);
         }
     }
 

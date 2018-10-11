@@ -69,6 +69,28 @@ namespace WebPebble.Services.Projects
             }
         }
 
+        public static void CreateFileRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            //Determine where to place these files.
+            string filename = e.Request.Query["filename"];
+            AssetType type = Enum.Parse<AssetType>(e.Request.Query["major_type"]);
+            InnerAssetType inner = Enum.Parse<InnerAssetType>(e.Request.Query["minor_type"]);
+            //Create
+            var file = proj.CreateSafeAsset(filename, type, inner, new byte[] { });
+            //Use JSON.
+            FileReply reply = new FileReply();
+            reply.type = e.Request.Query["editor_type"];
+            string content = "";
+            string proto = "http";
+            if (e.Request.IsHttps)
+                proto = "https";
+            reply.saveUrl = proto + "://" + e.Request.Host + "/project/" + proj.projectId + "/media/" + file.id + "/put/";
+            reply.content = content;
+            reply.id = file.id;
+            //Respond with JSON string.
+            Program.QuickWriteJsonToDoc(e, reply);
+        }
+
         private class FileReply
         {
             public string type;

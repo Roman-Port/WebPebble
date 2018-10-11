@@ -50,6 +50,7 @@ namespace WebPebble
             //Add services that are in the project.
             AddService(true, Services.Projects.Manage.ManageProject.HandleRequest, "/manage", true);
             AddService(true, Services.Projects.FileManager.OnRequest, "/media/", true);
+            AddService(true, Services.Projects.FileManager.CreateFileRequest, "/create_empty_media/", true);
             AddService(true, Services.Projects.FileList.ListFiles, "/media_list/", true);
             AddService(true, Services.Projects.Compile.DoCompile, "/build/", true);
             //Start

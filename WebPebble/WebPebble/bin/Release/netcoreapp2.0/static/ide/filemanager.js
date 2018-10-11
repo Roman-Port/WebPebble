@@ -36,7 +36,8 @@ filemanager.SaveFile = function (id, callback) {
     //Send to the server.
     project.serverRequest("media/" + data.id + "/put/", function () {
         //Update the tab info.
-        filemanager.loadedFiles[id].dom.firstChild.innerText = filemanager.loadedFiles[id].shortName;
+        var dd = filemanager.loadedFiles[id];
+        dd.tab.tab_ele.firstChild.innerText = dd.shortName;
         //Run callback
         callback();
     }, null, false, "POST", data.session.getValue());
