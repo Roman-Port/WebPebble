@@ -217,13 +217,13 @@ project.buildPbwBtn = function () {
                 project.showDialog("Build Finished", "The build finished successfully.", ["Dismiss", "Get PBW", "View Log"], [function () { },
                 function () { },
                 function () {
-                    project.displayLog(t, data.id);
+                    project.displayLog(data.content, data.id);
                 }]);
             } else {
                 //Failed.
                 project.showDialog("Build Failed", "The build failed to compile. Take a look at the log to see what went wrong.", ["Dismiss", "View Log"], [function () { },
                 function () {
-                    project.displayLog(t, data.id);
+                    project.displayLog(data.content, data.id);
                 }
                 ]);
             }
