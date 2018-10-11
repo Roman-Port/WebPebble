@@ -77,7 +77,7 @@ sidebarmanager.hide_content = function (tab) {
 
     //Make this button appear inactive.
     if (tab.buttonType == false) {
-        tab.tab_ele.className = "btn";
+        tab.tab_ele.firstChild.className = "btn";
     }
 }
 
@@ -101,6 +101,6 @@ sidebarmanager.show_content = function (tab) {
 
     //Make this button appear active.
     if (tab.buttonType == false) {
-        tab.tab_ele.className = "btn btn_fill_active";
+        tab.tab_ele.firstChild.className = "btn btn_fill_active";
     }
 }
