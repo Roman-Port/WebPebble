@@ -220,7 +220,7 @@ project.buildPbwBtn = function () {
 }
 
 project.showAddAssetDialog = function () {
-    project.showDialog("Add File", "File Name<input style=\"margin-left:10px;\" id=\"form_filename\" type=\"text\">", ["Create", "Cancel"], [
+    project.showDialog("Add File", "Source Type<select><option value=\"c\">C File</option><option value=\"c_worker\">C Worker File</option></select><br>File Name<input style=\"margin-left:10px; padding:8px;\" id=\"form_filename\" type=\"text\">", ["Create", "Cancel"], [
         function () {
             var url = "create_empty_media/?filename=" + encodeURIComponent(document.getElementById('form_filename').value) + "&major_type=src&minor_type=c";
             project.serverRequest(url, function (data) {
