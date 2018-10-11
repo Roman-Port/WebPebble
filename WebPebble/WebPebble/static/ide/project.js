@@ -238,6 +238,17 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
             formEle = document.createElement('input');
             formEle.type = "text";
         }
+        if (d.type == "select") {
+            formEle = document.createElement('select');
+            //Add options.
+            for (var ii = 0; ii < d.options; ii += 1) {
+                var dd = d.options[ii];
+                var ele = document.createElement('option');
+                ele.value = dd.value;
+                ele.innerText = dd.title;
+                formEle.appendChild(ele);
+            }
+        }
         //If it's null, complain.
         if (formEle == null) {
             console.log("Unknown type - " + d);
@@ -256,9 +267,17 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
     //Now, create the dialog.
     project.showDialog(name, dialogHtml.innerHTML, ["Create", "Cancel"], [
         function () {
-
+            //Gather the results.
+            var results = [];
+            for (var i = 0; i < options.length; i += 1) {
+                results.push(document.getElementById('formele_id_' + i).value);
+            }
+            //Call the callback.
+            confirmAction(results);
         },
-        function () { },
+        function () {
+            cancelAction();
+        },
     ]);
 }
 
@@ -274,9 +293,9 @@ project.showAddAssetDialog = function () {
     ]);*/
     project.displayForm("Add File", [
         { "title": "Source Type", "type": "text" },
-        { "title": "Filename", "type": "text" }
-    ], function () {
-
+        { "title": "Filename", "type": "select", "options": [{ "title": "C File", "value": "c" }, { "title": "JS File", "value": "js" }, { "title": "C Worker File", "value": "c_worker" }, { "title": "Window Layout File", "value": "layout" }] }
+    ], function (data) {
+        console.log(data);
     }, function () {
 
     });
