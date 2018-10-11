@@ -74,11 +74,19 @@ project.serverRequest = function (url, run_callback, fail_callback, isJson, type
     xmlhttp.send(body);
 };
 
-project.showDialog = function (title, text, buttonTextArray, buttonCallbackArray, data) {
+project.showDialog = function (title, text, buttonTextArray, buttonCallbackArray, data, treatAsDom) {
     //Data can be whatever you want to pass into the callbacks.
     //Set text first.
     document.getElementById('popup_title').innerText = title;
-    document.getElementById('popup_text').innerHTML = text;
+    if (treatAsDom == null) { treatAsDom = false; }
+    if (treatAsDom) {
+        //Copy dom elements to this.
+        document.getElementById('popup_text').innerHTML = "";
+        document.getElementById('popup_text').appendChild(text);
+    } else {
+        //Treat as normal HTML.
+        document.getElementById('popup_text').innerHTML = text;
+    }
     //Erase old buttons now.
     document.getElementById('popup_btns').innerHTML = "";
     //Add new buttons.
@@ -277,7 +285,7 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
         dialogHtml.appendChild(formHtml);
     }
     //Now, create the dialog.
-    project.showDialog(name, dialogHtml.innerHTML, ["Create", "Cancel"], [
+    project.showDialog(name, dialogHtml, ["Create", "Cancel"], [
         function () {
             //Gather the results.
             var results = [];
@@ -290,7 +298,7 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
         function () {
             cancelAction();
         },
-    ]);
+    ],true);
 }
 
 project.showAddAssetDialog = function () {
