@@ -268,6 +268,7 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
             formEle = document.createElement('div');
             formEle.className = "selectFix ";
             formEle.appendChild(inner);
+            formEle.x_refer = formEle.firstChild;
         }
         //If it's null, complain.
         if (formEle == null) {
@@ -290,7 +291,11 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
             //Gather the results.
             var results = [];
             for (var i = 0; i < options.length; i += 1) {
-                results.push(document.getElementById('formele_id_' + i).value);
+                var ele = document.getElementById('formele_id_' + i);
+                if (ele.x_refer != null) {
+                    ele = ele.x_refer;
+                }
+                results.push(ele.value);
             }
             //Call the callback.
             confirmAction(results);
@@ -321,10 +326,19 @@ project.showAddAssetDialog = function () {
     }
 
     project.displayForm("Add File", [
-        { "title": "Source Type", "type": "text", "onChange": onFilenameEdit },
-        { "title": "Filename", "type": "select", "onChange": onTypeChange, "options": [{ "title": "C File", "value": "c" }, { "title": "JS File", "value": "js" }, { "title": "C Worker File", "value": "c_worker" }, { "title": "Window Layout File", "value": "layout" }] }
+        { "title": "Source Type", "type": "select", "onChange": onTypeChange, "options": [{ "title": "C File", "value": "c" }, { "title": "JS File", "value": "js" }, { "title": "C Worker File", "value": "c_worker" }, { "title": "Window Layout File", "value": "layout" }] },
+        { "title": "Filename", "type": "text", "onChange": onFilenameEdit }
+        
     ], function (data) {
-        console.log(data);
+        //Decide what to do.
+        var type = data[0];
+        var name = data[1];
+        if (type == "c") {
+            var url = "create_empty_media/?filename=" + encodeURIComponent(name) + "&major_type=src&minor_type=c";
+            project.serverRequest(url, function (data) {
+                project.addExistingFileToSidebar(data);
+            }, null, true);
+        }
     }, function () {
 
     });
