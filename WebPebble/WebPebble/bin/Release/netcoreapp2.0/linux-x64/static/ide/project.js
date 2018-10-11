@@ -239,15 +239,19 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
             formEle.type = "text";
         }
         if (d.type == "select") {
-            formEle = document.createElement('select');
+            var inner = document.createElement('select');
             //Add options.
             for (var ii = 0; ii < d.options.length; ii += 1) {
                 var dd = d.options[ii];
                 var ele = document.createElement('option');
                 ele.value = dd.value;
                 ele.innerText = dd.title;
-                formEle.appendChild(ele);
+                inner.appendChild(ele);
             }
+            //Move this into an inner div.
+            formEle = document.createElement('div');
+            formEle.style.display = "inline-block";
+            formEle.appendChild(inner);
         }
         //If it's null, complain.
         if (formEle == null) {
