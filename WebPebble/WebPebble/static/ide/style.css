@@ -167,7 +167,7 @@ body {
 }
 
 .assets_type_container div {
-    height:45px;
+    height:46px;
 }
 
 .assets_type_container .btn {
@@ -176,6 +176,7 @@ body {
     display: inline-block;
     margin-bottom: 5px;
     font-size: 15px;
+    height:20px;
 }
 
 .assets_type_container .btn:hover {
