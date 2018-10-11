@@ -224,7 +224,7 @@ project.showAddAssetDialog = function () {
         function () {
             var url = "create_empty_media/?filename=" + encodeURIComponent(document.getElementById('form_filename').value) + "&major_type=src&minor_type=c";
             project.serverRequest(url, function (data) {
-                project.addExistingFileToSidebar(d);
+                project.addExistingFileToSidebar(data);
             }, null, true);
         },
         function () { },
