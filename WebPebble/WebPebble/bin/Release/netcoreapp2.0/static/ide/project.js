@@ -74,11 +74,19 @@ project.serverRequest = function (url, run_callback, fail_callback, isJson, type
     xmlhttp.send(body);
 };
 
-project.showDialog = function (title, text, buttonTextArray, buttonCallbackArray, data) {
+project.showDialog = function (title, text, buttonTextArray, buttonCallbackArray, data, treatAsDom) {
     //Data can be whatever you want to pass into the callbacks.
     //Set text first.
     document.getElementById('popup_title').innerText = title;
-    document.getElementById('popup_text').innerHTML = text;
+    if (treatAsDom == null) { treatAsDom = false; }
+    if (treatAsDom) {
+        //Copy dom elements to this.
+        document.getElementById('popup_text').innerHTML = "";
+        document.getElementById('popup_text').appendChild(text);
+    } else {
+        //Treat as normal HTML.
+        document.getElementById('popup_text').innerHTML = text;
+    }
     //Erase old buttons now.
     document.getElementById('popup_btns').innerHTML = "";
     //Add new buttons.
@@ -123,6 +131,11 @@ project.addExistingFileToSidebar = function (d) {
     if (d.type == 0 || d.type == 1) {
         var name = d.filename.split('/');
         name = name[name.length - 1];
+        var actionsHtml = "";
+        if (d.type == 0) {
+            //This file is deletable from the sidebar. Add the HTML for that.
+            actionsHtml = '<div class="action_window"><div onclick="filemanager.PromptDeleteFile(filemanager.loadedFiles[this.parentElement.parentElement.parentElement.x_id]);"><img src="https://romanport.com/static/icons/white/baseline-delete.svg"></div></div>';
+        }
         //Add this to the sidebar.
         var tab = sidebarmanager.addButton(name, d.type + 1, false, function (idd) {
             //Check if this file is ready for reading yet.
@@ -131,7 +144,7 @@ project.addExistingFileToSidebar = function (d) {
             return dd.loaded;
         }, function () {
             //Show the save/cancel dialog.
-        }, null, d.id, false);
+        }, null, d.id, false, actionsHtml);
         //Add a loading symbol to the tab.
         tab.tab_ele.firstChild.innerHTML = name + "<img src=\"https://romanport.com/static/icons/loader.svg\" height=\"18\" style=\"vertical-align: top; margin-left: 8px;\">";
         //Add to list of filemanager.loadedFiles
@@ -155,10 +168,10 @@ project.addExistingFileToSidebar = function (d) {
                 //Not exactly sure how the scope works in this lamda function. We'll hope it is correct.
                 dd.saved = false;
                 //Add the little star to the filename.
-                dd.tab.tab_ele.firstChild.innerText = dd.shortName + "*";
+                sidebarmanager.updateSuffixOfTab(dd.tab,"*");
             });
             //Hide the loader symbol.
-            dd.tab.tab_ele.firstChild.innerText = dd.shortName;
+            sidebarmanager.updateSuffixOfTab(dd.tab);
         }, null, true);
     }
 }
@@ -219,8 +232,87 @@ project.buildPbwBtn = function () {
 
 }
 
+project.displayForm = function (name, options, confirmAction, cancelAction) {
+    //Create the dialog HTML.
+    var dialogHtml = document.createElement('div');
+    //Loop through each option and include it.
+    for (var i = 0; i < options.length; i += 1) {
+        var d = options[i];
+        var nameHtml = document.createElement('div');
+        var formHtml = document.createElement('div');
+        //Add the title.
+        var titleEle = document.createElement('div');
+        titleEle.className = "formTitle";
+        titleEle.innerText = d.title;
+        nameHtml.appendChild(titleEle);
+        //Create the form action based on the action type.
+        var formEle = null;
+        if (d.type == "text") {
+            formEle = document.createElement('input');
+            formEle.type = "text";
+            //Add change event listener if asked.
+            if (d.onChange != null) {
+                formEle.addEventListener('input', d.onChange);
+            }
+        }
+        if (d.type == "select") {
+            var inner = document.createElement('select');
+            //Add options.
+            for (var ii = 0; ii < d.options.length; ii += 1) {
+                var dd = d.options[ii];
+                var ele = document.createElement('option');
+                ele.value = dd.value;
+                ele.innerText = dd.title;
+                inner.appendChild(ele);
+            }
+            //Add change event listerer if needed
+            if (d.onChange != null) {
+                inner.addEventListener('change', d.onChange);
+            }
+            //Move this into an inner div.
+            formEle = document.createElement('div');
+            formEle.className = "selectFix ";
+            formEle.appendChild(inner);
+            formEle.x_refer = formEle.firstChild;
+        }
+        //If it's null, complain.
+        if (formEle == null) {
+            console.log("Unknown type - " + d);
+            continue;
+        } 
+        //Fill out the rest of the data and append.
+        formEle.className += "formItem";
+        formEle.id = "formele_id_" + i;
+        formHtml.appendChild(formEle);
+        //Append all
+        nameHtml.className = "formCol";
+        formHtml.className = "formCol";
+        dialogHtml.appendChild(nameHtml);
+        dialogHtml.appendChild(formHtml);
+    }
+    //Now, create the dialog.
+    project.showDialog(name, dialogHtml, ["Create", "Cancel"], [
+        function () {
+            //Gather the results.
+            var results = [];
+            for (var i = 0; i < options.length; i += 1) {
+                var ele = document.getElementById('formele_id_' + i);
+                if (ele.x_refer != null) {
+                    ele = ele.x_refer;
+                }
+                results.push(ele.value);
+            }
+            //Call the callback.
+            confirmAction(results);
+        },
+        function () {
+            cancelAction();
+        },
+    ],null,true);
+}
+
 project.showAddAssetDialog = function () {
-    project.showDialog("Add File", "Source Type<select><option value=\"c\">C File</option><option value=\"c_worker\">C Worker File</option></select><br>File Name<input style=\"margin-left:10px; padding:8px;\" id=\"form_filename\" type=\"text\">", ["Create", "Cancel"], [
+    /*project.showDialog("Add File", "Source Type<select style=\"padding:8px;\"><option value=\"c\">C File</option><option value=\"c_worker\">C Worker File</option></select><br>File Name<input style=\"margin-left:10px; padding:8px;\" id=\"form_filename\" type=\"text\">", ["Create", "Cancel"], [
         function () {
             var url = "create_empty_media/?filename=" + encodeURIComponent(document.getElementById('form_filename').value) + "&major_type=src&minor_type=c";
             project.serverRequest(url, function (data) {
@@ -228,5 +320,31 @@ project.showAddAssetDialog = function () {
             }, null, true);
         },
         function () { },
-    ]);
+    ]);*/
+    var onFilenameEdit = function () {
+        //Verify if this ends correctly.....later.
+    }
+
+    var onTypeChange = function () {
+        //Hide elements depending on the type.
+        console.log(this.value);
+    }
+
+    project.displayForm("Add File", [
+        { "title": "Source Type", "type": "select", "onChange": onTypeChange, "options": [{ "title": "C File", "value": "c" }, { "title": "JS File", "value": "js" }, { "title": "C Worker File", "value": "c_worker" }, { "title": "Window Layout File", "value": "layout" }] },
+        { "title": "Filename", "type": "text", "onChange": onFilenameEdit }
+        
+    ], function (data) {
+        //Decide what to do.
+        var type = data[0];
+        var name = data[1];
+        if (type == "c") {
+            var url = "create_empty_media/?filename=" + encodeURIComponent(name) + "&major_type=src&minor_type=c";
+            project.serverRequest(url, function (data) {
+                project.addExistingFileToSidebar(data);
+            }, null, true);
+        }
+    }, function () {
+
+    });
 }

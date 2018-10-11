@@ -3,7 +3,7 @@
 sidebarmanager.activeItem = null;
 sidebarmanager.items = [];
 
-sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction, closeAction, htmlDom, internalId, showNow) {
+sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction, closeAction, htmlDom, internalId, showNow, actionsHtml) {
     //Name: Name dislpayed
     //sectionIndex: The index of the section to insert this into.
     //buttonType: If this is true, this is displayed as a button. A button cannot be closed, and cannot use a text entry area.
@@ -18,7 +18,6 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     tab.x_id = internalId;
     var tab_inner = document.createElement('div');
     tab_inner.className = "btn";
-    tab_inner.innerText = name;
     if (buttonType == true) { tab_inner.className = "btn btn_active"; }
     tab.appendChild(tab_inner);
     //Attach to section.
@@ -40,8 +39,12 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
         });*/
     }
 
+    if (actionsHtml == null) {
+        actionsHtml = "";
+    }
+
     //Add to our internal array.
-    var t = { "name": name, "sectionIndex": sectionIndex, "buttonType": buttonType, "clickAction": clickAction, "closeAction": closeAction, "dom_template": htmlDom, "internalId": internalId, "tab_ele": tab, "copy_dom": copydom, "is_dom_ele": copydom != null, "edit_session": editsession };
+    var t = { "name": name, "sectionIndex": sectionIndex, "buttonType": buttonType, "clickAction": clickAction, "closeAction": closeAction, "dom_template": htmlDom, "internalId": internalId, "tab_ele": tab, "copy_dom": copydom, "is_dom_ele": copydom != null, "edit_session": editsession, "actions_html": actionsHtml };
     sidebarmanager.items[internalId] = t;
 
     //Add an event listener to this object.
@@ -58,7 +61,22 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
         sidebarmanager.show_content(sidebarmanager.items[internalId]);
     }
 
+    //Correctly update name of tab.
+    sidebarmanager.updateSuffixOfTab(sidebarmanager.items[internalId].tab_ele);
+
     return sidebarmanager.items[internalId];
+}
+
+sidebarmanager.updateSuffixOfTab = function (tab, suffix) {
+    if (suffix == null) { suffix = ""; }
+    if (tab.tab_ele != null) {
+        var shortName = sidebarmanager.items[tab.tab_ele.x_id].name;
+        tab.tab_ele.firstChild.innerHTML = shortName + suffix + sidebarmanager.items[tab.tab_ele.x_id].actions_html;
+    } else {
+        var shortName = sidebarmanager.items[tab.x_id].name;
+        tab.firstChild.innerHTML = shortName + suffix + sidebarmanager.items[tab.x_id].actions_html;
+    }
+    
 }
 
 sidebarmanager.private_click = function () {

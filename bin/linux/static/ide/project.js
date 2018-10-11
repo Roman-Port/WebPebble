@@ -134,7 +134,7 @@ project.addExistingFileToSidebar = function (d) {
         var actionsHtml = "";
         if (d.type == 0) {
             //This file is deletable from the sidebar. Add the HTML for that.
-            actionsHtml = '<div class="action_window"><div onclick="filemanager.PromptDeleteFile(this);"><img src="https://romanport.com/static/icons/white/baseline-delete.svg"></div></div>';
+            actionsHtml = '<div class="action_window"><div onclick="filemanager.PromptDeleteFile(filemanager.loadedFiles[this.parentElement.parentElement.parentElement.x_id]);"><img src="https://romanport.com/static/icons/white/baseline-delete.svg"></div></div>';
         }
         //Add this to the sidebar.
         var tab = sidebarmanager.addButton(name, d.type + 1, false, function (idd) {

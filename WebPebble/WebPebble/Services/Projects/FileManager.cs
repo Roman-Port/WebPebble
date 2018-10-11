@@ -62,7 +62,29 @@ namespace WebPebble.Services.Projects
                 //Save
                 pp.WriteFile(fileName, data);
                 Program.QuickWriteToDoc(e, "OK");
-            }else
+            }
+            else if (action == "delete")
+            {
+                //Get the challenge bytes.
+                byte[] data = new byte[(int)e.Request.ContentLength];
+                e.Request.Body.Read(data, 0, data.Length);
+                //Compare challenge.
+                if(e.Request.Query["challenge"] == Encoding.UTF8.GetString(data))
+                {
+                    //Nuke the files
+                    File.Delete(fileName);
+                    //Nuke in the assets of the project.
+                    proj.assets.Remove(asset);
+                    proj.SaveProject();
+                    Program.QuickWriteToDoc(e, "OK");
+                } else
+                {
+                    //Verification failed.
+                    throw new Exception("Challenge failed.");
+                }
+                
+            }
+            else
             {
                 Program.QuickWriteToDoc(e, "Invalid action get/put.", "text/html", 500);
                 

@@ -169,6 +169,32 @@ body {
     margin-bottom: 5px;
     font-size: 15px;
     height:20px;
+    position:relative;
+}
+
+.assets_type_container .btn .action_window {
+    /* Actions that appear when this is selected. */
+    position:absolute;
+    right:5px;
+    top:5px;
+    height:30px;
+    width:30px;
+
+    /* This is shown below. */
+    display:none;
+}
+
+.assets_type_container .btn .action_window div {
+    /* Action */
+    height:20px;
+    padding:5px;
+    border-radius:3px;
+    background-color:#4F6272;
+}
+
+.assets_type_container .btn .action_window div img {
+    height:20px;
+    width:20px;
 }
 
 .assets_type_container .btn:hover {
@@ -184,6 +210,10 @@ body {
     display:block;
     border-top-right-radius:0;
     border-bottom-right-radius:0;
+}
+
+.assets_type_container .btn_fill_active .action_window {
+    display:block;
 }
 
 .assets_window .line {
@@ -215,7 +245,7 @@ body {
     left: 0;
     bottom: 0;
     z-index: 1001;
-    transition: all 200ms;
+    transition: all 120ms;
 }
 
 .hide {
@@ -232,11 +262,13 @@ body {
     background-color: #364958;
     border-radius: 10px;
     overflow: hidden;
-    transition: all 300ms;
+    transition: all 120ms;
+    margin-top:0;
 }
 
 .popup_window_hide {
     opacity: 0;
+    margin-top:15px;
 }
 
 .popup_window_top {
@@ -301,4 +333,44 @@ body {
     z-index: 100;
     width: 100%;
     height: 100%;
+}
+
+.formItem {
+    padding:8px;
+    width:160px;
+    height:15px;
+    margin-top:1px;
+    margin-bottom:1px;
+    text-align:left;
+    margin-left:10px;
+    border:none;
+}
+
+.formTitle {
+    padding:8px;
+    font-size:15px;
+    height:15px;
+    margin-top:1px;
+    margin-bottom:1px;
+    text-align:right;
+    margin-right:10px;
+}
+
+.formCol {
+    display: inline-block;
+    width: calc(50% - 16px);
+    text-align:left;
+}
+
+.selectFix {
+    background-color:white;
+    display:inline-block;
+    padding-top:5px;
+    padding-bottom:5px;
+    height:21px;
+}
+
+.selectFix select {
+    width:100%;
+    border:none;
 }

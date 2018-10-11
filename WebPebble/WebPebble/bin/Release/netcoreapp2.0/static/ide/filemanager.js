@@ -37,10 +37,25 @@ filemanager.SaveFile = function (id, callback) {
     project.serverRequest("media/" + data.id + "/put/", function () {
         //Update the tab info.
         var dd = filemanager.loadedFiles[id];
-        dd.tab.tab_ele.firstChild.innerText = dd.shortName;
+        sidebarmanager.updateSuffixOfTab(dd.tab);
         //Run callback
         callback();
     }, null, false, "POST", data.session.getValue());
+}
+
+filemanager.PromptDeleteFile = function (file) {
+    project.showDialog("Delete file \"" + file.shortName + "\"?", "This cannot be undone, and will happen immediately.", ["Confirm", "Cancel"], [
+        function () {
+            project.serverRequest("media/" + file.id + "/delete/?challenge=chal123", function () {
+                //Switch away from tab.
+                sidebarmanager.hide_content(sidebarmanager.activeItem);
+                //Update the tab info.
+                sidebarmanager.activeItem.tab_ele.parentNode.removeChild(sidebarmanager.activeItem.tab_ele);
+            }, null, false, "POST", "chal123");
+        }, function () {
+
+        }
+    ]);
 }
 
 filemanager.SaveAll = function (totalCallback) {
