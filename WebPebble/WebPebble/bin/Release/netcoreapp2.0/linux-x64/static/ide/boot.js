@@ -11,7 +11,8 @@ sidebarmanager.addButton("Compilation", 0, false, function () {
 }, function () { }, null, "sidebar_compile", false);
 //Add options to add sources
 sidebarmanager.addButton("Add Source", 1, true, function () {
-    console.log("click");
+    project.showAddAssetDialog();
+    return false;
 }, function () { }, null, "sidebar_add_src", false);
 sidebarmanager.addButton("Add Resource", 2, true, function () {
     console.log("click");
