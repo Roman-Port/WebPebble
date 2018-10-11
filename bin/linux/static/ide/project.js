@@ -298,7 +298,7 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
         function () {
             cancelAction();
         },
-    ],true);
+    ],null,true);
 }
 
 project.showAddAssetDialog = function () {
