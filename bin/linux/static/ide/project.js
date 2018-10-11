@@ -196,6 +196,15 @@ project.initKeybinds = function () {
     });
 }
 
+project.displayLog = function (content, id) {
+    //Display tab line.
+    document.getElementById('sidebar_sec_3_line').style.display = "block";
+    //Display tab
+    var tab = sidebarmanager.addButton("Build Log " + id, 3, false, function () { }, function () { }, null, "build_log_id" + id, true, "");
+    tab.edit_session.setContent(content);
+    tab.edit_session.setMode("ace/mode/text");
+}
+
 project.buildPbwBtn = function () {
     //Save first.
     filemanager.SaveAll(function () {
@@ -208,19 +217,13 @@ project.buildPbwBtn = function () {
                 project.showDialog("Build Finished", "The build finished successfully.", ["Dismiss", "Get PBW", "View Log"], [function () { },
                 function () { },
                 function () {
-                    //Set the template and apply it. This is a bit ugly.
-                    var t = document.getElementById('template_bigtext');
-                    t.value = data.log;
-                    tabManager.addDomTab("Build Log " + data.id, t, null);
+                    project.displayLog(t, data.id);
                 }]);
             } else {
                 //Failed.
                 project.showDialog("Build Failed", "The build failed to compile. Take a look at the log to see what went wrong.", ["Dismiss", "View Log"], [function () { },
                 function () {
-                    //Set the template and apply it. This is a bit ugly.
-                    var t = document.getElementById('template_bigtext');
-                    t.value = data.log;
-                    tabManager.addDomTab("Build Log " + data.id, t, null);
+                    project.displayLog(t, data.id);
                 }
                 ]);
             }
