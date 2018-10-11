@@ -221,11 +221,12 @@ project.buildPbwBtn = function () {
 
 project.displayForm = function (name, options, confirmAction, cancelAction) {
     //Create the dialog HTML.
-    var nameHtml = document.createElement('div');
-    var formHtml = document.createElement('div');
+    var dialogHtml = document.createElement('div');
     //Loop through each option and include it.
     for (var i = 0; i < options.length; i += 1) {
         var d = options[i];
+        var nameHtml = document.createElement('div');
+        var formHtml = document.createElement('div');
         //Add the title.
         var titleEle = document.createElement('div');
         titleEle.className = "formTitle";
@@ -234,7 +235,7 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
         //Create the form action based on the action type.
         var formEle = null;
         if (d.type == "text") {
-            formEle = document.createElement('div');
+            formEle = document.createElement('input');
             formEle.type = "text";
         }
         //If it's null, complain.
@@ -246,14 +247,13 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
         formEle.className = "formItem";
         formEle.id = "formele_id_" + i;
         formHtml.appendChild(formEle);
+        //Append all
+        nameHtml.className = "formCol";
+        formHtml.className = "formCol";
+        dialogHtml.appendChild(nameHtml);
+        dialogHtml.appendChild(formHtml);
     }
     //Now, create the dialog.
-    var dialogHtml = document.createElement('div');
-    nameHtml.className = "formCol";
-    formHtml.className = "formCol";
-    dialogHtml.appendChild(nameHtml);
-    dialogHtml.appendChild(formHtml);
-
     project.showDialog(name, dialogHtml.innerHTML, ["Create", "Cancel"], [
         function () {
 
