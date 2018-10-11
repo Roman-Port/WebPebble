@@ -66,9 +66,11 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
 sidebarmanager.updateSuffixOfTab = function (tab, suffix) {
     if (suffix == null) { suffix = ""; }
     if (tab.tab_ele != null) {
-        tab.tab_ele.firstChild.innerText = dd.shortName + suffix + " suffix manager";
+        var shortName = sidebarmanager.items[tab.tab_ele.x_id].name;
+        tab.tab_ele.firstChild.innerText = shortName + suffix + " suffix manager";
     } else {
-        tab.firstChild.innerText = dd.shortName + suffix + " suffix manager";
+        var shortName = sidebarmanager.items[tab.x_id].name;
+        tab.firstChild.innerText = shortName + suffix + " suffix manager";
     }
     
 }
