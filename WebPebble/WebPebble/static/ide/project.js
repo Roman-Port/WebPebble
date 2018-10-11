@@ -201,7 +201,7 @@ project.displayLog = function (content, id) {
     document.getElementById('sidebar_sec_3_line').style.display = "block";
     //Display tab
     var tab = sidebarmanager.addButton("Build Log " + id, 3, false, function () { }, function () { }, null, "build_log_id" + id, true, "");
-    tab.edit_session.setContent(content);
+    tab.edit_session.setValue(content);
     tab.edit_session.setMode("ace/mode/text");
 }
 
