@@ -219,8 +219,51 @@ project.buildPbwBtn = function () {
 
 }
 
+project.displayForm = function (name, options, confirmAction, cancelAction) {
+    //Create the dialog HTML.
+    var nameHtml = document.createElement('div');
+    var formHtml = document.createElement('div');
+    //Loop through each option and include it.
+    for (var i = 0; i < options.length; i += 1) {
+        var d = options[i];
+        //Add the title.
+        var titleEle = document.createElement('div');
+        titleEle.className = "formTitle";
+        titleEle.innerText = d.title;
+        nameHtml.appendChild(titleEle);
+        //Create the form action based on the action type.
+        var formEle = null;
+        if (d.type == "text") {
+            formEle = document.createElement('div');
+            formEle.type = "text";
+        }
+        //If it's null, complain.
+        if (formEle == null) {
+            console.log("Unknown type - " + d);
+            continue;
+        } 
+        //Fill out the rest of the data and append.
+        formEle.className = "formItem";
+        formEle.id = "formele_id_" + i;
+        formHtml.appendChild(formEle);
+    }
+    //Now, create the dialog.
+    var dialogHtml = document.createElement('div');
+    nameHtml.className = "formCol";
+    formHtml.className = "formCol";
+    dialogHtml.appendChild(nameHtml);
+    dialogHtml.appendChild(formHtml);
+
+    project.showDialog(name, dialogHtml.innerHTML, ["Create", "Cancel"], [
+        function () {
+
+        },
+        function () { },
+    ]);
+}
+
 project.showAddAssetDialog = function () {
-    project.showDialog("Add File", "Source Type<select><option value=\"c\">C File</option><option value=\"c_worker\">C Worker File</option></select><br>File Name<input style=\"margin-left:10px; padding:8px;\" id=\"form_filename\" type=\"text\">", ["Create", "Cancel"], [
+    /*project.showDialog("Add File", "Source Type<select style=\"padding:8px;\"><option value=\"c\">C File</option><option value=\"c_worker\">C Worker File</option></select><br>File Name<input style=\"margin-left:10px; padding:8px;\" id=\"form_filename\" type=\"text\">", ["Create", "Cancel"], [
         function () {
             var url = "create_empty_media/?filename=" + encodeURIComponent(document.getElementById('form_filename').value) + "&major_type=src&minor_type=c";
             project.serverRequest(url, function (data) {
@@ -228,5 +271,13 @@ project.showAddAssetDialog = function () {
             }, null, true);
         },
         function () { },
-    ]);
+    ]);*/
+    project.displayForm("Add File", [
+        { "title": "Source Type", "type": "text" },
+        { "title": "Filename", "type": "text" }
+    ], function () {
+
+    }, function () {
+
+    });
 }
