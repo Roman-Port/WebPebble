@@ -80,12 +80,15 @@ body {
     -webkit-box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);
     -moz-box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);
     box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);*/
-
     background-color: #1B2432;
-    top:80px;
+    /*top:80px;
     bottom:0;
     right:0;
-    left:315px;
+    left:315px;*/
+    left: 315px;
+    bottom:15px;
+    right:15px;
+    top:95px;
 }
 
 .ide_window_tabs {
