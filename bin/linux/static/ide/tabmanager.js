@@ -74,6 +74,11 @@ sidebarmanager.hide_content = function (tab) {
         //Hide the text editor
         document.getElementById('editor_inner').style.display = "none";
     }
+
+    //Make this button appear inactive.
+    if (tab.buttonType == false) {
+        tab.tab_ele.className = "btn";
+    }
 }
 
 sidebarmanager.show_content = function (tab) {
@@ -93,4 +98,9 @@ sidebarmanager.show_content = function (tab) {
 
     //Make sure editor is shown.
     document.getElementById('editor').className = "ide_window";
+
+    //Make this button appear active.
+    if (tab.buttonType == false) {
+        tab.tab_ele.className = "btn btn_fill_active";
+    }
 }
