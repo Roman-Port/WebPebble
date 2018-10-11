@@ -17,6 +17,7 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     tab.x_id = internalId;
     var tab_inner = document.createElement('div');
     tab_inner.className = "btn";
+    tab_inner.innerText = name;
     if (buttonType == true) { tab_inner.className = "btn btn_active"; }
     tab.appendChild(tab_inner);
     //Attach to section.
@@ -89,4 +90,7 @@ sidebarmanager.show_content = function (tab) {
 
     //Set this to the current view.
     sidebarmanager.activeItem = tab;
+
+    //Make sure editor is shown.
+    document.getElementById('editor').className = "ide_window";
 }
