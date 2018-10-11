@@ -78,7 +78,7 @@ project.showDialog = function (title, text, buttonTextArray, buttonCallbackArray
     //Data can be whatever you want to pass into the callbacks.
     //Set text first.
     document.getElementById('popup_title').innerText = title;
-    document.getElementById('popup_text').innerText = text;
+    document.getElementById('popup_text').innerHTML = text;
     //Erase old buttons now.
     document.getElementById('popup_btns').innerHTML = "";
     //Add new buttons.
