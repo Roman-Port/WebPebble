@@ -169,6 +169,20 @@ body {
     margin-bottom: 5px;
     font-size: 15px;
     height:20px;
+    position:relative;
+}
+
+.assets_type_container .btn .action_window {
+    /* Actions that appear when this is selected. */
+    position:absolute;
+    right:0;
+    top:5px;
+    bottom:5px;
+    width:30px;
+    background-color:red;
+
+    /* This is shown below. */
+    display:none;
 }
 
 .assets_type_container .btn:hover {
@@ -184,6 +198,10 @@ body {
     display:block;
     border-top-right-radius:0;
     border-bottom-right-radius:0;
+}
+
+.assets_type_container .btn_fill_active .action_window {
+    display:block;
 }
 
 .assets_window .line {
