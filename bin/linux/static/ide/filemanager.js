@@ -43,6 +43,10 @@ filemanager.SaveFile = function (id, callback) {
     }, null, false, "POST", data.session.getValue());
 }
 
+filemanager.PromptDeleteFile = function (context) {
+    console.log(context);
+}
+
 filemanager.SaveAll = function (totalCallback) {
     //This could take a bit, so show a dialog.
     project.showDialog("Saving...", "One moment, please.", [], []);

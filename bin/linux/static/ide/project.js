@@ -131,6 +131,11 @@ project.addExistingFileToSidebar = function (d) {
     if (d.type == 0 || d.type == 1) {
         var name = d.filename.split('/');
         name = name[name.length - 1];
+        var actionsHtml = "";
+        if (d.type == 0) {
+            //This file is deletable from the sidebar. Add the HTML for that.
+            actionsHtml = '<div class="action_window" onclick="filemanager.PromptDeleteFile(this);"><img src="https://romanport.com/static/icons/white/baseline-delete.svg"></div>';
+        }
         //Add this to the sidebar.
         var tab = sidebarmanager.addButton(name, d.type + 1, false, function (idd) {
             //Check if this file is ready for reading yet.
@@ -139,7 +144,7 @@ project.addExistingFileToSidebar = function (d) {
             return dd.loaded;
         }, function () {
             //Show the save/cancel dialog.
-        }, null, d.id, false);
+        }, null, d.id, false, actionsHtml);
         //Add a loading symbol to the tab.
         tab.tab_ele.firstChild.innerHTML = name + "<img src=\"https://romanport.com/static/icons/loader.svg\" height=\"18\" style=\"vertical-align: top; margin-left: 8px;\">";
         //Add to list of filemanager.loadedFiles
