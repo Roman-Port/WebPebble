@@ -127,7 +127,7 @@ project.init = function () {
                 //Show the save/cancel dialog.
                     }, null, d.id, false);
                 //Add a loading symbol to the tab.
-                tab.tab_ele.firstChild.innerHTML = name + "<img src=\"https://romanport.com/static/icons/loader.svg\" height=\"20\">";
+                tab.tab_ele.firstChild.innerHTML = name + "<img src=\"https://romanport.com/static/icons/loader.svg\" height=\"18\" style=\"vertical-align: top; margin-left: 8px;\">";
                 //Add to list of filemanager.loadedFiles
                 d.shortName = d;
                 d.tab = tab;
@@ -143,7 +143,7 @@ project.init = function () {
                     dd.loaded = true;
                     //Update the IDE.
                     dd.session.setMode("ace/mode/" + file_data.type);
-                    dd.session.setValue(content);
+                    dd.session.setValue(file_data.content);
                     //Add an event listener to the IDE to update this when it is edited.
                     dd.session.on("change", function () {
                         console.log(this);
