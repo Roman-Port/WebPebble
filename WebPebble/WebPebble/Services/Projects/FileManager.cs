@@ -44,6 +44,7 @@ namespace WebPebble.Services.Projects
                         proto = "https";
                     reply.saveUrl = proto + "://" + e.Request.Host + "/project/" + proj.projectId + "/media/" + fileId + "/put/";
                     reply.content = content;
+                    reply.id = fileId;
                     //Respond with JSON string.
                     Program.QuickWriteJsonToDoc(e, reply);
                 } else
@@ -73,6 +74,7 @@ namespace WebPebble.Services.Projects
             public string type;
             public string content;
             public string saveUrl;
+            public string id;
         }
     }
 }

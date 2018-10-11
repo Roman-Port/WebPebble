@@ -1,141 +1,121 @@
-﻿var tabManager = {};
-tabManager.activeTabs = [];
-tabManager.currentTab = null;
+﻿var sidebarmanager = {};
 
-tabManager.addDomTab = function (title, ele, exitCallback) {
-    //Copy an element into this tab's dedicated HTML. Automates things.
-    var tab = tabManager.addTab(title, function () {
-        if (!this.x_tab.ignoreClick) {
-            tabManager.switchToTab(this);
-        }
-    });
-    tab.x_tab.exitCallback = exitCallback;
-    //Copy this element.
-    var copy = ele.cloneNode(true);
-    copy.className = "fillEditor";
-    copy.id = "";
-    document.getElementById('editor').appendChild(copy);
-    tab.x_tab.content = copy;
-    //Instantly "finish loading".
-    tabManager.finishTabLoad(tab, function () {
-        var tab = this.parentElement;
-        tab.x_tab.ignoreClick = true; //Used to prevent clicking after a tab is closed.
-        //Clean up by deleting the html. First, call the callback in case it needs it.
-        if (tab.x_tab.exitCallback != null) {
-            tab.x_tab.exitCallback();
-        }
-        //Do cleanup.
-        var target = tab.x_tab.content;
-        target.parentElement.removeChild(target);
-        //Close tab.
-        tabManager.closeTab(tab);
-    });
-    //Now, switch to this tab.
-    tabManager.switchToTab(tab);
-}
+sidebarmanager.activeItem = null;
+sidebarmanager.items = [];
 
-tabManager.compareCurrentTab = function (tab) {
-    return tab == tabManager.currentTab;
-}
+sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction, closeAction, htmlDom, internalId, showNow) {
+    //Name: Name dislpayed
+    //sectionIndex: The index of the section to insert this into.
+    //buttonType: If this is true, this is displayed as a button. A button cannot be closed, and cannot use a text entry area.
+    //clickAction: Called when this tab is switched to.
+    //closeAction: Called when this tab is closed. Can be null.
+    //htmlDom: The DOM object to clone. If this is null, the text entry area will be used instead.
+    //internalId: The ID to use internally.
+    //showNow: If true, this tab will be switched to the moment it is added.
 
-tabManager.addTab = function (title, clickCallback) {
-    //Get the DOM.
-    var tabs = document.getElementById('tabs');
-    //Create object.
+    //First, create the dom element to use.
     var tab = document.createElement('div');
-    tab.dom = tab; //janky
-    tab.className = "tab";
-    //Set inner img
-    var tabNameInner = document.createElement('span');
-    tabNameInner.innerText = title;
-    tab.appendChild(tabNameInner);
-    //Add image
-    var tabImg = document.createElement('img');
-    //Use a loader until this image is downloaded from the server. You'll call our function for that.
-    tabImg.src = "https://romanport.com/static/icons/loader.svg";
-    tab.appendChild(tabImg);
+    tab.x_id = internalId;
+    var tab_inner = document.createElement('div');
+    tab_inner.className = "btn";
+    tab_inner.innerText = name;
+    if (buttonType == true) { tab_inner.className = "btn btn_active"; }
+    tab.appendChild(tab_inner);
+    //Attach to section.
+    document.getElementById('sidebar_sec_' + sectionIndex).appendChild(tab);
+    //Clone dom element.
+    var copydom = null;
+    var editsession = null;
+    if (htmlDom != null) {
+        var copy = htmlDom.cloneNode(true);
+        copy.className = "fillEditor";
+        copy.id = "";
+        document.getElementById('editor').appendChild(copy);
+    } else {
+        //This is a editor. Set the edit session.
+        var EditSession = require("ace/edit_session").EditSession;
+        editsession = new EditSession("");
+        /*editsession.on("change", function () {
+            
+        });*/
+    }
 
-    //Add the functions to the tab. The first one is going to be for finishing the loading process.
-    tab.x_tab = {};
-    tab.x_tab.dom = tab;
-    tab.x_tab.ignoreClick = false;
+    //Add to our internal array.
+    var t = { "name": name, "sectionIndex": sectionIndex, "buttonType": buttonType, "clickAction": clickAction, "closeAction": closeAction, "dom_template": htmlDom, "internalId": internalId, "tab_ele": tab, "copy_dom": copydom, "is_dom_ele": copydom != null, "edit_session": editsession };
+    sidebarmanager.items[internalId] = t;
 
-    //Add event listner to the tab.
-    tab.addEventListener('click', clickCallback);
+    //Add an event listener to this object.
+    tab.addEventListener('click', sidebarmanager.private_click);
 
-    //Append this to the dom.
-    tabs.appendChild(tab);
+    //Switch if requested.
+    if (showNow) {
+        //Deactive old items
+        if (sidebarmanager.activeItem != null) {
+            sidebarmanager.hide_content(sidebarmanager.activeItem);
+        }
 
-    //Add to active tabs.
-    tabManager.activeTabs.push(tab);
+        //Switch to this
+        sidebarmanager.show_content(sidebarmanager.items[internalId]);
+    }
 
-    //Ensure that the ide can be seen
+    return sidebarmanager.items[internalId];
+}
+
+sidebarmanager.private_click = function () {
+    //Get the data for this.
+    var d = sidebarmanager.items[this.x_id];
+    //Run the callback for this first in case it needs to prepare.
+    var reply = d.clickAction(this.x_id);
+    //Stop if reply is not null and is false.
+    if (reply != null) {
+        if (reply == false) {
+            return;
+        }
+    }
+    //Now, switch views. Hide the last item if needed.
+    if (sidebarmanager.activeItem != null) {
+        sidebarmanager.hide_content(sidebarmanager.activeItem);
+    }
+    //Show the current view.
+    sidebarmanager.show_content(d);
+}
+
+sidebarmanager.hide_content = function (tab) {
+    //If this has a dom element associated, hide it.
+    if (tab.is_dom_ele) {
+        //Hide the content.
+        tab.copy_dom.style.display = "none";
+    } else {
+        //Hide the text editor
+        document.getElementById('editor_inner').style.display = "none";
+    }
+
+    //Make this button appear inactive.
+    if (tab.buttonType == false) {
+        tab.tab_ele.firstChild.className = "btn";
+    }
+}
+
+sidebarmanager.show_content = function (tab) {
+    //If this has a dom element associated, show it.
+    if (tab.is_dom_ele) {
+        //show the content.
+        tab.copy_dom.style.display = "block";
+    } else {
+        //Switch to this document.
+        editor.setSession(tab.edit_session);
+        //show the text editor
+        document.getElementById('editor_inner').style.display = "block";
+    }
+
+    //Set this to the current view.
+    sidebarmanager.activeItem = tab;
+
+    //Make sure editor is shown.
     document.getElementById('editor').className = "ide_window";
 
-    //Return tab
-    return tab;
-}
-
-tabManager.finishTabLoad = function (tab, exitCallback) {
-    //Find the image.
-    var ti = tab.lastChild;
-    ti.src = "https://romanport.com/static/icons/baseline-close.svg";
-    //Set callback.
-    tab.lastChild.addEventListener('click', exitCallback);
-}
-
-tabManager.switchToTab = function (tab) {
-    //First, deactive the current tab.
-    if (tabManager.currentTab != null) {
-        tabManager.currentTab.className = "tab";
-        //If this tab has dedicated html, hide it.
-        if (tabManager.currentTab.x_tab.content != null) {
-            tabManager.currentTab.x_tab.content.style.display = "none";
-        }
-    }
-    //Set this as the current tab.
-    tabManager.currentTab = tab;
-    tab.className = "tab tab_active";
-    //If we have dedicated html, show it.
-    if (tab.x_tab.content != null) {
-        tab.x_tab.content.style.display = "block";
-    }
-}
-
-tabManager.closeTab = function (tab) {
-    //Assume cleanup has already been done.
-    //If this is the active tab, switch to the first one.
-    var nextTab = null;
-    if (tabManager.compareCurrentTab(tab)) {
-        //If there are no other tabs, collapse the view.
-        if (tabManager.activeTabs.length == 1) {
-            //Last one.
-            //Hide the entire editor.
-            document.getElementById('editor').className = "ide_window hide";
-        } else {
-            //Switch to the first one that isn't us.
-            var i = 0;
-            while (true) {
-                var target = tabManager.activeTabs[i];
-                if (tabManager.compareCurrentTab(target)) {
-                    //This is us. Skip.
-                    i += 1;
-                } else {
-                    //Switch to this one.
-                    nextTab = target;
-                    break;
-                }
-            }
-        }
-    } else {
-        console.log("keep this tab active");
-    }
-    //Now, it is safe to do what we want with this tab.
-    //Remove it from the list at the top and the internal list.
-    tabManager.activeTabs.splice(tabManager.activeTabs.indexOf(tab), 1);
-    tab.parentElement.removeChild(tab);
-    //Switch to
-    if (nextTab != null) {
-        tabManager.switchToTab(nextTab);
+    //Make this button appear active.
+    if (tab.buttonType == false) {
+        tab.tab_ele.firstChild.className = "btn btn_fill_active";
     }
 }

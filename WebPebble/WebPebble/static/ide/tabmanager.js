@@ -65,7 +65,13 @@ sidebarmanager.private_click = function () {
     //Get the data for this.
     var d = sidebarmanager.items[this.x_id];
     //Run the callback for this first in case it needs to prepare.
-    d.clickAction();
+    var reply = d.clickAction(this.x_id);
+    //Stop if reply is not null and is false.
+    if (reply != null) {
+        if (reply == false) {
+            return;
+        }
+    }
     //Now, switch views. Hide the last item if needed.
     if (sidebarmanager.activeItem != null) {
         sidebarmanager.hide_content(sidebarmanager.activeItem);

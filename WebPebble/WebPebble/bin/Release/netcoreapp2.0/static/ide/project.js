@@ -107,34 +107,50 @@ project.hideDialog = function () {
     document.getElementById('popup_window').className = "popup_window_container hide";
 }
 
-project.assets = [];
-
 project.init = function () {
     //Get assets from server.
     project.serverRequest("media_list/", function (data) {
         //Set assets and add tabs.
-        project.assets = data;
+        project.assets = {};
         for (var i = 0; i < data.length; i += 1) {
             var d = data[i];
             if (d.type == 0 || d.type == 1) {
-                var e = document.createElement('div');
-                var ee = document.createElement('div');
-                ee.className = "tab btn";
                 var name = d.filename.split('/');
                 name = name[name.length - 1];
-                ee.innerText = name;
-                e.appendChild(ee);
-                //Set data on dom.
-                e.x_asset = d;
-                e.x_asset.shortName = name;
-                //Add the event listener to view this.
-                e.addEventListener('click', function () {
-                    var asset = this.x_asset;
-                    filemanager.LoadFile(asset.id, asset.shortName);
-                });
-                //Append to the list.
-                var list = document.getElementById('assets_' + d.type);
-                list.insertBefore(e, list.firstChild);
+                //Add this to the sidebar.
+                var tab = sidebarmanager.addButton(name, d.type + 1, false, function (idd) {
+                    //Check if this file is ready for reading yet.
+                    //We can use the id we got passed to get our data.
+                    var dd = filemanager.loadedFiles[idd];
+                    return dd.loaded;
+                }, function () {
+                //Show the save/cancel dialog.
+                    }, null, d.id, false);
+                //Add a loading symbol to the tab.
+                tab.tab_ele.firstChild.innerHTML = name + "<img src=\"https://romanport.com/static/icons/loader.svg\" height=\"20\">";
+                //Add to list of filemanager.loadedFiles
+                d.shortName = d;
+                d.tab = tab;
+                d.session = d.tab.edit_session;
+                d.saved = true;
+                d.loaded = false;
+                filemanager.loadedFiles[d.id] = d;
+                //Start the loading process for this file.
+                project.serverRequest("media/" + d.id+"/get/application_json", function (file_data) {
+                    //Set the contents of the session.
+                    var dd = filemanager.loadedFiles[file_data.id];
+                    dd.save_url = file_data.save_url;
+                    dd.loaded = true;
+                    //Update the IDE.
+                    dd.session.setMode("ace/mode/" + file_data.type);
+                    dd.session.setValue(content);
+                    //Add an event listener to the IDE to update this when it is edited.
+                    dd.session.on("change", function () {
+                        console.log(this);
+                    });
+                    //Hide the loader symbol.
+                    dd.tab_ele.firstChild.innerText = dd.shortName;
+                }, null, true);
             }
         }
     }, null, true);
