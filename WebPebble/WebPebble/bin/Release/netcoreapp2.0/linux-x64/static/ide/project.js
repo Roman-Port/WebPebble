@@ -113,28 +113,22 @@ project.init = function () {
     //Get assets from server.
     project.serverRequest("media_list/", function (data) {
         //Set assets and add tabs.
-        project.assets = data;
+        project.assets = [];
         for (var i = 0; i < data.length; i += 1) {
             var d = data[i];
             if (d.type == 0 || d.type == 1) {
-                var e = document.createElement('div');
-                var ee = document.createElement('div');
-                ee.className = "tab btn";
                 var name = d.filename.split('/');
                 name = name[name.length - 1];
-                ee.innerText = name;
-                e.appendChild(ee);
-                //Set data on dom.
-                e.x_asset = d;
-                e.x_asset.shortName = name;
-                //Add the event listener to view this.
-                e.addEventListener('click', function () {
-                    var asset = this.x_asset;
-                    filemanager.LoadFile(asset.id, asset.shortName);
-                });
-                //Append to the list.
-                var list = document.getElementById('assets_' + d.type);
-                list.insertBefore(e, list.firstChild);
+                //Add this to the sidebar.
+                var tab = sidebarmanager.addButton(name, d.type + 1, false, function () {
+
+                }, function () {
+                //Show the save/cancel dialog.
+                }, null, d.id, false);
+                //Add to list
+                d.shortName = d;
+                d.tab = tab;
+                project.assets.push(d);
             }
         }
     }, null, true);
