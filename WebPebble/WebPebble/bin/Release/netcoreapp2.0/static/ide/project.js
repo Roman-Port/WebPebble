@@ -78,7 +78,7 @@ project.showDialog = function (title, text, buttonTextArray, buttonCallbackArray
     //Data can be whatever you want to pass into the callbacks.
     //Set text first.
     document.getElementById('popup_title').innerText = title;
-    document.getElementById('popup_text').innerText = text;
+    document.getElementById('popup_text').innerHTML = text;
     //Erase old buttons now.
     document.getElementById('popup_btns').innerHTML = "";
     //Add new buttons.
@@ -114,49 +114,53 @@ project.init = function () {
         project.assets = {};
         for (var i = 0; i < data.length; i += 1) {
             var d = data[i];
-            if (d.type == 0 || d.type == 1) {
-                var name = d.filename.split('/');
-                name = name[name.length - 1];
-                //Add this to the sidebar.
-                var tab = sidebarmanager.addButton(name, d.type + 1, false, function (idd) {
-                    //Check if this file is ready for reading yet.
-                    //We can use the id we got passed to get our data.
-                    var dd = filemanager.loadedFiles[idd];
-                    return dd.loaded;
-                }, function () {
-                //Show the save/cancel dialog.
-                    }, null, d.id, false);
-                //Add a loading symbol to the tab.
-                tab.tab_ele.firstChild.innerHTML = name + "<img src=\"https://romanport.com/static/icons/loader.svg\" height=\"18\" style=\"vertical-align: top; margin-left: 8px;\">";
-                //Add to list of filemanager.loadedFiles
-                d.shortName = name;
-                d.tab = tab;
-                d.session = d.tab.edit_session;
-                d.saved = true;
-                d.loaded = false;
-                filemanager.loadedFiles[d.id] = d;
-                //Start the loading process for this file.
-                project.serverRequest("media/" + d.id+"/get/application_json", function (file_data) {
-                    //Set the contents of the session.
-                    var dd = filemanager.loadedFiles[file_data.id];
-                    dd.save_url = file_data.save_url;
-                    dd.loaded = true;
-                    //Update the IDE.
-                    dd.session.setMode("ace/mode/" + file_data.type);
-                    dd.session.setValue(file_data.content);
-                    //Add an event listener to the IDE to update this when it is edited.
-                    dd.session.on("change", function () {
-                        //Not exactly sure how the scope works in this lamda function. We'll hope it is correct.
-                        dd.saved = false;
-                        //Add the little star to the filename.
-                        dd.tab.tab_ele.firstChild.innerText = dd.shortName+"*";
-                    });
-                    //Hide the loader symbol.
-                    dd.tab.tab_ele.firstChild.innerText = dd.shortName;
-                }, null, true);
-            }
+            project.addExistingFileToSidebar(d);
         }
     }, null, true);
+}
+
+project.addExistingFileToSidebar = function (d) {
+    if (d.type == 0 || d.type == 1) {
+        var name = d.filename.split('/');
+        name = name[name.length - 1];
+        //Add this to the sidebar.
+        var tab = sidebarmanager.addButton(name, d.type + 1, false, function (idd) {
+            //Check if this file is ready for reading yet.
+            //We can use the id we got passed to get our data.
+            var dd = filemanager.loadedFiles[idd];
+            return dd.loaded;
+        }, function () {
+            //Show the save/cancel dialog.
+        }, null, d.id, false);
+        //Add a loading symbol to the tab.
+        tab.tab_ele.firstChild.innerHTML = name + "<img src=\"https://romanport.com/static/icons/loader.svg\" height=\"18\" style=\"vertical-align: top; margin-left: 8px;\">";
+        //Add to list of filemanager.loadedFiles
+        d.shortName = name;
+        d.tab = tab;
+        d.session = d.tab.edit_session;
+        d.saved = true;
+        d.loaded = false;
+        filemanager.loadedFiles[d.id] = d;
+        //Start the loading process for this file.
+        project.serverRequest("media/" + d.id + "/get/application_json", function (file_data) {
+            //Set the contents of the session.
+            var dd = filemanager.loadedFiles[file_data.id];
+            dd.save_url = file_data.save_url;
+            dd.loaded = true;
+            //Update the IDE.
+            dd.session.setMode("ace/mode/" + file_data.type);
+            dd.session.setValue(file_data.content);
+            //Add an event listener to the IDE to update this when it is edited.
+            dd.session.on("change", function () {
+                //Not exactly sure how the scope works in this lamda function. We'll hope it is correct.
+                dd.saved = false;
+                //Add the little star to the filename.
+                dd.tab.tab_ele.firstChild.innerText = dd.shortName + "*";
+            });
+            //Hide the loader symbol.
+            dd.tab.tab_ele.firstChild.innerText = dd.shortName;
+        }, null, true);
+    }
 }
 
 project.initKeybinds = function () {
@@ -213,4 +217,16 @@ project.buildPbwBtn = function () {
         }, true, "GET", null, 60 * 1000);
     });
 
+}
+
+project.showAddAssetDialog = function () {
+    project.showDialog("Add File", "File Name<input style=\"margin-left:10px;\" id=\"form_filename\" type=\"text\">", ["Create", "Cancel"], [
+        function () {
+            var url = "create_empty_media/?filename=" + encodeURIComponent(document.getElementById('form_filename').value) + "&major_type=src&minor_type=c";
+            project.serverRequest(url, function (data) {
+                project.addExistingFileToSidebar(d);
+            }, null, true);
+        },
+        function () { },
+    ]);
 }
