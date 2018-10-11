@@ -64,8 +64,13 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
 }
 
 sidebarmanager.updateSuffixOfTab = function (tab, suffix) {
-    if (suffix == null) { suffix = "";}
-    tab.tab_ele.firstChild.innerText = dd.shortName + suffix+" suffix manager";
+    if (suffix == null) { suffix = ""; }
+    if (tab.tab_ele != null) {
+        tab.tab_ele.firstChild.innerText = dd.shortName + suffix + " suffix manager";
+    } else {
+        tab.firstChild.innerText = dd.shortName + suffix + " suffix manager";
+    }
+    
 }
 
 sidebarmanager.private_click = function () {
