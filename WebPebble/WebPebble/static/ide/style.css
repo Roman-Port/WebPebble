@@ -166,6 +166,10 @@ body {
     margin-top: 8px;
 }
 
+.assets_type_container div {
+    height:45px;
+}
+
 .assets_type_container .btn {
     padding: 10px;
     border-radius: 8px;
