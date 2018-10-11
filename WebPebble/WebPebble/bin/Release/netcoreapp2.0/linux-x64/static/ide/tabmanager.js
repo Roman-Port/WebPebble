@@ -3,7 +3,7 @@
 sidebarmanager.activeItem = null;
 sidebarmanager.items = [];
 
-sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction, closeAction, htmlDom, internalId) {
+sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction, closeAction, htmlDom, internalId, showNow) {
     //Name: Name dislpayed
     //sectionIndex: The index of the section to insert this into.
     //buttonType: If this is true, this is displayed as a button. A button cannot be closed, and cannot use a text entry area.
@@ -11,6 +11,7 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     //closeAction: Called when this tab is closed. Can be null.
     //htmlDom: The DOM object to clone. If this is null, the text entry area will be used instead.
     //internalId: The ID to use internally.
+    //showNow: If true, this tab will be switched to the moment it is added.
 
     //First, create the dom element to use.
     var tab = document.createElement('div');
@@ -46,13 +47,16 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     //Add an event listener to this object.
     tab.addEventListener('click', sidebarmanager.private_click);
 
-    //Deactive old items
-    if (sidebarmanager.activeItem != null) {
-        sidebarmanager.hide_content(sidebarmanager.activeItem);
-    }
+    //Switch if requested.
+    if (showNow) {
+        //Deactive old items
+        if (sidebarmanager.activeItem != null) {
+            sidebarmanager.hide_content(sidebarmanager.activeItem);
+        }
 
-    //Switch to this
-    sidebarmanager.show_content(sidebarmanager.items[internalId]);
+        //Switch to this
+        sidebarmanager.show_content(sidebarmanager.items[internalId]);
+    }
 
     return sidebarmanager.items[internalId];
 }

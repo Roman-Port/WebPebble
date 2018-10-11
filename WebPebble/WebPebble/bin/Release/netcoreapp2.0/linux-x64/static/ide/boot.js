@@ -5,17 +5,17 @@ editor.session.setMode("ace/mode/c_cpp");
 //Add sidebar options
 sidebarmanager.addButton("Settings", 0, false, function () {
     console.log("click");
-}, function () { }, null, "sidebar_sett");
+}, function () { }, null, "sidebar_sett", false);
 sidebarmanager.addButton("Compilation", 0, false, function () {
     console.log("click");
-}, function () { }, null, "sidebar_compile");
+}, function () { }, null, "sidebar_compile", false);
 //Add options to add sources
 sidebarmanager.addButton("Add Source", 1, true, function () {
     console.log("click");
-}, function () { }, null, "sidebar_add_src");
+}, function () { }, null, "sidebar_add_src", false);
 sidebarmanager.addButton("Add Resource", 2, true, function () {
     console.log("click");
-}, function () { }, null, "sidebar_add_resrc");
+}, function () { }, null, "sidebar_add_resrc", false);
 //Boot
 project.init();
 project.initKeybinds();
