@@ -237,6 +237,10 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
         if (d.type == "text") {
             formEle = document.createElement('input');
             formEle.type = "text";
+            //Add change event listener if asked.
+            if (d.onChange != null) {
+                formEle.addEventListener('input', d.onChange);
+            }
         }
         if (d.type == "select") {
             var inner = document.createElement('select');
@@ -247,6 +251,10 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
                 ele.value = dd.value;
                 ele.innerText = dd.title;
                 inner.appendChild(ele);
+            }
+            //Add change event listerer if needed
+            if (d.onChange != null) {
+                inner.addEventListener('input', d.onChange);
             }
             //Move this into an inner div.
             formEle = document.createElement('div');
@@ -295,9 +303,18 @@ project.showAddAssetDialog = function () {
         },
         function () { },
     ]);*/
+    var onFilenameEdit = function () {
+        //Verify if this ends correctly.....later.
+    }
+
+    var onTypeChange = function () {
+        //Hide elements depending on the type.
+        console.log(this.value);
+    }
+
     project.displayForm("Add File", [
-        { "title": "Source Type", "type": "text" },
-        { "title": "Filename", "type": "select", "options": [{ "title": "C File", "value": "c" }, { "title": "JS File", "value": "js" }, { "title": "C Worker File", "value": "c_worker" }, { "title": "Window Layout File", "value": "layout" }] }
+        { "title": "Source Type", "type": "text", "onChange": onFilenameEdit },
+        { "title": "Filename", "type": "select", "onChange": onTypeChange, "options": [{ "title": "C File", "value": "c" }, { "title": "JS File", "value": "js" }, { "title": "C Worker File", "value": "c_worker" }, { "title": "Window Layout File", "value": "layout" }] }
     ], function (data) {
         console.log(data);
     }, function () {
