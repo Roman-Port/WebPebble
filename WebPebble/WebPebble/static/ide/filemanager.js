@@ -37,7 +37,7 @@ filemanager.SaveFile = function (id, callback) {
     project.serverRequest("media/" + data.id + "/put/", function () {
         //Update the tab info.
         var dd = filemanager.loadedFiles[id];
-        dd.tab.tab_ele.firstChild.innerText = dd.shortName;
+        sidebarmanager.updateSuffixOfTab(dd.tab);
         //Run callback
         callback();
     }, null, false, "POST", data.session.getValue());

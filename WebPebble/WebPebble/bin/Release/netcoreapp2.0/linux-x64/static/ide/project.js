@@ -163,10 +163,10 @@ project.addExistingFileToSidebar = function (d) {
                 //Not exactly sure how the scope works in this lamda function. We'll hope it is correct.
                 dd.saved = false;
                 //Add the little star to the filename.
-                dd.tab.tab_ele.firstChild.innerText = dd.shortName + "*";
+                sidebarmanager.updateSuffixOfTab(dd.tab,"*");
             });
             //Hide the loader symbol.
-            dd.tab.tab_ele.firstChild.innerText = dd.shortName;
+            sidebarmanager.updateSuffixOfTab(dd.tab);
         }, null, true);
     }
 }

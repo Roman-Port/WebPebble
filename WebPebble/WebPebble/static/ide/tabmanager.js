@@ -18,7 +18,6 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     tab.x_id = internalId;
     var tab_inner = document.createElement('div');
     tab_inner.className = "btn";
-    tab_inner.innerText = name;
     if (buttonType == true) { tab_inner.className = "btn btn_active"; }
     tab.appendChild(tab_inner);
     //Attach to section.
@@ -58,7 +57,15 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
         sidebarmanager.show_content(sidebarmanager.items[internalId]);
     }
 
+    //Correctly update name of tab.
+    sidebarmanager.updateSuffixOfTab(sidebarmanager.items[internalId].tab_ele);
+
     return sidebarmanager.items[internalId];
+}
+
+sidebarmanager.updateSuffixOfTab = function (tab, suffix) {
+    if (suffix == null) { suffix = "";}
+    tab.tab_ele.firstChild.innerText = dd.shortName + suffix+" suffix manager";
 }
 
 sidebarmanager.private_click = function () {
