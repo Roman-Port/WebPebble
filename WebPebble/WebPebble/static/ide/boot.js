@@ -8,7 +8,7 @@ sidebarmanager.addButton("Settings", 0, false, function () {
 }, function () { }, null, "sidebar_sett", false);
 sidebarmanager.addButton("Compilation", 0, false, function () {
     console.log("click");
-}, function () { }, null, "sidebar_compile", false);
+}, function () { }, document.getElementById('template_compile'), "sidebar_compile", false);
 //Add options to add sources
 sidebarmanager.addButton("Add Source", 1, true, function () {
     project.showAddAssetDialog();

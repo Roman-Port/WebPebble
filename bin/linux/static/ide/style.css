@@ -374,3 +374,17 @@ body {
     width:100%;
     border:none;
 }
+
+.template_inner {
+    padding:10px;
+}
+
+.template_inner h1 {
+    color:white;
+    font-size:22px;
+}
+
+.template_inner p {
+    color:#e5e5e5;
+    font-size:15px;
+}
