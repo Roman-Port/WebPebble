@@ -37,7 +37,13 @@ namespace WebPebble.Services.Projects
             if(ok)
                 File.Move(pp.pathnane + "build/" + proj.projectId + ".pbw", Program.config.user_project_build_dir + proj.projectId + "/" + id + "/" + "build.pbw");
             //Clean up.
-            Directory.Delete(pp.pathnane + "build/", true);
+            try
+            {
+                Directory.Delete(pp.pathnane + "build/", true);
+            } catch
+            {
+                //Huh. Weird.
+            }
             //Create a reply.
             Program.QuickWriteJsonToDoc(e, b);
         }
