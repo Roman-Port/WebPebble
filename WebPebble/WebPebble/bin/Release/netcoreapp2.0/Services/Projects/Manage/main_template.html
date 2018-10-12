@@ -94,8 +94,27 @@
         <!-- Compilation menu -->
         <div id="template_compile">
             <div class="template_inner">
-                <h1>Builds</h1>
-                <p>You can see the history of builds here. Press the play button in the upper right corner to create one!</p>
+                <div class="container">
+                    <h1>Builds</h1>
+                    <p>You can see your past builds here. Click on the button below to create a new one.</p>
+                    <div class="med_button" onclick="project.buildPbwBtn();">Run Build</div>
+                </div>
+                <div class="container build_history_area blur">
+                    <table style="width:100%; text-align:left;" class="build_history">
+                        <tr style="text-align:left;">
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                        <!--<tr>
+        <td>12345</td>
+        <td>10/10/18 at 1:44:08 AM</td>
+        <td>OK</td>
+        <td><div class="med_button">Build Log</div><div class="med_button">Get PBW</div></td>
+    </tr>-->
+                    </table>
+                </div>
             </div>
         </div>
     </div>

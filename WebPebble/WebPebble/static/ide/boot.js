@@ -22,8 +22,14 @@ sidebarmanager.addButton("Compilation", 0, false, function () {
             }
             //add btns
             var b = document.createElement('th');
-            html_tools.createQuickDomClassEvent("Build Log", 'div', b, 'med_button', function () { });
-            html_tools.createQuickDomClassEvent("Get PBW", 'div', b, 'med_button', function () { });
+            html_tools.createQuickDomClassEvent("Build Log", 'div', b, 'med_button', function () {
+                project.displayLog(this.parentNode.x_data.api_log, this.parentNode.x_data.id);
+            });
+            html_tools.createQuickDomClassEvent("Get PBW", 'div', b, 'med_button', function () {
+                filemanager.DownloadUrl(this.parentNode.x_data.api_pbw);
+            });
+            b.style.float = "right";
+            b.x_data = build;
             dom.appendChild(b);
             dom.x_id = build.id;
             document.getElementsByClassName('build_history')[0].appendChild(dom);

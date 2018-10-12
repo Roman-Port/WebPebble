@@ -31,7 +31,7 @@ namespace WebPebble.Services.Projects
                         passed = b.passed
                     };
                     ob.api_log = "build_history/" + ob.id + "/";
-                    ob.api_pbw = "pbw_media/" + ob.id + "/"+proj.projectId+"_build_"+b.id+".pbw";
+                    ob.api_pbw = "/project/"+proj.projectId+"/pbw_media/" + ob.id + "/"+proj.projectId+"_build_"+b.id+".pbw";
                     ob.time = time.ToShortDateString() + " at " + time.ToLongTimeString();
                     builds[i] = ob;
                 }

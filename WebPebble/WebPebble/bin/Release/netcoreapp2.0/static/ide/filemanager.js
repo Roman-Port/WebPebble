@@ -58,6 +58,18 @@ filemanager.PromptDeleteFile = function (file) {
     ]);
 }
 
+filemanager.DownloadUrl = function (url) {
+    //Open an iframe to download this file.
+    var ifg = document.createElement('iframe');
+    ifg.src = url;
+    ifg.style.display = "none";
+    document.body.appendChild(ifg);
+    //Close after a few seconds.
+    window.setTimeout(function () {
+        document.body.removeChild(ifg);
+    }, 2000);
+}
+
 filemanager.SaveAll = function (totalCallback) {
     //This could take a bit, so show a dialog.
     project.showDialog("Saving...", "One moment, please.", [], []);

@@ -322,6 +322,7 @@ body {
     width: 100%;
     color: white;
     resize: none;
+    overflow:auto;
 }
 
 #editor_inner {
@@ -376,15 +377,83 @@ body {
 }
 
 .template_inner {
-    padding:10px;
+    padding:15px;
 }
 
 .template_inner h1 {
     color:white;
-    font-size:22px;
+    font-size:26px;
+    margin-top:0;
+}
+
+.template_inner h2 {
+    color:white;
+    font-size:23px;
+    margin:0;
+}
+
+.template_inner h3 {
+    color:white;
+    font-size:20px;
+    margin:0;
 }
 
 .template_inner p {
     color:#e5e5e5;
-    font-size:15px;
+    font-size:17px;
+}
+
+.template_inner .container {
+    background-color:#2b3745;
+    padding:12px;
+    color:white;
+    border-radius:5px;
+    -webkit-box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
+    -moz-box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
+    box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
+    max-width:700px;
+    margin-bottom:5px;
+    transition:filter 200ms;
+}
+
+.template_inner .med_button {
+    height: 20px;
+    line-height: 20px;
+    font-size: 15px;
+    padding: 5px;
+    padding-left: 12px;
+    padding-right: 12px;
+    background-color: #1b2432;
+    border-radius: 5px;
+    display: inline-block;
+    margin-right: 4px;
+    cursor: pointer;
+    border: 1px solid #111721;
+}
+
+.template_inner .big_button {
+    height: 30px;
+    line-height: 30px;
+    font-size: 18px;
+    padding: 8px;
+    padding-left: 12px;
+    padding-right: 12px;
+    background-color: #1b2432;
+    border-radius: 5px;
+    display: inline-block;
+    margin-right: 4px;
+    cursor: pointer;
+    border: 1px solid #111721;
+}
+
+.blur {
+    filter:blur(4px);
+}
+
+.red_btn {
+    color:#ff9999;
+}
+
+.green_btn {
+    color: #94fcae;
 }
