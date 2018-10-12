@@ -112,6 +112,9 @@ sidebarmanager.hide_content = function (tab) {
     if (tab.buttonType == false) {
         tab.tab_ele.firstChild.className = "btn";
     }
+
+    //Make sure editor is hidden.
+    document.getElementById('editor').className = "ide_window hide";
 }
 
 sidebarmanager.show_content = function (tab) {

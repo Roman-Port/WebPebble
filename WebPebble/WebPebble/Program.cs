@@ -54,6 +54,7 @@ namespace WebPebble
             AddService(true, Services.Projects.FileManager.CreateFileRequest, "/create_empty_media/", true);
             AddService(true, Services.Projects.FileList.ListFiles, "/media_list/", true);
             AddService(true, Services.Projects.Compile.DoCompile, "/build/", true);
+            AddService(true, Services.Projects.History.OnRequest, "/build_history/", true);
             //Start
             MainAsync().GetAwaiter().GetResult();
         }
@@ -170,7 +171,6 @@ namespace WebPebble
                         id = id.Substring(0, id.IndexOf('/'));
                         //Now, use this ID to load it from the database.
                         var collect = database.GetCollection<WebPebbleProject>("projects");
-                        Console.WriteLine(id);
                         var projects = collect.Find(x => x.projectId == id && x.authorId == user.uuid);
                         if (projects.Count() == 1)
                             proj = projects.ToArray()[0];

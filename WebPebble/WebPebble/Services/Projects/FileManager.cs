@@ -72,7 +72,7 @@ namespace WebPebble.Services.Projects
                 if(e.Request.Query["challenge"] == Encoding.UTF8.GetString(data))
                 {
                     //Nuke the files
-                    File.Delete(fileName);
+                    File.Delete(pp.pathnane + fileName);
                     //Nuke in the assets of the project.
                     proj.assets.Remove(asset);
                     proj.SaveProject();
