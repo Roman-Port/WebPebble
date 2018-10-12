@@ -55,6 +55,7 @@ namespace WebPebble
             AddService(true, Services.Projects.FileList.ListFiles, "/media_list/", true);
             AddService(true, Services.Projects.Compile.DoCompile, "/build/", true);
             AddService(true, Services.Projects.History.OnRequest, "/build_history/", true);
+            AddService(true, Services.Projects.PbwMedia.OnRequest, "/pbw_media/", true);
             //Start
             MainAsync().GetAwaiter().GetResult();
         }
