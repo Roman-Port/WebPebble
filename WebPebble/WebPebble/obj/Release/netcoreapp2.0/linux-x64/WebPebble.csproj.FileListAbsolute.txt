@@ -16,3 +16,5 @@ C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\static\ide\style.css
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\static\ide\tabmanager.js
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\Services\CreateProject\form_template.html
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\Services\Landing\landing_signedin.html
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\Services\Landing\landing_signedout.html

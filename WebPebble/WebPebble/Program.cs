@@ -46,6 +46,7 @@ namespace WebPebble
             //Get database
             database = new LiteDatabase(config.database_file);
             //Add services that are out of the project.
+            AddService(false, Services.Landing.Landing.OnRequest, "/", false);
             AddService(false, Services.CreateProject.CreateProject.OnRequest, "/create", true);
             AddService(false, Services.QuickLogin.Serve, "/token/", false);
             //Add services that are in the project.
