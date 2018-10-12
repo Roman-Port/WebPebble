@@ -10,11 +10,20 @@ namespace WebPebble.Services.CreateProject
     {
         public static void OnRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject nonProject)
         {
-            //Usually, we'd serve a form. For now, to save time, we'll just create it.
-            WebPebbleProject project = WebPebbleProject.CreateProject("Testing " + LibRpws.LibRpwsCore.GenerateRandomString(4), user.appDevName, user.uuid, false);
-            //Redirect the user to this project.
-            e.Response.Headers.Add("Location", "/projects/" + project.projectId + "/manage/");
-            Program.QuickWriteToDoc(e, "Redirecting....", "text/plain", 302);
+            //Serve the form if this is a get request.
+            if(e.Request.Method.ToLower() == "get")
+            {
+                //Serve form.
+                Program.QuickWriteToDoc(e,TemplateManager.GetTemplate("Services/CreateProject/form_template.html", new string[] { }, new string[] { }));
+            } else if(e.Request.Method.ToLower() == "post")
+            {
+                //Create the project.
+                WebPebbleProject project = WebPebbleProject.CreateProject(e.Request.Form["title"], user.appDevName, user.uuid, false, e.Request.Form["sdk_version"]);
+                //Redirect the user to this project.
+                e.Response.Headers.Add("Location", "/project/" + project.projectId + "/manage/");
+                Program.QuickWriteToDoc(e, "Redirecting....", "text/plain", 302);
+            }
+            
         }
     }
 }

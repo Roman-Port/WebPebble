@@ -20,7 +20,7 @@ namespace WebPebble.Entities
         public List<WebPebbleProjectBuild> builds { get; set; }
 
         //Functions for creation.
-        public static WebPebbleProject CreateProject(string name, string authorName, string authorId, bool isWatchface)
+        public static WebPebbleProject CreateProject(string name, string authorName, string authorId, bool isWatchface, string sdk_version)
         {
             //First, generate an ID to use.
             var collect = Program.database.GetCollection<WebPebbleProject>("projects");
@@ -28,7 +28,7 @@ namespace WebPebble.Entities
             while (collect.Find(x => x.projectId == id).ToArray().Length != 0)
                 id = LibRpws.LibRpwsCore.GenerateRandomHexString(16);
             //Now that we have a unique ID, create the files for it.
-            PebbleProject.PebbleProject proj = PebbleProject.PebbleProject.CreateProjectFiles(id, name, authorName, isWatchface);
+            PebbleProject.PebbleProject proj = PebbleProject.PebbleProject.CreateProjectFiles(id, name, authorName, isWatchface,sdk_version);
             //Now, create the object and save it to the database.
             WebPebbleProject wpp = new WebPebbleProject
             {

@@ -3,7 +3,9 @@ project.settings = {};
 project.appInfo = {};
 project.started = false;
 
-project.id = "2ca12e56dd024781";
+project.id = window.location.pathname.split('/')[2];
+
+
 project.serverRequest = function (url, run_callback, fail_callback, isJson, type, body, timeout) {
     url = "http://10.0.1.52/project/" + project.id + "/" + url;
     //This is the main server request function. Please change all other ones to use this.

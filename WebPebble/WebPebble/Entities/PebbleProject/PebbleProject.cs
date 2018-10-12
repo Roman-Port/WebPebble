@@ -93,7 +93,7 @@ namespace WebPebble.Entities.PebbleProject
         }
 
         /* CREATION FUNCTIONS */
-        public static PebbleProject CreateProjectFiles(string id, string name, string author, bool isWatchface)
+        public static PebbleProject CreateProjectFiles(string id, string name, string author, bool isWatchface, string sdk_version)
         {
             //First, run the command to generate the files.
             LinuxInterface.ExecuteCommand("pebble new-project " + id, Program.config.user_project_dir);
@@ -104,6 +104,7 @@ namespace WebPebble.Entities.PebbleProject
             proj.package.author = author;
             proj.package.pebble.displayName = name;
             proj.package.pebble.watchapp.watchface = isWatchface;
+            proj.package.pebble.sdkVersion = sdk_version;
             //Rename the main.c. 
             try
             {
