@@ -382,19 +382,19 @@ body {
 .template_inner h1 {
     color:white;
     font-size:26px;
-    margin-top:0;
+    margin:0;
 }
 
 .template_inner h2 {
     color:white;
     font-size:23px;
-    margin-top:0;
+    margin:0;
 }
 
 .template_inner h3 {
     color:white;
     font-size:20px;
-    margin-top:0;
+    margin:0;
 }
 
 .template_inner p {
@@ -407,9 +407,10 @@ body {
     padding:10px;
     color:white;
     border-radius:5px;
-    -webkit-box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.36);
-    -moz-box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.36);
-    box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.36);
+    -webkit-box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
+    -moz-box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
+    box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
+    max-width:700px;
 }
 
 .template_inner .med_button {
