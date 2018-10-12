@@ -20,10 +20,10 @@ sidebarmanager.addButton("Compilation", 0, false, function () {
             } else {
                 html_tools.createQuickDom(build.id, "Failed", dom);
             }
-            document.getElementsByClassName('build_history').appendChild(dom);
+            document.getElementsByClassName('build_history')[0].appendChild(dom);
         }
         //Reveal list
-        document.getElementsByClassName('build_history_area').style.filer = "none";
+        document.getElementsByClassName('build_history_area')[0].style.filer = "none";
     }, function () { }, true);
 }, function () { }, document.getElementById('template_compile'), "sidebar_compile", false);
 //Add options to add sources
