@@ -16,14 +16,20 @@ sidebarmanager.addButton("Compilation", 0, false, function () {
             html_tools.createQuickDom(build.id, "th", dom);
             html_tools.createQuickDom(build.time, "th", dom);
             if (build.passed) {
-                html_tools.createQuickDom(build.id, "OK", dom);
+                html_tools.createQuickDom("OK", "th", dom);
             } else {
-                html_tools.createQuickDom(build.id, "Failed", dom);
+                html_tools.createQuickDom("Failed", "th", dom);
             }
+            //add btns
+            var b = document.createElement('th');
+            html_tools.createQuickDomClassEvent("Build Log", 'div', b, 'med_button', function () { });
+            html_tools.createQuickDomClassEvent("Get PBW", 'div', b, 'med_button', function () { });
+            dom.appendChild(b);
+            dom.x_id = build.id;
             document.getElementsByClassName('build_history')[0].appendChild(dom);
         }
         //Reveal list
-        document.getElementsByClassName('build_history_area')[0].style.filer = "none";
+        document.getElementsByClassName('build_history_area')[0].className = "container build_history_area";
     }, function () { }, true);
 }, function () { }, document.getElementById('template_compile'), "sidebar_compile", false);
 //Add options to add sources

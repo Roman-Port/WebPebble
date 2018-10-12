@@ -149,3 +149,11 @@ html_tools.createQuickDom = function (text, type, parent) {
     d.innerText = text;
     parent.appendChild(d);
 }
+
+html_tools.createQuickDomClassEvent = function (text, type, parent, className, event) {
+    var d = document.createElement(type);
+    d.innerText = text;
+    d.className = className;
+    d.addEventListener('click', event);
+    parent.appendChild(d);
+}
