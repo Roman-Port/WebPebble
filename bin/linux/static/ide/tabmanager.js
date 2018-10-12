@@ -26,10 +26,7 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     var copydom = null;
     var editsession = null;
     if (htmlDom != null) {
-        var copy = htmlDom.cloneNode(true);
-        copy.className = "fillEditor";
-        copy.id = "";
-        document.getElementById('editor').appendChild(copy);
+        //There was once code here.
     } else {
         //This is a editor. Set the edit session.
         var EditSession = require("ace/edit_session").EditSession;
@@ -44,7 +41,7 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     }
 
     //Add to our internal array.
-    var t = { "name": name, "sectionIndex": sectionIndex, "buttonType": buttonType, "clickAction": clickAction, "closeAction": closeAction, "dom_template": htmlDom, "internalId": internalId, "tab_ele": tab, "copy_dom": copydom, "is_dom_ele": copydom != null, "edit_session": editsession, "actions_html": actionsHtml };
+    var t = { "name": name, "sectionIndex": sectionIndex, "buttonType": buttonType, "clickAction": clickAction, "closeAction": closeAction, "dom_template": htmlDom, "internalId": internalId, "tab_ele": tab, "is_dom_ele": htmlDom != null, "edit_session": editsession, "actions_html": actionsHtml };
     sidebarmanager.items[internalId] = t;
 
     //Add an event listener to this object.
@@ -101,8 +98,8 @@ sidebarmanager.private_click = function () {
 sidebarmanager.hide_content = function (tab) {
     //If this has a dom element associated, hide it.
     if (tab.is_dom_ele) {
-        //Hide the content.
-        tab.copy_dom.style.display = "none";
+        //Destroy the content.
+        tab.copy_dom.parentNode.removeChild(tab.copy_dom);
     } else {
         //Hide the text editor
         document.getElementById('editor_inner').style.display = "none";
@@ -120,7 +117,12 @@ sidebarmanager.hide_content = function (tab) {
 sidebarmanager.show_content = function (tab) {
     //If this has a dom element associated, show it.
     if (tab.is_dom_ele) {
-        //show the content.
+        //Clone the content.
+        var copy = tab.htmlDom.cloneNode(true);
+        copy.className = "fillEditor open_sans open-sans";
+        copy.id = "";
+        document.getElementById('editor').appendChild(copy);
+        tab.copy_dom = copy;
         tab.copy_dom.style.display = "block";
     } else {
         //Switch to this document.
