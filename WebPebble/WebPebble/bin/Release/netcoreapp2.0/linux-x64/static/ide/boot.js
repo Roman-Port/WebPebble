@@ -16,9 +16,9 @@ sidebarmanager.addButton("Compilation", 0, false, function () {
             html_tools.createQuickDom(build.id, "th", dom);
             html_tools.createQuickDom(build.time, "th", dom);
             if (build.passed) {
-                html_tools.createQuickDom("OK", "th", dom);
+                html_tools.createQuickDomClass("OK", "th", dom, 'green_btn');
             } else {
-                html_tools.createQuickDom("Failed", "th", dom);
+                html_tools.createQuickDomClass("Failed", "th", dom, 'red_btn');
             }
             //add btns
             var b = document.createElement('th');

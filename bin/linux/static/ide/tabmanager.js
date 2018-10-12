@@ -150,6 +150,13 @@ html_tools.createQuickDom = function (text, type, parent) {
     parent.appendChild(d);
 }
 
+html_tools.createQuickDomClass = function (text, type, parent, className) {
+    var d = document.createElement(type);
+    d.innerText = text;
+    d.className = className;
+    parent.appendChild(d);
+}
+
 html_tools.createQuickDomClassEvent = function (text, type, parent, className, event) {
     var d = document.createElement(type);
     d.innerText = text;

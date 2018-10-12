@@ -322,6 +322,7 @@ body {
     width: 100%;
     color: white;
     resize: none;
+    overflow:auto;
 }
 
 #editor_inner {
@@ -447,4 +448,12 @@ body {
 
 .blur {
     filter:blur(4px);
+}
+
+.red_btn {
+    color:#ff9999;
+}
+
+.green_btn {
+    color: #94fcae;
 }
