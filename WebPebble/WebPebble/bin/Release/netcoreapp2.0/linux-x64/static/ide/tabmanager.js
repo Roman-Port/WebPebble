@@ -118,7 +118,7 @@ sidebarmanager.show_content = function (tab) {
     //If this has a dom element associated, show it.
     if (tab.is_dom_ele) {
         //Clone the content.
-        var copy = tab.htmlDom.cloneNode(true);
+        var copy = tab.dom_template.cloneNode(true);
         copy.className = "fillEditor open_sans open-sans";
         copy.id = "";
         document.getElementById('editor').appendChild(copy);
