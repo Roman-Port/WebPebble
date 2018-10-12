@@ -142,3 +142,10 @@ sidebarmanager.show_content = function (tab) {
         tab.tab_ele.firstChild.className = "btn btn_fill_active";
     }
 }
+
+var html_tools = {};
+html_tools.createQuickDom = function (text, type, parent) {
+    var d = document.createElement(type);
+    d.innerText = text;
+    parent.appendChild(d);
+}

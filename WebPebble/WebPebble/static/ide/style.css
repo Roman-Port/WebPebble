@@ -412,6 +412,7 @@ body {
     box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
     max-width:700px;
     margin-bottom:5px;
+    transition:filter 200ms;
 }
 
 .template_inner .med_button {
