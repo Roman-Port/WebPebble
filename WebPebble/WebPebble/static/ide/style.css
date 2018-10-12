@@ -457,3 +457,26 @@ body {
 .green_btn {
     color: #94fcae;
 }
+
+/* Thanks to https://codepen.io/brunjo/pen/azdWjY */
+
+.inf_loader {
+    width: 100%;
+    height: 20px;
+    border: 1px solid #111721;
+    border-radius: 3px;
+    background-image: repeating-linear-gradient( -45deg, #B76D68, #B76D68 11px, #EBD7D5 10px, #EBD7D5 20px /* determines size */
+    );
+    background-size: 28px 28px;
+    animation: move .5s linear infinite;
+}
+
+@keyframes move {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 28px 0;
+    }
+}

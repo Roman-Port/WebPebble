@@ -123,6 +123,14 @@ namespace WebPebble.Services.Projects
             }
         }
 
+        public static void OnProjSettingsRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            //Hide bandwidth-intensive bits.
+            proj.builds = null;
+            //Serve the project's data.
+            Program.QuickWriteJsonToDoc(e, proj);
+        }
+
         private class FileReply
         {
             public string type;

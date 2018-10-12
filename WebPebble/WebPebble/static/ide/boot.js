@@ -1,4 +1,6 @@
-﻿//Init editor
+﻿//Show waiting message.
+project.showDialog("Initializing...", '<div class="inf_loader"></div>', [], [], null, false);
+//Init editor
 var editor = ace.edit("editor_inner");
 editor.setTheme("ace/theme/dracula");
 editor.session.setMode("ace/mode/c_cpp");

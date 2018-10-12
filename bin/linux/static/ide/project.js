@@ -1,4 +1,8 @@
 ﻿var project = {};
+project.settings = {};
+project.appInfo = {};
+project.started = false;
+
 project.id = "2ca12e56dd024781";
 project.serverRequest = function (url, run_callback, fail_callback, isJson, type, body, timeout) {
     url = "http://10.0.1.52/project/" + project.id + "/" + url;
@@ -124,6 +128,22 @@ project.init = function () {
             var d = data[i];
             project.addExistingFileToSidebar(d);
         }
+        //Fetch project data.
+        project.serverRequest("settings/", function (sett) {
+            project.settings = sett;
+            var n = document.getElementById('project_name');
+            n.innerText = sett.name;
+            n.className = "btn btn_active";
+            //Fetch appinfo.json
+            project.serverRequest("settings/", function (app) {
+                project.appInfo = app;
+                project.started = false;
+                //Allow the user to use this.
+                project.hideDialog();
+            }, null, true);
+            
+        }, null, true);
+        
     }, null, true);
 }
 

@@ -14,6 +14,8 @@ namespace WebPebble.Entities
         public string projectId { get; set; } //Actual ID to use.
         public string authorId { get; set; } //RPWS author id.
 
+        public string name { get; set; }
+
         public List<WebPebbleProjectAsset> assets { get; set; }
         public List<WebPebbleProjectBuild> builds { get; set; }
 
@@ -31,7 +33,8 @@ namespace WebPebble.Entities
             WebPebbleProject wpp = new WebPebbleProject
             {
                 authorId = authorId,
-                projectId = id
+                projectId = id,
+                name = name
             };
             wpp._id = collect.Insert(wpp);
             //Now, add the asset.
