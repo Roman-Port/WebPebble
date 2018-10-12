@@ -40,7 +40,7 @@ namespace WebPebble
 
         public static string GetPebble()
         {
-            return "~/webpebble/pebble_sdk/pebble-sdk-4.5-linux64/bin/pebble";
+            return Program.config.pebble_sdk_dir;
         }
     }
 }

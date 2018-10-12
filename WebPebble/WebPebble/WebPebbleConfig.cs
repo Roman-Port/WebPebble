@@ -10,5 +10,6 @@ namespace WebPebble
         public string database_file;
         public string user_project_build_dir;
         public string static_files_dir;
+        public string pebble_sdk_dir;
     }
 }
