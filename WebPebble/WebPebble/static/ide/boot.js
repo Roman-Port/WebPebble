@@ -23,7 +23,12 @@ sidebarmanager.addButton("Compilation", 0, false, function () {
             //add btns
             var b = document.createElement('th');
             html_tools.createQuickDomClassEvent("Build Log", 'div', b, 'med_button', function () {
-                project.displayLog(this.parentNode.x_data.api_log, this.parentNode.x_data.id);
+                //Download log.
+                project.showDialog("Loading...", "Loading log.", [], [], null, false);
+                project.serverRequest(this.parentNode.x_data.api_log, function (data_d) {
+                    project.hideDialog();
+                    project.displayLog(data_d.log, this.parentNode.x_data.id);
+                }, null, true);
             });
             html_tools.createQuickDomClassEvent("Get PBW", 'div', b, 'med_button', function () {
                 filemanager.DownloadUrl(this.parentNode.x_data.api_pbw);
