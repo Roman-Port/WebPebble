@@ -8,7 +8,7 @@ sidebarmanager.addButton("Settings", 0, false, function () {
 }, function () { }, null, "sidebar_sett", false);
 sidebarmanager.addButton("Compilation", 0, false, function () {
     //Fetch data.
-    project.serverRequest("build_history", function (data) {
+    project.serverRequest("build_history/", function (data) {
         //Add each build.
         for (var i = 0; i < data.length; i += 1) {
             var build = data[i];
