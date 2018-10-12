@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -101,6 +102,25 @@ namespace WebPebble.Services.Projects
             var file = proj.CreateSafeAsset(filename, type, inner, new byte[] { });
             //Respond with JSON string.
             Program.QuickWriteJsonToDoc(e, file);
+        }
+
+        public static void AppInfoJson(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            //Edit or serve appinfo.json.
+            PebbleProject pp = new PebbleProject(proj.projectId);
+            if(e.Request.Method.ToLower() == "get")
+            {
+                Program.QuickWriteJsonToDoc(e, pp.package);
+            }
+            if(e.Request.Method.ToLower() == "put")
+            {
+                //Update.
+                byte[] data = new byte[(int)e.Request.ContentLength];
+                e.Request.Body.Read(data, 0, data.Length);
+                pp.package = JsonConvert.DeserializeObject<PackageJson>(Encoding.UTF8.GetString(data));
+                pp.SavePackage();
+                Program.QuickWriteToDoc(e, "OK", "text/plain");
+            }
         }
 
         private class FileReply

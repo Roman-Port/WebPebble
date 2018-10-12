@@ -15,6 +15,7 @@ namespace WebPebble.Entities.PebbleProject
         public string name { get; set; }
         public List<string> targetPlatforms { get; set; }
         public string type { get; set; }
+        public bool menuIcon { get; set; }
     }
 
     public class Resources
