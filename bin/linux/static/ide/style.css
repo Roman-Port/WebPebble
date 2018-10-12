@@ -404,13 +404,14 @@ body {
 
 .template_inner .container {
     background-color:#2b3745;
-    padding:10px;
+    padding:12px;
     color:white;
     border-radius:5px;
     -webkit-box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
     -moz-box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
     box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
     max-width:700px;
+    margin-bottom:5px;
 }
 
 .template_inner .med_button {
@@ -418,6 +419,21 @@ body {
     line-height: 20px;
     font-size: 15px;
     padding: 5px;
+    padding-left: 12px;
+    padding-right: 12px;
+    background-color: #1b2432;
+    border-radius: 5px;
+    display: inline-block;
+    margin-left: 4px;
+    cursor: pointer;
+    border: 1px solid #111721;
+}
+
+.template_inner .big_button {
+    height: 30px;
+    line-height: 30px;
+    font-size: 18px;
+    padding: 8px;
     padding-left: 12px;
     padding-right: 12px;
     background-color: #1b2432;
