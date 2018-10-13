@@ -92,6 +92,8 @@
         <div id="template_options">
             <div class="template_inner">
 
+                <!-- Name section -->
+
                 <div class="container open_sans container_control">
                     <div class="control_item">
                         <div class="label">Project Name</div>
@@ -99,17 +101,108 @@
                             <input type="text" id="settings_entry_project_name" />
                         </div>
                         <div class="help">
-                            Here is some help text to help you out with your text. I'm not sure how long this will get, but we'll make it run on just to see.
+                            This name is only changed in WebPebble, and does not reflect on the actual Pebble app.
                         </div>
                     </div>
 
                     <div class="control_item">
-                        <div class="label">Project Type</div>
+                        <div class="label">SDK Version</div>
                         <div class="control">
-                            <select id="settings_entry_project_type"><option>Test1</option><option>Test2</option><option>Test3</option></select>
+                            <select id="settings_entry_sdk_version"><option value="3">SDK 3 (Pebble Time and newer)</option><option value="2">SDK 2 (Pebble Classic, Pebble Steel)</option></select>
                         </div>
                         <div class="help">
-                            Here is some help text to help you out with your text. I'm not sure how long this will get, but we'll make it run on just to see.
+                            Targetting an older SDK version might remove features. Your browser will reload if you change this value.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main project section -->
+                <div class="container open_sans container_control">
+                    <!-- Kind -->
+                    <div class="control_item">
+                        <div class="label">App Kind</div>
+                        <div class="control">
+                            <select id="settings_entry_sdk_version"><option value="watchapp">Watchapp</option><option value="watchface">Watchface</option></select>
+                        </div>
+                    </div>
+                    <!-- Visibility -->
+                    <div class="control_item">
+                        <div class="label">App Visibility</div>
+                        <div class="control">
+                            <select id="settings_entry_sdk_version"><option value="visable">Always visable</option><option value="hidden">Always hidden</option><option value="companion">Only when companion app is running</option></select>
+                        </div>
+                        <div class="help">
+                            Visibility of your app in the Pebble launcher menu.
+                        </div>
+                    </div>
+                    <!-- Short App Name -->
+                    <div class="control_item">
+                        <div class="label">Short App Name</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            App's short name. This will appear on the watch.
+                        </div>
+                    </div>
+                    <!-- Long App Name -->
+                    <div class="control_item">
+                        <div class="label">Long App Name</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            App's long name. This will appear in the app list on the phone.
+                        </div>
+                    </div>
+                    <!-- Visibility -->
+                    <div class="control_item">
+                        <div class="label">App Visibility</div>
+                        <div class="control">
+                            <select id="null"><option value="visable">None</option></select>
+                        </div>
+                        <div class="help">
+                            Displayed on the Pebble's launcher menu. Must be a 28x28 file in PNG format.
+                        </div>
+                    </div>
+                    <!-- Company Name -->
+                    <div class="control_item">
+                        <div class="label">Developer Name</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            The name of the developer, you!
+                        </div>
+                    </div>
+                    <!-- Version Name -->
+                    <div class="control_item">
+                        <div class="label">Version ID</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            App version. Takes the format major[.minor], where major and minor are between 0 and 255.
+                        </div>
+                    </div>
+                    <!-- UUID -->
+                    <div class="control_item">
+                        <div class="label">App UUID</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            A unique identifier for the app. Takes the format xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx, where x is any hexadecimal digit and y is one of 8, 9, A, or B
+                        </div>
+                    </div>
+                    <!-- JS Handling -->
+                    <div class="control_item">
+                        <div class="label">JavaScript Handling</div>
+                        <div class="control">
+                            <select id="null"><option value="commom">CommonJS-Style</option><option value="concatenation">Concatenation</option></select>
+                        </div>
+                        <div class="help">
+                            CommonJS-style enables you to require() other files; concatenation makes them into a single JS file.
                         </div>
                     </div>
                 </div>

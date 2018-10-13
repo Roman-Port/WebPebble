@@ -98,7 +98,7 @@ namespace WebPebble
                             mime = "application/javascript";
                             break;
                         case "png":
-                            mime = "image/apng";
+                            mime = "image/png";
                             break;
                     }
                     QuickWriteToDoc(e, File.ReadAllText(name), mime);
