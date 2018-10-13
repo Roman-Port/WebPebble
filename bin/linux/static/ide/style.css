@@ -487,6 +487,10 @@ body {
     margin-bottom:20px;
 }
 
+.container :last-child control_item {
+    margin-bottom:0;
+}
+
 .control_item .label {
     width:150px;
     text-align:right;
@@ -499,7 +503,7 @@ body {
 .control_item .help {
     width:calc(100% - 180px);
     color:black;
-    margin-right:170px;
+    margin-left:170px;
     padding:5px;
     font-size:14px;
     color:#e2e2e2;
