@@ -376,14 +376,14 @@ project.showAddAssetDialog = function () {
 
 project.copyToSettingsView = function () {
     //Copy the values to the settings view.
-    var appinfo = project.appInfo;
+    var appInfo = project.appInfo;
     document.getElementById('settings_entry_sdk_version').value = appInfo.pebble.sdkVersion;
     document.getElementById('settings_entry_kind').value = "watchapp";
     if (appInfo.pebble.watchapp.watchface) { document.getElementById('settings_entry_kind').value = "watchface"; }
-    document.getElementById('settings_entry_short_name').value = appInfo.pebble.displayName;
-    document.getElementById('settings_entry_long_name').value = appInfo.name;
-    document.getElementById('settings_entry_dev_name').value = appInfo.value;
-    document.getElementById('settings_entry_version').value = appInfo.version;
+    document.getElementById('settings_entry_short_name').value = appInfo.pebble.shortName;
+    document.getElementById('settings_entry_long_name').value = appInfo.pebble.longName;
+    document.getElementById('settings_entry_dev_name').value = appInfo.pebble.companyName;
+    document.getElementById('settings_entry_version').value = appInfo.pebble.versionLabel;
     document.getElementById('settings_entry_uuid').value = appInfo.pebble.uuid;
 }
 

@@ -4,18 +4,23 @@ using System.Text;
 
 namespace WebPebble.Entities.PebbleProject
 {
-    public class Dependencies
-    {
-    }
-
     public class Medium
     {
-        public string characterRegex { get; set; }
         public string file { get; set; }
         public string name { get; set; }
         public List<string> targetPlatforms { get; set; }
-        public string type { get; set; }
         public bool menuIcon { get; set; }
+        public string type { get; set; }
+
+        //Font specific
+        public int trackingAdjust { get; set; }
+        public string characterRegex { get; set; }
+        public string compatibility { get; set; }
+
+        //Bitmap specific
+        public string memoryFormat { get; set; }
+        public string spaceOptimization { get; set; }
+        public string storageFormat { get; set; }
     }
 
     public class Resources
@@ -30,21 +35,24 @@ namespace WebPebble.Entities.PebbleProject
 
     public class Pebble
     {
-        public string displayName { get; set; }
+        public Dictionary<string, int> appKeys { get; set; }
+        public List<string> capabilities { get; set; }
+        public string companyName { get; set; }
         public bool enableMultiJS { get; set; }
-        public List<object> messageKeys { get; set; }
+        public string longName { get; set; }
         public string projectType { get; set; }
         public Resources resources { get; set; }
         public string sdkVersion { get; set; }
+        public string shortName { get; set; }
         public List<string> targetPlatforms { get; set; }
         public string uuid { get; set; }
+        public string versionLabel { get; set; }
         public Watchapp watchapp { get; set; }
     }
 
     public class PackageJson
     {
         public string author { get; set; }
-        public Dependencies dependencies { get; set; }
         public List<object> keywords { get; set; }
         public string name { get; set; }
         public Pebble pebble { get; set; }

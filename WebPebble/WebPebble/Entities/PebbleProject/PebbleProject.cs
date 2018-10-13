@@ -102,9 +102,15 @@ namespace WebPebble.Entities.PebbleProject
             //Now, edit the package config file to apply the params offered.
             proj.package.name = name;
             proj.package.author = author;
-            proj.package.pebble.displayName = name;
+            proj.package.pebble.companyName = author;
+            proj.package.pebble.shortName = name;
+            proj.package.pebble.longName = name;
+            proj.package.pebble.enableMultiJS = true;
+            proj.package.pebble.projectType = "native";
             proj.package.pebble.watchapp.watchface = isWatchface;
             proj.package.pebble.sdkVersion = sdk_version;
+            proj.package.pebble.resources = new Resources();
+            proj.package.pebble.resources.media = new List<Medium>();
             //Rename the main.c. 
             try
             {

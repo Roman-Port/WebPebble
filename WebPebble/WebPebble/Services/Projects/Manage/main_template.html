@@ -266,14 +266,14 @@
                         <div class="label">Memory Format</div>
                         <div class="control">
                             <select id="addresrc_entry_bitmap_memformat">
-                                <option value="best">Best</option>
-                                <option value="smallest">Smallest</option>
-                                <option value="smallest_p">Smallest Palette</option>
-                                <option value="1b">1-bit</option>
-                                <option value="8b">8-bit</option>
-                                <option value="1b_p">1-bit Palette</option>
-                                <option value="2b_p">2-bit Palette</option>
-                                <option value="4b_p">4-bit Palette</option>
+                                <option value="default">Best</option>
+                                <option value="Smallest">Smallest</option>
+                                <option value="SmallestPalette">Smallest Palette</option>
+                                <option value="1Bit">1-bit</option>
+                                <option value="8Bit">8-bit</option>
+                                <option value="1BitPalette">1-bit Palette</option>
+                                <option value="2BitPalette">2-bit Palette</option>
+                                <option value="4BitPalette">4-bit Palette</option>
                             </select>
                         </div>
                     </div>
@@ -282,7 +282,7 @@
                         <div class="label">Storage Format</div>
                         <div class="control">
                             <select id="addresrc_entry_bitmap_storeformat">
-                                <option value="best">Best</option>
+                                <option value="default">Best</option>
                                 <option value="pbi">PBI</option>
                                 <option value="png">PNG</option>
                             </select>
@@ -290,10 +290,10 @@
                     </div>
                     <!-- Space format -->
                     <div class="control_item">
-                        <div class="label">Optimisation</div>
+                        <div class="label">Optimization</div>
                         <div class="control">
                             <select id="addresrc_entry_bitmap_opti">
-                                <option value="best">Best</option>
+                                <option value="default">Best</option>
                                 <option value="storage">Storage</option>
                                 <option value="memory">Memory</option>
                             </select>
@@ -326,7 +326,7 @@
                     <div class="control_item">
                         <div class="label">Tracking Adjust</div>
                         <div class="control">
-                            <input type="number" id="addresrc_entry_font_tracking" />
+                            <input type="number" id="addresrc_entry_font_tracking" value="0" />
                         </div>
                         <div class="help">
                             Number of additional pixels by which to shift each character.
