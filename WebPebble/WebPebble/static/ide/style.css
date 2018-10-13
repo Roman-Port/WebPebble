@@ -533,6 +533,20 @@ body {
     line-height:30px;
 }
 
+.control_item .control form {
+    padding-bottom:unset;
+    font-size:unset;
+    padding-left:unset;
+    padding-right:unset;
+    border:unset;
+    height:unset;
+    line-height:unset;
+
+    padding-top:5px;
+    width: calc(100% - 30px);
+    color:white;
+}
+
 .control_item .control select {
     /* This select is very janky and weird. Test on other browsers! */
     -webkit-appearance: none;

@@ -141,7 +141,11 @@ namespace WebPebble.Services.Projects
             //Create an ID.
             string id = DateTime.UtcNow.Ticks.ToString() + LibRpws.LibRpwsCore.GenerateRandomString(8);
             //Create the filename.
-            string filename = type.ToString() + "/" + innerType.ToString() + "/" + id;
+            string filename = type.ToString() + "/" + innerType.ToString()+"/";
+            //Ensure created
+            Directory.CreateDirectory(filename);
+            //Finish filename
+            filename += id;
             //Create the asset.
             WebPebbleProjectAsset asset = proj.AddAsset(filename, type, innerType);
             //Write to this file.
