@@ -51,7 +51,7 @@ sidebarmanager.addButton("Add Source", 1, true, function () {
     return false;
 }, function () { }, null, "sidebar_add_src", false);
 sidebarmanager.addButton("Add Resource", 2, true, function () {
-    console.log("click");
+    edit_resource.onSelect();
 }, function () { }, document.getElementById('template_add_resource'), "sidebar_add_resrc", false);
 //Boot
 project.init();
