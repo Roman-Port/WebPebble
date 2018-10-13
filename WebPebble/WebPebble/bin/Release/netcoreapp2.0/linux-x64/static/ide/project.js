@@ -408,5 +408,7 @@ project.addResourceToSidebar = function (data) {
         return true;
     }, function () {
         //Show the save/cancel dialog.
-    }, document.getElementById('template_add_resource'), d.id, false, "");
+    }, document.getElementById('template_add_resource'), data.id, false, "");
+    //Set the data on the DOM.
+    tab.tab_ele.x_data = data;
 }
