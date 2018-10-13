@@ -108,7 +108,7 @@ edit_resource.uploadFile = function (type,sub_type, callback) {
         data: new FormData(form_ele),
         processData: false,
         contentType: false,
-        async: false,
+        async: true,
         success: function (response) {
             if (response) {
                 callback(response);

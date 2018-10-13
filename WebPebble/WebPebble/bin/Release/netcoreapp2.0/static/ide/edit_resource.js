@@ -70,7 +70,34 @@ edit_resource.getUpdatedPebbleMedia = function (fileData) {
     return o;
 }
 
-edit_resource.uploadFile = function (type,sub_type) {
+edit_resource.saveNow = function (callback) {
+    //First, upload the new file. A check should be done to see if one was actually sent.
+    project.showDialog("Creating Resource...", '<div class="inf_loader"></div>', [], [], null, false);
+    //Determine the type of file.
+    var type = "images";
+    if (document.getElementById('addresrc_entry_type').value == "font") { type = "fonts"; }
+    if (document.getElementById('addresrc_entry_type').value == "raw") { type = "data"; }
+    //Do the upload.
+    edit_resource.uploadFile("resources", type, function (uploaded_file) {
+        //Generate the Pebble resource file.
+        var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
+        //Push it to the resources for the Pebble.
+        project.appInfo.pebble.resources.media.push(pbl_data);
+        //Save that file.
+        project.saveAppInfo(function () {
+            //Add this file to the sidebar.
+            project.addResourceToSidebar(uploaded_file);
+            //Hide the loader.
+            project.hideDialog();
+            //Call the callback, if there is one.
+            if (callback != null) {
+                callback(uploaded_file, pbl_data);
+            }
+        });
+    });
+}
+
+edit_resource.uploadFile = function (type,sub_type, callback) {
     //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
     var form_ele = document.getElementById('add_resrc_uploader');
     var form = jQuery(form_ele);
@@ -81,10 +108,10 @@ edit_resource.uploadFile = function (type,sub_type) {
         data: new FormData(form_ele),
         processData: false,
         contentType: false,
-        async: false,
+        async: true,
         success: function (response) {
             if (response) {
-                console.log(response);
+                callback(response);
             }
         },
         error: function () {

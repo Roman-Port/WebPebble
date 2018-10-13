@@ -128,7 +128,10 @@ project.init = function () {
         project.assets = {};
         for (var i = 0; i < data.length; i += 1) {
             var d = data[i];
-            project.addExistingFileToSidebar(d);
+            //Add only source files right now.
+            if (d.type == 0) {
+                project.addExistingFileToSidebar(d);
+            }
         }
         //Fetch project data.
         project.serverRequest("settings/", function (sett) {
@@ -392,4 +395,8 @@ project.saveAppInfo = function (callback) {
     project.serverRequest("appinfo.json", function (app) {
         callback();
     }, null, false, "PUT", JSON.stringify(project.appInfo));
+}
+
+project.addResourceToSidebar = function (data) {
+    console.log("TODO");
 }

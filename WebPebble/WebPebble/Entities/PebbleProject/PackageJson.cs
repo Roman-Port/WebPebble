@@ -38,6 +38,7 @@ namespace WebPebble.Entities.PebbleProject
         public Dictionary<string, int> appKeys { get; set; }
         public List<string> capabilities { get; set; }
         public string companyName { get; set; }
+        public string displayName { get; set; }
         public bool enableMultiJS { get; set; }
         public string longName { get; set; }
         public string projectType { get; set; }
