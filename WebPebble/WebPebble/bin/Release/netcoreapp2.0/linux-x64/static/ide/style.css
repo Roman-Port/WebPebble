@@ -412,7 +412,7 @@ body {
     -moz-box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
     box-shadow: 2px 4px 24px 0px rgba(0,0,0,0.26);
     max-width:700px;
-    margin-bottom:5px;
+    margin-bottom:12px;
     transition:filter 200ms;
 }
 
@@ -501,9 +501,9 @@ body {
 }
 
 .control_item .help {
-    width:calc(100% - 180px);
+    width:calc(100% - 210px);
     color:black;
-    margin-left:170px;
+    margin-left:160px;
     padding:5px;
     margin-top:15px;
     font-size:14px;
@@ -541,5 +541,5 @@ body {
     width:100%;
     background-position: right 10px center;
     background-repeat: no-repeat;
-    background-image: url(/static/img/dropdown.png);
+    background-image: url(https://romanport.com/static/webpebble/img/dropdown.png);
 }
