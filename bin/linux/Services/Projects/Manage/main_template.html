@@ -122,14 +122,14 @@
                     <div class="control_item">
                         <div class="label">App Kind</div>
                         <div class="control">
-                            <select id="settings_entry_sdk_version"><option value="watchapp">Watchapp</option><option value="watchface">Watchface</option></select>
+                            <select id="settings_entry_kind"><option value="watchapp">Watchapp</option><option value="watchface">Watchface</option></select>
                         </div>
                     </div>
                     <!-- Visibility -->
                     <div class="control_item">
-                        <div class="label">App Visibility</div>
+                        <div class="label">App Visibility (PENDING)</div>
                         <div class="control">
-                            <select id="settings_entry_sdk_version"><option value="visable">Always visable</option><option value="hidden">Always hidden</option><option value="companion">Only when companion app is running</option></select>
+                            <select id="settings_entry_visib"><option value="visable">Always visable</option><option value="hidden">Always hidden</option><option value="companion">Only when companion app is running</option></select>
                         </div>
                         <div class="help">
                             Visibility of your app in the Pebble launcher menu.
@@ -139,7 +139,7 @@
                     <div class="control_item">
                         <div class="label">Short App Name</div>
                         <div class="control">
-                            <input type="text" id="settings_entry_project_name" />
+                            <input type="text" id="settings_entry_short_name" />
                         </div>
                         <div class="help">
                             App's short name. This will appear on the watch.
@@ -149,7 +149,7 @@
                     <div class="control_item">
                         <div class="label">Long App Name</div>
                         <div class="control">
-                            <input type="text" id="settings_entry_project_name" />
+                            <input type="text" id="settings_entry_long_name" />
                         </div>
                         <div class="help">
                             App's long name. This will appear in the app list on the phone.
@@ -157,9 +157,9 @@
                     </div>
                     <!-- Visibility -->
                     <div class="control_item">
-                        <div class="label">App Visibility</div>
+                        <div class="label">Menu Icon (PENDING)</div>
                         <div class="control">
-                            <select id="null"><option value="visable">None</option></select>
+                            <select id="settings_entry_icon"><option value="null">None</option></select>
                         </div>
                         <div class="help">
                             Displayed on the Pebble's launcher menu. Must be a 28x28 file in PNG format.
@@ -169,7 +169,7 @@
                     <div class="control_item">
                         <div class="label">Developer Name</div>
                         <div class="control">
-                            <input type="text" id="settings_entry_project_name" />
+                            <input type="text" id="settings_entry_dev_name" />
                         </div>
                         <div class="help">
                             The name of the developer, you!
@@ -179,7 +179,7 @@
                     <div class="control_item">
                         <div class="label">Version ID</div>
                         <div class="control">
-                            <input type="text" id="settings_entry_project_name" />
+                            <input type="text" id="settings_entry_version" />
                         </div>
                         <div class="help">
                             App version. Takes the format major[.minor], where major and minor are between 0 and 255.
@@ -189,7 +189,7 @@
                     <div class="control_item">
                         <div class="label">App UUID</div>
                         <div class="control">
-                            <input type="text" id="settings_entry_project_name" />
+                            <input type="text" id="settings_entry_uuid" />
                         </div>
                         <div class="help">
                             A unique identifier for the app. Takes the format xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx, where x is any hexadecimal digit and y is one of 8, 9, A, or B
@@ -197,9 +197,9 @@
                     </div>
                     <!-- JS Handling -->
                     <div class="control_item">
-                        <div class="label">JavaScript Handling</div>
+                        <div class="label">JS Handling (PENDING)</div>
                         <div class="control">
-                            <select id="null"><option value="commom">CommonJS-Style</option><option value="concatenation">Concatenation</option></select>
+                            <select id="settings_entry_js_handle"><option value="commom">CommonJS-Style</option><option value="concatenation">Concatenation</option></select>
                         </div>
                         <div class="help">
                             CommonJS-style enables you to require() other files; concatenation makes them into a single JS file.
