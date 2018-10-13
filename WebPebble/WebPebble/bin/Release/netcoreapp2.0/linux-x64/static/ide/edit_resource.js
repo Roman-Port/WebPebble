@@ -29,7 +29,7 @@ edit_resource.getUpdatedPebbleMedia = function (fileData) {
     //Get the package.json/pebble/resources/media data for this.
     //fileData is the WebPebble media data.
     var o = {};
-    o.file = fileData.filename;
+    o.file = fileData.filename.substring(10); //Trim off the /resources.
     o.name = document.getElementById('addresrc_entry_id').value; //C ID
     o.type = document.getElementById('addresrc_entry_type').value; //The type
     o.targetPlatforms = null; //This'll be set to a list of platforms if it is checked later.
