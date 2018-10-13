@@ -119,7 +119,9 @@ namespace WebPebble.Entities
     public enum InnerAssetType
     {
         c,
+        /* resources */
+        images,
         fonts,
-        images
+        data
     }
 }

@@ -30,8 +30,7 @@ edit_resource.getUpdatedPebbleMedia = function (fileData) {
     //fileData is the WebPebble media data.
     var o = {};
     o.file = fileData.filename;
-    o.name = document.getElementById('addresrc_entry_id'); //C ID
-    o.menuIcon = false; //This'll be set later if this is selected.
+    o.name = document.getElementById('addresrc_entry_id').value; //C ID
     o.type = document.getElementById('addresrc_entry_type').value; //The type
     o.targetPlatforms = null; //This'll be set to a list of platforms if it is checked later.
 
@@ -69,4 +68,27 @@ edit_resource.getUpdatedPebbleMedia = function (fileData) {
     }
 
     return o;
+}
+
+edit_resource.uploadFile = function (type,sub_type) {
+    //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
+    var form_ele = document.getElementById('add_resrc_uploader');
+    var form = jQuery(form_ele);
+    var url = "/project/" + project.id + "/upload_media/?type=" + encodeURIComponent(type) + "&sub_type=" + encodeURIComponent(sub_type);
+    jQuery.ajax({
+        url: url,
+        type: "POST",
+        data: new FormData(form_ele),
+        processData: false,
+        contentType: false,
+        async: false,
+        success: function (response) {
+            if (response) {
+                console.log(response);
+            }
+        },
+        error: function () {
+            alert("server error while uploading file");
+        }
+    });
 }

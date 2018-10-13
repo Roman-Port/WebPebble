@@ -131,6 +131,26 @@ namespace WebPebble.Services.Projects
             Program.QuickWriteJsonToDoc(e, proj);
         }
 
+        public static void UploadFile(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            //Get the file uploaded.
+            var f = e.Request.Form.Files["data"];
+            //Get the asset params
+            AssetType type = Enum.Parse<AssetType>(e.Request.Query["type"]);
+            InnerAssetType innerType = Enum.Parse<InnerAssetType>(e.Request.Query["sub_type"]);
+            //Create an ID.
+            string id = DateTime.UtcNow.Ticks.ToString() + LibRpws.LibRpwsCore.GenerateRandomString(8);
+            //Create the filename.
+            string filename = type.ToString() + "/" + innerType.ToString() + "/" + id;
+            //Create the asset.
+            WebPebbleProjectAsset asset = proj.AddAsset(filename, type, innerType);
+            //Write to this file.
+            using (FileStream fs = new FileStream(Program.config.user_project_dir + proj.projectId + "/" + filename, FileMode.CreateNew))
+                f.OpenReadStream().CopyTo(fs);
+            //Create a response.
+            Program.QuickWriteJsonToDoc(e, asset);
+        }
+
         private class FileReply
         {
             public string type;
