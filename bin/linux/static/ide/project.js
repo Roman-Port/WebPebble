@@ -393,3 +393,7 @@ project.saveAppInfo = function (callback) {
         callback();
     }, null, false, "PUT", JSON.stringify(project.appInfo));
 }
+
+project.addResourceToSidebar = function (data) {
+    console.log("TODO");
+}
