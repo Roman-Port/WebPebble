@@ -505,13 +505,15 @@ body {
     color:black;
     margin-left:170px;
     padding:5px;
+    margin-top:15px;
     font-size:14px;
     color:#e2e2e2;
 }
 
 .control_item .control {
     background-color:white;
-    width:calc(100% - 170px);
+    width:calc(100% - 200px);
+    margin-right:40px;
     border-radius:5px;
     color:black;
     float: right;
