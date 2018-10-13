@@ -486,23 +486,28 @@ body {
     min-height:40px;
 }
 
-.control_item label {
+.control_item .label {
     width:150px;
     text-align:right;
     line-height:40px;
-    padding-right:20px;
     font-size:18px;
     color:white;
 }
 
 .control_item .control {
     background-color:white;
-    width:calc(100% - 180px);
+    width:calc(100% - 170px);
     border-radius:5px;
     color:black;
+    float: right;
+    height: 40px;
+    overflow:hidden;
 }
 
 .control_item .control input[type=text] {
-    padding-top:5px;
-    padding-right:15px;
+    padding-top:10px;
+    padding-bottom:10px;
+    font-size:15px;
+    padding-left:15px;
+    width: calc(100% - 30px);
 }
