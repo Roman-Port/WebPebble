@@ -142,8 +142,8 @@ namespace WebPebble.Services.Projects
             string id = DateTime.UtcNow.Ticks.ToString() + LibRpws.LibRpwsCore.GenerateRandomString(8);
             //Create the filename.
             string filename = type.ToString() + "/" + innerType.ToString()+"/";
-            //Ensure created
-            Directory.CreateDirectory(filename);
+            //Create directory
+            Directory.CreateDirectory(Program.config.user_project_dir + proj.projectId + "/" + filename);
             //Finish filename
             filename += id;
             //Create the asset.
