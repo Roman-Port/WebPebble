@@ -519,7 +519,7 @@ body {
     overflow:hidden;
 }
 
-.control_item .control {
+.control_item .control * {
     padding-top:5px;
     padding-bottom:5px;
     font-size:15px;
