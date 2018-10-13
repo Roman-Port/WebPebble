@@ -484,7 +484,7 @@ body {
 /* Below is for forms in the ide view. */
 .control_item {
     min-height:40px;
-    margin-bottom:8px;
+    margin-bottom:20px;
 }
 
 .control_item .label {
@@ -497,9 +497,11 @@ body {
 }
 
 .control_item .help {
-    width:calc(100% - 170px);
+    width:calc(100% - 180px);
     color:black;
-    float: right;
+    margin-right:170px;
+    padding:5px;
+    font-size:14px;
     color:#e2e2e2;
 }
 
