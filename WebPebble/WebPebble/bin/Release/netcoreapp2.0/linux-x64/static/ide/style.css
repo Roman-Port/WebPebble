@@ -480,3 +480,29 @@ body {
         background-position: 28px 0;
     }
 }
+
+/* Below is for forms in the ide view. */
+.control_item {
+    min-height:40px;
+}
+
+.control_item label {
+    width:150px;
+    text-align:right;
+    line-height:40px;
+    padding-right:20px;
+    font-size:18px;
+    color:white;
+}
+
+.control_item .control {
+    background-color:white;
+    width:calc(100% - 180px);
+    border-radius:5px;
+    color:black;
+}
+
+.control_item .control input[type=text] {
+    padding-top:5px;
+    padding-right:15px;
+}

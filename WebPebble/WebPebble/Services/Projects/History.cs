@@ -19,6 +19,11 @@ namespace WebPebble.Services.Projects
             if(showList)
             {
                 //Print the build history. Remove the log data because it is expensive to bandwidth, and convert the time to a readable format.
+                if(proj.builds == null)
+                {
+                    proj.builds = new List<WebPebbleProjectBuild>();
+                    proj.SaveProject();
+                }
                 OutputBuild[] builds = new OutputBuild[proj.builds.Count];
                 //Go through each.
                 for (int i = 0; i < proj.builds.Count; i++)
