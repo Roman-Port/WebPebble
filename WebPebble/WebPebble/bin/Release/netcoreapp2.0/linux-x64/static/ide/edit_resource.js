@@ -111,7 +111,7 @@ edit_resource.uploadFile = function (type,sub_type, callback) {
         async: false,
         success: function (response) {
             if (response) {
-                callback(JSON.parse(response));
+                callback(response);
             }
         },
         error: function () {
