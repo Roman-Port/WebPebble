@@ -138,6 +138,7 @@ namespace WebPebble.Services.Projects
             //Get the asset params
             AssetType type = Enum.Parse<AssetType>(e.Request.Query["type"]);
             InnerAssetType innerType = Enum.Parse<InnerAssetType>(e.Request.Query["sub_type"]);
+            string nickname = e.Request.Query["nickname"]; //The display name.
             //Create an ID.
             string id = DateTime.UtcNow.Ticks.ToString() + LibRpws.LibRpwsCore.GenerateRandomString(8);
             //Create the filename.
@@ -147,7 +148,7 @@ namespace WebPebble.Services.Projects
             //Finish filename
             filename += id;
             //Create the asset.
-            WebPebbleProjectAsset asset = proj.AddAsset(filename, type, innerType);
+            WebPebbleProjectAsset asset = proj.AddAsset(filename, type, innerType,nickname);
             //Write to this file.
             using (FileStream fs = new FileStream(Program.config.user_project_dir + proj.projectId + "/" + filename, FileMode.CreateNew))
                 f.OpenReadStream().CopyTo(fs);

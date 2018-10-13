@@ -7,6 +7,11 @@ edit_resource.onSelect = function () {
     edit_resource.onTypeChange('bitmap');
 }
 
+edit_resource.onSelectExisting = function () {
+    console.log(this);
+    console.log("todo");
+}
+
 edit_resource.onTypeChange = function (type) {
     //Hide all of the special types.
     var typeDivs = document.getElementsByClassName('typeselect_hidden');
@@ -67,6 +72,9 @@ edit_resource.getUpdatedPebbleMedia = function (fileData) {
         }
     }
 
+    //Add the uploaded id.
+    o.x_webpebble_media_id = fileData.id;
+
     return o;
 }
 
@@ -78,7 +86,7 @@ edit_resource.saveNow = function (callback) {
     if (document.getElementById('addresrc_entry_type').value == "font") { type = "fonts"; }
     if (document.getElementById('addresrc_entry_type').value == "raw") { type = "data"; }
     //Do the upload.
-    edit_resource.uploadFile("resources", type, function (uploaded_file) {
+    edit_resource.uploadFile("resources", type, document.getElementById('addresrc_entry_filename').value, function (uploaded_file) {
         //Generate the Pebble resource file.
         var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
         //Push it to the resources for the Pebble.
@@ -97,11 +105,11 @@ edit_resource.saveNow = function (callback) {
     });
 }
 
-edit_resource.uploadFile = function (type,sub_type, callback) {
+edit_resource.uploadFile = function (type, sub_type, name, callback) {
     //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
     var form_ele = document.getElementById('add_resrc_uploader');
     var form = jQuery(form_ele);
-    var url = "/project/" + project.id + "/upload_media/?type=" + encodeURIComponent(type) + "&sub_type=" + encodeURIComponent(sub_type);
+    var url = "/project/" + project.id + "/upload_media/?type=" + encodeURIComponent(type) + "&sub_type=" + encodeURIComponent(sub_type) + "&nickname=" + encodeURIComponent(name);
     jQuery.ajax({
         url: url,
         type: "POST",

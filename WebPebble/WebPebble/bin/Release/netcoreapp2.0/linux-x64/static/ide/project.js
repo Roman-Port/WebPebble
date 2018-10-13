@@ -132,6 +132,9 @@ project.init = function () {
             if (d.type == 0) {
                 project.addExistingFileToSidebar(d);
             }
+            if (d.type == 1) {
+                project.addResourceToSidebar(d);
+            }
         }
         //Fetch project data.
         project.serverRequest("settings/", function (sett) {
@@ -153,7 +156,7 @@ project.init = function () {
 }
 
 project.addExistingFileToSidebar = function (d) {
-    if (d.type == 0 || d.type == 1) {
+    if (d.type == 0) {
         var name = d.filename.split('/');
         name = name[name.length - 1];
         var actionsHtml = "";
@@ -398,5 +401,12 @@ project.saveAppInfo = function (callback) {
 }
 
 project.addResourceToSidebar = function (data) {
-    console.log("TODO");
+    //Add the tab for this.
+    var tab = sidebarmanager.addButton(data.nickname, 2, false, function (idd) {
+        //Show the edit menu.
+        edit_resource.onSelectExisting();
+        return true;
+    }, function () {
+        //Show the save/cancel dialog.
+    }, document.getElementById('template_add_resource'), d.id, false, "");
 }

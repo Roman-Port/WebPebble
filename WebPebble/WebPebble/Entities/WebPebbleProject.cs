@@ -50,12 +50,13 @@ namespace WebPebble.Entities
 
         //Assets
         
-        public WebPebbleProjectAsset AddAsset(string filename, AssetType type, InnerAssetType inner)
+        public WebPebbleProjectAsset AddAsset(string filename, AssetType type, InnerAssetType inner, string nickname = null)
         {
             WebPebbleProjectAsset a = new WebPebbleProjectAsset();
             a.filename = filename;
             a.type = type;
             a.innerType = inner;
+            a.nickname = nickname;
             //Generate an ID.
             string id = LibRpws.LibRpwsCore.GenerateRandomHexString(8);
             //Save
@@ -97,6 +98,8 @@ namespace WebPebble.Entities
     {
         public string id { get; set; }
         public string filename { get; set; }
+
+        public string nickname { get; set; } //Custom name.
 
         public AssetType type { get; set; }
         public InnerAssetType innerType { get; set; }
