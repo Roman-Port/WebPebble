@@ -7,8 +7,8 @@ edit_resource.onSelect = function () {
     edit_resource.onTypeChange('bitmap');
 }
 
-edit_resource.onSelectExisting = function () {
-    console.log(this);
+edit_resource.onSelectExisting = function (context) {
+    console.log(context);
     console.log("todo");
 }
 

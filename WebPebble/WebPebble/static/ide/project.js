@@ -402,9 +402,9 @@ project.saveAppInfo = function (callback) {
 
 project.addResourceToSidebar = function (data) {
     //Add the tab for this.
-    var tab = sidebarmanager.addButton(data.nickname, 2, false, function (idd) {
+    var tab = sidebarmanager.addButton(data.nickname, 2, false, function (context) {
         //Show the edit menu.
-        edit_resource.onSelectExisting();
+        edit_resource.onSelectExisting(context);
         return true;
     }, function () {
         //Show the save/cancel dialog.
