@@ -487,7 +487,7 @@ body {
     margin-bottom:20px;
 }
 
-.container_control:last-child .control_item {
+.container_control :last-child {
     margin-bottom:0;
 }
 
@@ -519,12 +519,19 @@ body {
     overflow:hidden;
 }
 
-.control_item .control input[type=text] {
-    padding-top:11px;
-    padding-bottom:11px;
+.control_item .control {
+    padding-top:5px;
+    padding-bottom:5px;
     font-size:15px;
     padding-left:15px;
     padding-right:15px;
     width: calc(100% - 30px);
     border:none;
+    height:30px;
+    line-height:30px;
+}
+
+.control_item .control select {
+    -webkit-appearance: none;
+    background-color:white;
 }
