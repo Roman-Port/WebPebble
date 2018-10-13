@@ -532,6 +532,12 @@ body {
 }
 
 .control_item .control select {
+    /* This select is very janky and weird. Test on other browsers! */
     -webkit-appearance: none;
     background-color:white;
+    height:40px;
+    width:100%;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-image: url(/static/img/dropdown.png);
 }

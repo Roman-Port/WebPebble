@@ -68,7 +68,7 @@
     <!-- Assets sidebar -->
     <div class="assets_window open_sans">
         <div class="assets_type_container" style="margin-top:0; height:auto;" id="sidebar_sec_0">
-            <div><div class="btn btn_active blur" style="font-size:18px; height:auto; transition:filter 200ms;" id="project_name">Project Name</div></div>
+            <div style="height:auto;"><div class="btn btn_active blur" style="font-size:18px; height:auto; transition:filter 200ms;" id="project_name">Project Name</div></div>
         </div>
         <div class="line"></div>
         <div class="assets_type_container" id="sidebar_sec_1">
@@ -92,11 +92,24 @@
         <div id="template_options">
             <div class="template_inner">
 
-                <div class="container open_sans">
+                <div class="container open_sans container_control">
                     <div class="control_item">
-                        <label for="settings_entry_project_name">Project Name</label>
+                        <div class="label">Project Name</div>
                         <div class="control">
                             <input type="text" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            Here is some help text to help you out with your text. I'm not sure how long this will get, but we'll make it run on just to see.
+                        </div>
+                    </div>
+
+                    <div class="control_item">
+                        <div class="label">Project Type</div>
+                        <div class="control">
+                            <select id="settings_entry_project_type"><option>Test1</option><option>Test2</option><option>Test3</option></select>
+                        </div>
+                        <div class="help">
+                            Here is some help text to help you out with your text. I'm not sure how long this will get, but we'll make it run on just to see.
                         </div>
                     </div>
                 </div>

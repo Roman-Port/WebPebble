@@ -484,25 +484,60 @@ body {
 /* Below is for forms in the ide view. */
 .control_item {
     min-height:40px;
+    margin-bottom:20px;
 }
 
-.control_item label {
+.container_control :last-child {
+    margin-bottom:0;
+}
+
+.control_item .label {
     width:150px;
     text-align:right;
     line-height:40px;
-    padding-right:20px;
     font-size:18px;
     color:white;
+    display:inline-block;
+}
+
+.control_item .help {
+    width:calc(100% - 180px);
+    color:black;
+    margin-left:170px;
+    padding:5px;
+    font-size:14px;
+    color:#e2e2e2;
 }
 
 .control_item .control {
     background-color:white;
-    width:calc(100% - 180px);
+    width:calc(100% - 170px);
     border-radius:5px;
     color:black;
+    float: right;
+    height: 40px;
+    overflow:hidden;
 }
 
-.control_item .control input[type=text] {
+.control_item .control * {
     padding-top:5px;
+    padding-bottom:5px;
+    font-size:15px;
+    padding-left:15px;
     padding-right:15px;
+    width: calc(100% - 30px);
+    border:none;
+    height:30px;
+    line-height:30px;
+}
+
+.control_item .control select {
+    /* This select is very janky and weird. Test on other browsers! */
+    -webkit-appearance: none;
+    background-color:white;
+    height:40px;
+    width:100%;
+    background-position: right 10px center;
+    background-repeat: no-repeat;
+    background-image: url(/static/img/dropdown.png);
 }
