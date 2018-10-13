@@ -6,8 +6,10 @@ editor.setTheme("ace/theme/dracula");
 editor.session.setMode("ace/mode/c_cpp");
 //Add sidebar options
 sidebarmanager.addButton("Settings", 0, false, function () {
+    
+}, function () { }, document.getElementById('template_options'), "sidebar_sett", false, function () {
     project.copyToSettingsView();
-}, function () { }, document.getElementById('template_options'), "sidebar_sett", false);
+});
 sidebarmanager.addButton("Compilation", 0, false, function () {
     //Fetch data.
     project.serverRequest("build_history/", function (data) {
@@ -51,8 +53,11 @@ sidebarmanager.addButton("Add Source", 1, true, function () {
     return false;
 }, function () { }, null, "sidebar_add_src", false);
 sidebarmanager.addButton("Add Resource", 2, true, function () {
+    
+}, function () { }, document.getElementById('template_add_resource'), "sidebar_add_resrc", false, function () {
+    
     edit_resource.onSelect();
-}, function () { }, document.getElementById('template_add_resource'), "sidebar_add_resrc", false);
+});
 //Boot
 project.init();
 project.initKeybinds();

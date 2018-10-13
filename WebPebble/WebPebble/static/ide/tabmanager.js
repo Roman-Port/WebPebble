@@ -3,7 +3,7 @@
 sidebarmanager.activeItem = null;
 sidebarmanager.items = [];
 
-sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction, closeAction, htmlDom, internalId, showNow, actionsHtml) {
+sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction, closeAction, htmlDom, internalId, showNow, actionsHtml, clickActionAfter) {
     //Name: Name dislpayed
     //sectionIndex: The index of the section to insert this into.
     //buttonType: If this is true, this is displayed as a button. A button cannot be closed, and cannot use a text entry area.
@@ -41,7 +41,7 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     }
 
     //Add to our internal array.
-    var t = { "name": name, "sectionIndex": sectionIndex, "buttonType": buttonType, "clickAction": clickAction, "closeAction": closeAction, "dom_template": htmlDom, "internalId": internalId, "tab_ele": tab, "is_dom_ele": htmlDom != null, "edit_session": editsession, "actions_html": actionsHtml };
+    var t = { "name": name, "sectionIndex": sectionIndex, "buttonType": buttonType, "clickAction": clickAction, "closeAction": closeAction, "dom_template": htmlDom, "internalId": internalId, "tab_ele": tab, "is_dom_ele": htmlDom != null, "edit_session": editsession, "actions_html": actionsHtml, "clickActionAfter": clickActionAfter };
     sidebarmanager.items[internalId] = t;
 
     //Add an event listener to this object.
@@ -129,6 +129,11 @@ sidebarmanager.show_content = function (tab) {
         editor.setSession(tab.edit_session);
         //show the text editor
         document.getElementById('editor_inner').style.display = "block";
+    }
+
+    //Run after callback.
+    if (tab.clickActionAfter != null) {
+        tab.clickActionAfter(tab.id);
     }
 
     //Set this to the current view.
