@@ -226,13 +226,147 @@
                             <th>Status</th>
                             <th></th>
                         </tr>
-                        <!--<tr>
-        <td>12345</td>
-        <td>10/10/18 at 1:44:08 AM</td>
-        <td>OK</td>
-        <td><div class="med_button">Build Log</div><div class="med_button">Get PBW</div></td>
-    </tr>-->
                     </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add resource menu -->
+        <div id="template_add_resource">
+            <div class="template_inner">
+                <!-- Main -->
+                <div class="container open_sans container_control">
+                    <!-- Type -->
+                    <div class="control_item">
+                        <div class="label">Resource Type</div>
+                        <div class="control">
+                            <select id="settings_entry_sdk_version" onchange="edit_resource.onTypeChange(this.value);">
+                                <option value="bitmap">Bitmap image</option>
+                                <option value="font">TrueType font</option>
+                                <option value="raw">Raw binary blob</option>
+                                <option value="png">PNG image (PENDING)</option>
+                                <option value="png-trans">PNG image with transparency (PENDING)</option>
+                                <option value="pbi">1-bit Pebble Image</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- WebPebble name for this resource -->
+                    <div class="control_item">
+                        <div class="label">Filename</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_project_name" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Below are special to their type. Each type will have a section here, and they will be toggled depending on the type of file chosen. -->
+                <!-- Bitmap image -->
+                <div class="container open_sans container_control typeselect_hidden" style="display:none;" id="typeselect_template_bitmap">
+                    <!-- Memory format -->
+                    <div class="control_item">
+                        <div class="label">Memory Format</div>
+                        <div class="control">
+                            <select id="settings_entry_sdk_version">
+                                <option value="best">Best</option>
+                                <option value="smallest">Smallest</option>
+                                <option value="smallest_p">Smallest Palette</option>
+                                <option value="1b">1-bit</option>
+                                <option value="8b">8-bit</option>
+                                <option value="1b_p">1-bit Palette</option>
+                                <option value="2b_p">2-bit Palette</option>
+                                <option value="4b_p">4-bit Palette</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Storage format -->
+                    <div class="control_item">
+                        <div class="label">Storage Format</div>
+                        <div class="control">
+                            <select id="settings_entry_sdk_version">
+                                <option value="best">Best</option>
+                                <option value="pbi">PBI</option>
+                                <option value="png">PNG</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Space format -->
+                    <div class="control_item">
+                        <div class="label">Optimisation</div>
+                        <div class="control">
+                            <select id="settings_entry_sdk_version">
+                                <option value="best">Best</option>
+                                <option value="storage">Storage</option>
+                                <option value="memory">Memory</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- TrueType Font -->
+                <div class="container open_sans container_control typeselect_hidden" style="display:none;" id="typeselect_template_font">
+                    <!-- Font Size -->
+                    <div class="control_item">
+                        <div class="label">Font Size</div>
+                        <div class="control">
+                            <input type="number" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            <b>Important!</b> This will be appened to the end of the identifier below. You should use "<span id="typeselect_font_id"></span>" as your C identifier.
+                        </div>
+                    </div>
+                    <!-- Characters -->
+                    <div class="control_item">
+                        <div class="label">Characters</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            Use a valid Python regex to select characters to include. You may only use these characters. You can use <a href="https://regexr.com/" target="_blank">regexr.com</a> to help you.
+                        </div>
+                    </div>
+                    <!-- Tracking Adjust -->
+                    <div class="control_item">
+                        <div class="label">Tracking Adjust</div>
+                        <div class="control">
+                            <input type="number" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            Number of additional pixels by which to shift each character.
+                        </div>
+                    </div>
+                    <!-- Compat -->
+                    <div class="control_item">
+                        <div class="label">Compatability</div>
+                        <div class="control">
+                            <select id="settings_entry_sdk_version">
+                                <option value="latest">Latest</option>
+                                <option value="27">=< 2.7</option>
+                            </select>
+                        </div>
+                        <div class="help">
+                            Determines the font rendering algorithm to use. The latest looks better, but can produce slightly larger characters.
+                        </div>
+                    </div>
+                </div>
+                <!-- Identifier and target platforms -->
+                <div class="container open_sans container_control">
+                    <!-- Identifier -->
+                    <div class="control_item">
+                        <div class="label">Identifier</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            This is used in your code and must be a valid C identifier.
+                        </div>
+                    </div>
+                </div>
+                <!-- Uploader -->
+                <div class="container open_sans container_control">
+                    Some uploader goes here.
+                </div>
+                <!-- Save buttons -->
+                <div class="container open_sans container_control">
+                    <div class="med_button">Save</div>
+                    <div class="med_button">Delete</div>
                 </div>
             </div>
         </div>
@@ -249,5 +383,6 @@
 <script src="/static/ide/tabmanager.js"></script>
 <script src="/static/ide/filemanager.js"></script>
 <script src="/static/ide/project.js"></script>
+<script src="/static/ide/edit_resource.js"></script>
 
 <script src="/static/ide/boot.js"></script>
