@@ -78,7 +78,7 @@ edit_resource.saveNow = function (callback) {
     if (document.getElementById('addresrc_entry_type').value == "font") { type = "fonts"; }
     if (document.getElementById('addresrc_entry_type').value == "raw") { type = "data"; }
     //Do the upload.
-    edit_resource.uploadFile("resource", type, function (uploaded_file) {
+    edit_resource.uploadFile("resources", type, function (uploaded_file) {
         //Generate the Pebble resource file.
         var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
         //Push it to the resources for the Pebble.
