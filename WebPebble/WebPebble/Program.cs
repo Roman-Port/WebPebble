@@ -36,7 +36,7 @@ namespace WebPebble
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting WebPebble");
+            Console.WriteLine("Starting WebPebble rev2");
             //Set everything up
             //Get the config.
             string pathname = "E:/RPWS_Production/WebPebble/conf.json";
@@ -63,7 +63,6 @@ namespace WebPebble
             AddService(true, Services.Projects.PbwMedia.OnRequest, "/pbw_media/", true);
             //Start the WebSocket server.
             WebSocketServer.StartServer();
-            Console.WriteLine("Finished starting WebSocket server...");
             //Start
             MainAsync().GetAwaiter().GetResult();
         }
