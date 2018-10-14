@@ -20,7 +20,6 @@ namespace WebPebble.WebSockets
             Console.WriteLine("Starting WebSocket server...");
             listener = new HttpListener();
             listener.Prefixes.Add("http://cloudpebble-developer-proxy.get-rpws.com:43187/");
-            listener.Prefixes.Add("ws://cloudpebble-developer-proxy.get-rpws.com:43187/");
             listener.Start();
             
             listener.BeginGetContext(OnGetClient, null);
