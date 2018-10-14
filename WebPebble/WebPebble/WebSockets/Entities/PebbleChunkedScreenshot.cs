@@ -85,7 +85,18 @@ namespace WebPebble.WebSockets.Entities
             //The expanded data now consists of the colors channels. Place them in the image.
             using (Image<Rgba32> image = new Image<Rgba32>(width,height))
             {
-                for (int y = 0; y < height; y++)
+                for(int pos = 0; pos < expanded_data.Length; pos+=4)
+                {
+                    var color = new Rgba32((byte)expanded_data[pos], (byte)expanded_data[pos + 1], (byte)expanded_data[pos + 2]);
+                    int pixelPos = pos / 4;
+                    int y = pixelPos / width;
+                    int x = pixelPos % width;
+                    Console.WriteLine(x.ToString() + " " + y.ToString()+"_"+pos.ToString());
+                    image[x, y] = color;
+                }
+
+
+                /*for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
@@ -94,7 +105,7 @@ namespace WebPebble.WebSockets.Entities
                         Console.WriteLine(x.ToString() + " " + y.ToString());
                         image[x, y] = color;
                     }
-                }
+                }*/
                 //Save the image to an array.
                 using (MemoryStream ms = new MemoryStream()) {
                     image.Save(ms, new SixLabors.ImageSharp.Formats.Png.PngEncoder());

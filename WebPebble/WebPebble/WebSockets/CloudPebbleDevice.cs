@@ -161,9 +161,10 @@ namespace WebPebble.WebSockets
                     
                     pair.connected = true;
                 }
-                catch
+                catch (Exception ex)
                 {
                     //Remain in "disconnected" state.
+                    Console.WriteLine("(Debug) " + ex.Message + ex.StackTrace);
                 }
             } else
             {
