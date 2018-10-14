@@ -1,6 +1,6 @@
-﻿
-using FastBitmapLib;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -66,7 +66,6 @@ namespace WebPebble.WebSockets.Entities
         {
             //Called after the buffer is complete.
             BitArray ba = new BitArray(bmp_buffer);
-            FastBitmap f = new FastBitmap(width, height);
 
             //Decode the image data.
             int[] expanded_data;
@@ -74,17 +73,19 @@ namespace WebPebble.WebSockets.Entities
             expanded_data = decode_image_8bit_corrected();
 
             //The expanded data now consists of the colors channels. Place them in the image.
-            for (int x = 0; x < width; x++)
+            using (Image<Rgba32> image = new Image<Rgba32>(width,height))
             {
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
                 {
-                    int pos = ((x * width) + y)*4;
-                    f.SetPixel(x, y, new FastColor((byte)expanded_data[pos], (byte)expanded_data[pos+1], (byte)expanded_data[pos+2]));
+                    for (int y = 0; y < height; y++)
+                    {
+                        int pos = ((x * width) + y) * 4;
+                        image[x, y] = new Rgba32((byte)expanded_data[pos], (byte)expanded_data[pos + 1], (byte)expanded_data[pos + 2]);
+                    }
                 }
+                using (FileStream fs = new FileStream("/home/roman/test.png", FileMode.Create))
+                    image.Save(fs, new SixLabors.ImageSharp.Formats.Png.PngEncoder());
             }
-
-
-            f.Save("/home/roman/img.bmp");
 
         }
 
