@@ -87,7 +87,7 @@ namespace WebPebble.WebSockets
             var user = Oauth.RpwsAuth.AuthenticateUser(token);
             //Create a reply.
             if (user == null)
-                SendData(new byte[] { 0x01 });
+                SendData(new byte[] {0x09, 0x01 });
             //Accept and set up.
             user_uuid = user.uuid;
             authenticated = true;
@@ -101,7 +101,7 @@ namespace WebPebble.WebSockets
             //Add ourself.
             WebPebble.WebSockets.WebSocketServer.connectedClients.Add(user_uuid, this);
             //Accept.
-            SendData(new byte[] { 0x00 });
+            SendData(new byte[] {0x09, 0x00 });
             //Set the status in the app to "connected"
             SetStatus(true);
             //Debug: Install app
