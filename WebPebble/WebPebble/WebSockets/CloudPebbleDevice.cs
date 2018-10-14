@@ -177,6 +177,7 @@ namespace WebPebble.WebSockets
                 short length = ReadShort(ms);
                 //Get the ID
                 id = (PebbleEndpointType)ReadShort(ms);
+                Console.WriteLine("Got type " + id.ToString());
                 //Read the data.
                 data = new byte[length];
                 ms.Read(data, 0, length);
