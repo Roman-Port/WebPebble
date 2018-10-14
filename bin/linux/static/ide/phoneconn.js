@@ -10,9 +10,9 @@ phoneconn.init = function (callback) {
     console.log("Connecting to " + phoneconn.url);
     phoneconn.ws = new WebSocket(phoneconn.url);
     //Establish events.
-    socket.addEventListener('message', phoneconn.onMessage);
+    phoneconn.ws.addEventListener('message', phoneconn.onMessage);
     //Connect and do auth.
-    socket.addEventListener('open', function (event) {
+    phoneconn.ws.addEventListener('open', function (event) {
         //We've connected. Do first time authoriation.
         var token = Cookies.get("access-token");
         phoneconn.send(1, { "token": token }, function (data) {
