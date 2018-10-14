@@ -21,6 +21,7 @@ namespace WebPebble.WebSockets
             if (code != CloudPebbleCode.AUTH_TOKEN && !authenticated)
                 return;
             //Decide what to do based on this code.
+            Console.WriteLine("Got message of type " + code.ToString() + " with length " + e.RawData.Length.ToString() + ".");
             switch (code)
             {
                 case CloudPebbleCode.AUTH_TOKEN:
