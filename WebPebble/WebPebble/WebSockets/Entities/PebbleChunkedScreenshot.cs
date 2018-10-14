@@ -112,10 +112,11 @@ namespace WebPebble.WebSockets.Entities
         //thanks to https://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array for helping me at 2:30 AM
         public static byte[] StringToByteArray(string hex)
         {
-            return Enumerable.Range(0, hex.Length)
-                             .Where(x => x % 2 == 0)
-                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
-                             .ToArray();
+            byte[] d = new byte[3];
+            d[0] = Convert.ToByte(hex.Substring(0, 2), 16);
+            d[1] = Convert.ToByte(hex.Substring(2, 2), 16);
+            d[2] = Convert.ToByte(hex.Substring(4, 2), 16);
+            return d;
         }
 
         enum PebbleColorMap
