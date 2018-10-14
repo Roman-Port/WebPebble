@@ -23,15 +23,18 @@ namespace WebPebble.WebSockets
             if (code != CloudPebbleCode.AUTH_TOKEN && !authenticated)
                 return;
             //Check if there is an interrupt for this.
-            InterruptOnRequest inter = interrupts.Find(x => x.code == code);
-            if(inter != null)
+            var inter_list = interrupts.FindAll(x => x.code == code);
+            foreach(var inter in inter_list)
             {
-                //Remove this from the interrupts list.
-                interrupts.Remove(inter);
                 //Call the callback.
-                bool preventDefault = inter.callback(e.RawData);
+                AfterInterruptAction state = inter.callback(e.RawData, inter.d);
+                if (state == AfterInterruptAction.PreventDefault_EndInterrupt || state == AfterInterruptAction.NoPreventDefault_EndInterrupt)
+                {
+                    //Remove this from the interrupts list.
+                    interrupts.Remove(inter);
+                }
                 //Check if we should prevent default
-                if (preventDefault)
+                if (state == AfterInterruptAction.PreventDefault_ContinueInterrupt || state == AfterInterruptAction.PreventDefault_EndInterrupt)
                     return;
             }
             //Decide what to do based on this code.
@@ -77,10 +80,10 @@ namespace WebPebble.WebSockets
             Send(data);
         }
 
-        public void SendDataGetReplyType(byte[] data, CloudPebbleCode code, OnGetReply callback)
+        public void SendDataGetReplyType(byte[] data, CloudPebbleCode code, OnGetReply callback, object d)
         {
             //All this does is register a type with the reply from this for the first reply. It is not reliable.
-            InterruptOnRequest interr = new InterruptOnRequest(code, callback);
+            InterruptOnRequest interr = new InterruptOnRequest(code, callback, d);
             interrupts.Add(interr);
             //Send the data now.
             SendData(data);
@@ -202,18 +205,28 @@ namespace WebPebble.WebSockets
             }
         }
 
-        public delegate bool OnGetReply(byte[] data);
+        public delegate AfterInterruptAction OnGetReply(byte[] data, object d);
 
         public class InterruptOnRequest
         {
             public CloudPebbleCode code;
             public OnGetReply callback;
+            public object d;
 
-            public InterruptOnRequest(CloudPebbleCode _code, OnGetReply _callback)
+            public InterruptOnRequest(CloudPebbleCode _code, OnGetReply _callback, object _d)
             {
                 code = _code;
                 callback = _callback;
+                d = _d;
             }
+        }
+
+        public enum AfterInterruptAction
+        {
+            PreventDefault_EndInterrupt, //Prevent the default and remove the interrupt
+            PreventDefault_ContinueInterrupt, //Prevent the default and make the interrupt run the next time this comes in.
+            NoPreventDefault_EndInterrupt, //Do not prevent the default and remove the interrupt
+            NoPreventDefault_ContinueInterrupt, //Do not prevent the default and make the interrupt run the next time this comes in.
         }
     }
 

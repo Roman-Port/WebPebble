@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using WebPebble.WebSockets.Entities;
 
 namespace WebPebble.WebSockets
 {
     public partial class CloudPebbleDevice
     {
         //This file manages the "endpoints" as old CloudPebble called them.
-        public delegate void EndpointMsgCallback(PebbleProtocolMessage data);
-        public void SendEndpointMsg(PebbleEndpointType type, byte[] data, EndpointMsgCallback callback, bool preventDefault)
+        public delegate AfterInterruptAction EndpointMsgCallback(PebbleProtocolMessage data);
+        public void SendEndpointMsg(PebbleEndpointType type, byte[] data, EndpointMsgCallback callback)
         {
             byte[] buf = new byte[data.Length + 5];
             //The first byte is the message type, which is PEBBLE_PROTOCOL_PHONE_TO_WATCH
@@ -23,7 +24,7 @@ namespace WebPebble.WebSockets
             //The remainder is the message itself
             data.CopyTo(buf, 5);
             //Send this message and wait for a reply.
-            SendDataGetReplyType(buf, CloudPebbleCode.PEBBLE_PROTOCOL_WATCH_TO_PHONE, (byte[] reply) =>
+            SendDataGetReplyType(buf, CloudPebbleCode.PEBBLE_PROTOCOL_WATCH_TO_PHONE, (byte[] reply, object user) =>
             {
                 //Read this in and see if the reply type matches the one we requested.
                 using(MemoryStream ms = new MemoryStream(reply))
@@ -33,15 +34,14 @@ namespace WebPebble.WebSockets
                     if(msg.id == type)
                     {
                         //This is what we wanted. Prevent the default and call callback.
-                        callback(msg);
-                        return preventDefault;
+                        return callback(msg);
                     } else
                     {
                         //Not what we wanted.
-                        return true;
+                        return AfterInterruptAction.NoPreventDefault_ContinueInterrupt;
                     }
                 }
-            });
+            }, null);
         }
 
         public byte[] FromShort(short data)
@@ -51,13 +51,18 @@ namespace WebPebble.WebSockets
             return buf;
         }
 
+        public PebbleChunkedScreenshot active_receive_img;
+
         public void GetScreenshot()
         {
+            //Screenshots are sent in chunks. The first chunk has a header of 12 bytes.
             SendEndpointMsg(PebbleEndpointType.SCREENSHOT, new byte[] { 0x00 }, (PebbleProtocolMessage msg) =>
             {
-                Console.WriteLine("Got screenshot. Saving.");
-                File.WriteAllBytes("/home/roman/test.bmp", msg.data);
-            }, true);
+                //Use the object instead. Create one if it doesn't exist.
+                if (active_receive_img == null)
+                    active_receive_img = new PebbleChunkedScreenshot();
+                return active_receive_img.OnGotData(msg);
+            });
         }
     }
 
