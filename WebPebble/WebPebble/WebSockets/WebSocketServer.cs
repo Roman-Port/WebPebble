@@ -19,7 +19,7 @@ namespace WebPebble.WebSockets
         {
             Console.WriteLine("Starting WebSocket server...");
             listener = new HttpListener();
-            listener.Prefixes.Add("http://localhost:43187/");
+            listener.Prefixes.Add("http://10.0.1.52:43187/");
             listener.Start();
             
             listener.BeginGetContext(OnGetClient, null);
