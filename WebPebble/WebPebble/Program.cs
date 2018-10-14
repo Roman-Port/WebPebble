@@ -63,6 +63,7 @@ namespace WebPebble
             AddService(true, Services.Projects.PbwMedia.OnRequest, "/pbw_media/", true);
             //Start the WebSocket server.
             WebSocketServer.StartServer();
+            Console.WriteLine("Finished starting WebSocket server...");
             //Start
             MainAsync().GetAwaiter().GetResult();
         }
