@@ -21,7 +21,7 @@ filemanager.CloseFile = function (id) {
     } else {
         project.showDialog("Save " + data.shortName + "?", "If you don't save changes to this file, they will be lost.", ["Save", "Don't Save", "Cancel"], [
             function () {
-                project.showDialog("Saving...", "One moment, please.", [], []);
+                project.showDialog("Saving...", "<div class=\"inf_loader\"></div>", [], []);
                 filemanager.SaveFile(id, endFunction);
             },
             function () { endFunction(); },
