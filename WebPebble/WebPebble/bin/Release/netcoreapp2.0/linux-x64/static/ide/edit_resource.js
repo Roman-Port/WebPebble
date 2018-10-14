@@ -32,7 +32,7 @@ edit_resource.onSelectExisting = function (context) {
     document.getElementById('addresrc_entry_id').value = pebble_data.name; //C ID
     document.getElementById('addresrc_entry_type').value = pebble_data.type; //The type
     //Do chosen platforms later.
-
+    edit_resource.onTypeChange(pebble_data.type);
     //Type specific data.
     if (pebble_data.type == "font") {
         //Use the regex entered as the character regex.

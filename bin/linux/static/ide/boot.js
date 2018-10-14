@@ -7,7 +7,7 @@ editor.session.setMode("ace/mode/c_cpp");
 //Add sidebar options
 sidebarmanager.addButton("Settings", 0, false, function () {
     
-}, function () { }, document.getElementById('template_options'), "sidebar_sett", false, function () {
+}, function () { }, document.getElementById('template_options'), "sidebar_sett", false, "", function () {
     project.copyToSettingsView();
 });
 sidebarmanager.addButton("Compilation", 0, false, function () {
@@ -54,7 +54,7 @@ sidebarmanager.addButton("Add Source", 1, true, function () {
 }, function () { }, null, "sidebar_add_src", false);
 sidebarmanager.addButton("Add Resource", 2, true, function () {
     
-}, function () { }, document.getElementById('template_add_resource'), "sidebar_add_resrc", false, function () {
+}, function () { }, document.getElementById('template_add_resource'), "sidebar_add_resrc", false, "", function () {
     
     edit_resource.onSelect();
 });
