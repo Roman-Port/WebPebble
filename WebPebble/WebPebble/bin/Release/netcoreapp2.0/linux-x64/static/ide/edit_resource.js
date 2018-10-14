@@ -209,9 +209,17 @@ edit_resource.updateDataNow = function (callback) {
             }
         });
     }
-    if (edit_resource.checkIfFileIsPending) {
+    if (edit_resource.checkIfFileIsPending()) {
         //Upload a new file.
-        alert('todo');
+        //Delete the old media.
+        project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/delete/?challenge=delete", function () {
+            //Now, reupload the new media.
+            edit_resource.uploadFile("resources", type, document.getElementById('addresrc_entry_filename').value, function (uploaded) {
+                edit_resource.openFile.media_data = uploaded;
+                //Call the main code now.
+                afterFileUpdate();
+            });
+        }, function () { }, false, "POST", "delete");
     } else {
         //Go forward and keep old file.
         afterFileUpdate();
