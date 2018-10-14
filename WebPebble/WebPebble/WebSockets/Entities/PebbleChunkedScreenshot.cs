@@ -1,5 +1,6 @@
 ﻿
 using FastBitmapLib;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -66,41 +67,34 @@ namespace WebPebble.WebSockets.Entities
             //Called after the buffer is complete.
             BitArray ba = new BitArray(bmp_buffer);
             FastBitmap f = new FastBitmap(width, height);
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    int pos = (x * width) + y;
-                    if (false)
-                    {
-                        //Read the bit instead of the byte.
-                        Console.WriteLine(x);
-                        bool on = ba[pos];
 
-                        if (on)
-                            f.SetPixel(x, y, new FastColor(0,0,0));
-                        else
-                            f.SetPixel(x, y, new FastColor(255, 255, 255));
-                    }
-                    else
-                    {
-                        //This is going to be slow....
-                        byte color_id = bmp_buffer[pos];
-                        //Convert this to an RGB color.
-                        PebbleColorMap value = (PebbleColorMap)color_id;
-                        string hex_code = value.ToString().Substring(1);
-                        Console.WriteLine(color_id);
-                        Console.WriteLine(value.ToString());
-                        byte[] data = StringToByteArray(hex_code);
-                        Console.WriteLine(x);
-                        Console.WriteLine(data.Length);
-                        f.SetPixel(x, y, new FastColor(data[0], data[1], data[2]));
-                    }
-                }
+            //Decode the image data.
+            int[] expanded_data;
+
+            expanded_data = decode_image_8bit_corrected();
+
+            Console.WriteLine(JsonConvert.SerializeObject(expanded_data));
+
+            //f.Save("/home/roman/img.bmp");
+
+        }
+
+        private int[] decode_image_8bit_corrected()
+        {
+            int[] expanded_data = new int[bmp_buffer.Length * 4];
+
+            for (var i = 0; i < bmp_buffer.Length; i+=1)
+            {
+                var pixel = bmp_buffer[i];
+                var pos = i * 4;
+                var corrected = PebbleColorMap[pixel & 63];
+                expanded_data[pos + 0] = (corrected >> 16) & 0xff;
+                expanded_data[pos + 1] = (corrected >> 8) & 0xff;
+                expanded_data[pos + 2] = (corrected >> 0) & 0xff;
+                expanded_data[pos + 3] = 255; // always fully opaque.
             }
 
-            f.Save("/home/roman/img.bmp");
-
+            return expanded_data;
         }
 
         private int ReadInt32(MemoryStream ms)
@@ -121,7 +115,75 @@ namespace WebPebble.WebSockets.Entities
             return d;
         }
 
-        enum PebbleColorMap
+        public static int[] PebbleColorMap = new int[]
+        {
+            0x000000,
+            0x001e41,
+            0x004387,
+            0x0068ca,
+            0x2b4a2c,
+            0x27514f,
+            0x16638d,
+            0x007dce,
+            0x5e9860,
+            0x5c9b72,
+            0x57a5a2,
+            0x4cb4db,
+            0x8ee391,
+            0x8ee69e,
+            0x8aebc0,
+            0x84f5f1,
+            0x4a161b,
+            0x482748,
+            0x40488a,
+            0x2f6bcc,
+            0x564e36,
+            0x545454,
+            0x4f6790,
+            0x4180d0,
+            0x759a64,
+            0x759d76,
+            0x71a6a4,
+            0x69b5dd,
+            0x9ee594,
+            0x9de7a0,
+            0x9becc2,
+            0x95f6f2,
+            0x99353f,
+            0x983e5a,
+            0x955694,
+            0x8f74d2,
+            0x9d5b4d,
+            0x9d6064,
+            0x9a7099,
+            0x9587d5,
+            0xafa072,
+            0xaea382,
+            0xababab,
+            0xa7bae2,
+            0xc9e89d,
+            0xc9eaa7,
+            0xc7f0c8,
+            0xc3f9f7,
+            0xe35462,
+            0xe25874,
+            0xe16aa3,
+            0xde83dc,
+            0xe66e6b,
+            0xe6727c,
+            0xe37fa7,
+            0xe194df,
+            0xf1aa86,
+            0xf1ad93,
+            0xefb5b8,
+            0xecc3eb,
+            0xffeeab,
+            0xfff1b5,
+            0xfff6d3,
+            0xffffff
+        };
+
+        enum PebbleColorMapEnum
         {
             A000000,
             A001e41,
