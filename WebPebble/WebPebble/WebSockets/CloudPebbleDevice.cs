@@ -168,6 +168,7 @@ namespace WebPebble.WebSockets
             {
                 byte[] buf = new byte[2];
                 ms.Read(buf, 0, 2);
+                Array.Reverse(buf);
                 return BitConverter.ToInt16(buf, 0);
             }
 
