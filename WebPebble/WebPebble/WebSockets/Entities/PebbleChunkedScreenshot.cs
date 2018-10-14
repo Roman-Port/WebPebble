@@ -67,7 +67,7 @@ namespace WebPebble.WebSockets.Entities
             bool oneBppMode = version == 1;
             BitArray ba = new BitArray(bmp_buffer);
 
-            using (Image<Rgba32> image = new Image<Rgba32>(width,height))
+            using (Image<Rgba32> image = new Image<Rgba32>(width*2,height*2))
             {
                 for (int x = 0; x < width; x++)
                 {
@@ -80,9 +80,9 @@ namespace WebPebble.WebSockets.Entities
                             //Read the bit instead of the byte.
                             bool on = ba[pos];
                             if (on)
-                                image[x, y] = new Rgba32(0, 0, 0);
+                                image[x+1, y+1] = new Rgba32(0, 0, 0);
                             else
-                                image[x, y] = new Rgba32(255, 255, 255);
+                                image[x+1, y+1] = new Rgba32(255, 255, 255);
                         }
                         else
                         {
@@ -92,7 +92,7 @@ namespace WebPebble.WebSockets.Entities
                             PebbleColorMap value = (PebbleColorMap)color_id;
                             string hex_code = value.ToString().Substring(1);
                             byte[] data = StringToByteArray(hex_code);
-                            image[x, y] = new Rgba32(data[0],data[1],data[2]);
+                            image[x+1, y+1] = new Rgba32(data[0],data[1],data[2]);
                         }
                     }
                 }
