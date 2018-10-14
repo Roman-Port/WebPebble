@@ -12,7 +12,6 @@ namespace WebPebble.WebSockets
     {
         public bool authenticated = false;
         public string user_uuid = "";
-        public List<PebbleProtocolMessage> messageBuffer = new List<PebbleProtocolMessage>();
         public List<InterruptOnRequest> interrupts = new List<InterruptOnRequest>();
 
         public WebSocketPair pair;
@@ -49,11 +48,11 @@ namespace WebPebble.WebSockets
                     break;
 
                 case CloudPebbleCode.PEBBLE_PROTOCOL_PHONE_TO_WATCH:
-                    messageBuffer.Add(new PebbleProtocolMessage(ms, code));
+                    OnPPMMessage(new PebbleProtocolMessage(ms, code));
                     break;
 
                 case CloudPebbleCode.PEBBLE_PROTOCOL_WATCH_TO_PHONE:
-                    messageBuffer.Add(new PebbleProtocolMessage(ms, code));
+                    OnPPMMessage(new PebbleProtocolMessage(ms, code));
                     break;
 
                 default:
@@ -178,6 +177,27 @@ namespace WebPebble.WebSockets
                 pair = WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid];
             }
             //Now, WebPebble will deal with it.
+        }
+
+        private void OnPPMMessage(PebbleProtocolMessage ppm)
+        {
+            //Send this on to the web client.
+            Dictionary<string, string> data = new Dictionary<string, string>();
+            data["msg"] = ppm.stringData;
+            data["direction"] = ((int)ppm.direction).ToString();
+            data["type"] = ppm.id.ToString();
+            data["binary"] = "";
+            //Send it to the web client if they are connected.
+            if(pair.connected)
+            {
+                try
+                {
+                    pair.web.QuickReply(-1, WebPebbleClient.WebPebbleRequestType.PebbleProtocolMsg, data);
+                } catch
+                {
+
+                }
+            }
         }
 
         /* External API */

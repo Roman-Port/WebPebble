@@ -86,8 +86,14 @@
 
     <!-- Watch control bar -->
     <div class="watch_control_window">
-        <div class="big_button" onclick="project.buildPbwBtn();"><img src="https://romanport.com/static/icons/white/baseline-mobile_screen_share.svg" /> <span class="tooltip open_sans">Take Screenshot</span></div>
-        <div class="big_button" onclick="project.buildPbwBtn();"><img src="https://romanport.com/static/icons/white/baseline-message.svg" /> <span class="tooltip open_sans">View Logs</span></div>
+        <div style="display:none;" id="watch_control_main">
+            <div class="big_button" onclick="phoneconn.getScreenshot();"><img src="https://romanport.com/static/icons/white/baseline-mobile_screen_share.svg" /> <span class="tooltip open_sans">Take Screenshot</span></div>
+            <div class="big_button" onclick="project.buildPbwBtn();"><img src="https://romanport.com/static/icons/white/baseline-message.svg" /> <span class="tooltip open_sans">View Logs</span></div>
+        </div>
+        <div id="watch_control_warning">
+            <div class="big_button" style="float:left;" onclick="alert('todo');"><img src="https://romanport.com/static/icons/white/baseline-help.svg"></div>
+            <div style="padding:8px;height:24px;line-height:24px;font-size:15px;color: gray;display: inline-block;" class="open_sans">No Pebble Connected</div>
+        </div>
     </div>
 
     <!-- Hidden templates. -->

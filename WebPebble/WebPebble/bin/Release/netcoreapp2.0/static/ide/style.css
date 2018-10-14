@@ -557,3 +557,44 @@ body {
     background-repeat: no-repeat;
     background-image: url(https://romanport.com/static/webpebble/img/dropdown.png);
 }
+
+/* Watch control bottom */
+.watch_control_window {
+    bottom: 15px;
+    left: 15px;
+    position: fixed;
+    width: 300px;
+}
+
+.watch_control_window .big_button {
+    height: 24px;
+    line-height: 24px;
+    padding: 8px;
+    background-color: #1b2432;
+    border-radius: 5px;
+    display: inline-block;
+    margin-right: 8px;
+    cursor: pointer;
+    position: relative;
+}
+
+.watch_control_window .big_button .tooltip {
+    opacity: 0;
+    /* background-color: #1b2432; */
+    color: white;
+    border-radius: 4px;
+    /* padding: 5px 8px; */
+    position: absolute;
+    z-index: 1000;
+    bottom: 0px;
+    width: 130px;
+    left: 0;
+    font-size: 15px;
+    transition: opacity 100ms, padding 100ms;
+    padding-bottom: 40px;
+}
+
+.watch_control_window .big_button:hover .tooltip {
+    opacity: 1;
+    padding-bottom: 50px;
+}

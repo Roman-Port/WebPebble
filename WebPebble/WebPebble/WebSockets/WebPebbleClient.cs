@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
 using WebPebble.Oauth;
 using WebSocketSharp;
@@ -32,6 +33,9 @@ namespace WebPebble.WebSockets
                     break;
                 case WebPebbleRequestType.Screenshot:
                     DoGetScreenshot(request);
+                    break;
+                case WebPebbleRequestType.InstallApp:
+                    InstallApp(request);
                     break;
             }
         }
@@ -162,6 +166,19 @@ namespace WebPebble.WebSockets
            });
         }
 
+        public void InstallApp(WebPebbleRequest req)
+        {
+            //If we're not connected, tell them so.
+            if (!CheckIfConnected(req))
+                return;
+            //Download the PBW file prompted.
+            using (var client = new WebClient())
+            {
+                byte[] pbw = client.DownloadData(req.data["url"]);
+                pair.phone.InstallApp(pbw);
+            }
+        }
+
         public class WebPebbleRequest
         {
             public int requestid; //This will be echoed back to the client. -1 if this is a event and not a reply.
@@ -175,7 +192,9 @@ namespace WebPebble.WebSockets
             Reply = 0,
             Auth = 1,
             Screenshot = 2,
-            ConnectionStatus = 3
+            ConnectionStatus = 3,
+            PebbleProtocolMsg = 4,
+            InstallApp = 5
         }
     }
 }

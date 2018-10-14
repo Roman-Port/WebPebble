@@ -243,13 +243,20 @@ project.buildPbwBtn = function () {
             //Check if the build crashed.
             if (data.passed) {
                 //OK.
-                project.showDialog("Build Finished", "The build finished successfully.", ["Dismiss", "Get PBW", "View Log"], [function () { },
+                //If the Pebble is connected, install this file onto it. Else, show the dialog
+                if (phoneconn.deviceConnected) {
+                    //Install on phone.
+                    phoneconn.installApp("/project/" + project.id + "/pbw_media/" + data.id + "/" + project.id + "_build_" + data.id + ".pbw", data);
+                } else {
+                    project.showDialog("Build Finished", "The build finished successfully.", ["Dismiss", "Get PBW", "View Log"], [function () { },
                     function () {
                         filemanager.DownloadUrl("/project/" + project.id + "/pbw_media/" + data.id + "/" + project.id + "_build_" + data.id + ".pbw");
-                },
-                function () {
-                    project.displayLog(data.log, data.id);
-                }]);
+                    },
+                    function () {
+                        project.displayLog(data.log, data.id);
+                    }]);
+                }
+                
             } else {
                 //Failed.
                 project.showDialog("Build Failed", "The build failed to compile. Take a look at the log to see what went wrong.", ["Dismiss", "View Log"], [function () { },

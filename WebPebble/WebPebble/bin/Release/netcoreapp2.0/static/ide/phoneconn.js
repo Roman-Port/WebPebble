@@ -6,6 +6,9 @@ phoneconn.currentId = 1;
 phoneconn.callbacks = {};
 
 phoneconn.authorized = false;
+phoneconn.deviceConnected = false;
+
+phoneconn.pebbleProtocolMsgBuffer = []; //This could get quite large.
 
 phoneconn.init = function (callback) {
     //Create a WebSocket connection.
@@ -38,7 +41,8 @@ phoneconn.onMessage = function (event) {
     console.log(data);
     //If the ID of this is -1, this is a event. 
     if (data.requestid == -1) {
-        console.log("TODO event");
+        var event = phoneconn.eventList[data.requestid];
+        event(data);
     } else {
         //Find the target callback for this.
         var target = phoneconn.callbacks[data.requestid];
@@ -68,9 +72,41 @@ phoneconn.send = function (type, data, callback) {
 phoneconn.getScreenshot = function () {
     project.showDialog("Taking Screenshot...", '<div class="inf_loader"></div>', [], [], null, false);
     phoneconn.send(2, {}, function (data) {
-        project.showDialog("Pebble Screenshot", '<img src="' + data.img_header+data.data + '">', ["Save", "Dismiss"], [function () {
+        project.showDialog("Pebble Screenshot", '<img src="' + data.data.img_header + data.data.data + '">', ["Save", "Dismiss"], [function () {
             //Open iframe on this.
-            filemanager.DownloadUrl(data.download_header + data.data);
+            filemanager.DownloadUrl(data.data.download_header + data.data.data);
         }, function () { }], null, false);
     });
 }
+
+phoneconn.installApp = function (pbwUrl, buildData) {
+    project.showDialog("Installing on Device...", '<div class="inf_loader"></div>', [], [], null, false);
+    phoneconn.send(5, { "url": pbwUrl }, function () { });
+    window.setTimeout(function () {
+        project.showDialog("Build Finished", "The build finished and was installed on the Pebble successfully.", ["Dismiss", "Get PBW", "View Log"], [function () { },
+        function () {
+            filemanager.DownloadUrl(pbwUrl);
+        },
+        function () {
+            project.displayLog(buildData.log, buildData.id);
+        }]);
+    }, 1500);
+}
+
+
+//Events
+phoneconn.onPhoneStatusMsg = function () {
+    document.getElementById('watch_control_main').style.display = "block";
+    document.getElementById('watch_control_warning').style.display = "none";
+    phoneconn.deviceConnected = true;
+}
+
+phoneconn.onPebbleProtocolMsg = function (data) {
+    //Add this to the message buffer.
+    phoneconn.pebbleProtocolMsgBuffer.push(data);
+}
+
+phoneconn.eventList = {
+    3: phoneconn.onPhoneStatusMsg,
+    4: phoneconn.onPebbleProtocolMsg
+};
