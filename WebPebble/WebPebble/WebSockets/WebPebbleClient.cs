@@ -66,7 +66,7 @@ namespace WebPebble.WebSockets
             pair.connected = false;
         }
 
-        public void SendData(byte[] data)
+        public void SendData(string data)
         {
             Send(data);
         }
@@ -79,7 +79,7 @@ namespace WebPebble.WebSockets
                 type = type,
                 data = dict
             };
-            SendData(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(req)));
+            SendData(JsonConvert.SerializeObject(req));
         }
 
         public bool CheckIfConnected(WebPebbleRequest req)
