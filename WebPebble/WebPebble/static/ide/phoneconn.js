@@ -37,14 +37,14 @@ phoneconn.onMessage = function (event) {
     //Debug log
     console.log(data);
     //If the ID of this is -1, this is a event. 
-    if (data.messageid == -1) {
+    if (data.requestid == -1) {
         console.log("TODO event");
     } else {
         //Find the target callback for this.
-        var target = phoneconn.callbacks[data.messageid];
+        var target = phoneconn.callbacks[data.requestid];
         target(data);
         //Remove this.
-        delete phoneconn.callbacks[data.messageid];
+        delete phoneconn.callbacks[data.requestid];
     }
 }
 
@@ -58,7 +58,7 @@ phoneconn.send = function (type, data, callback) {
     var buf = {};
     buf.type = type;
     buf.data = data;
-    buf.messageid = id;
+    buf.requestid = id;
     //Send on the websocket.
     phoneconn.ws.send(JSON.stringify(buf));
 }
