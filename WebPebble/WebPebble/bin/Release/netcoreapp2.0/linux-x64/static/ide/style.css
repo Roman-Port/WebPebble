@@ -572,24 +572,29 @@ body {
     padding: 8px;
     background-color: #1b2432;
     border-radius: 5px;
-    float: right;
     display: inline-block;
-    margin-left: 8px;
+    margin-right: 8px;
     cursor: pointer;
     position: relative;
 }
 
 .watch_control_window .big_button .tooltip {
-    visibility: hidden;
-    background-color: black;
+    opacity: 0;
+    /* background-color: #1b2432; */
     color: white;
     border-radius: 4px;
-    padding: 5px;
+    /* padding: 5px 8px; */
     position: absolute;
-    z-index: 10;
-    bottom:5px;
+    z-index: 1000;
+    bottom: 0px;
+    width: 130px;
+    left: 0;
+    font-size: 15px;
+    transition: opacity 100ms, padding 100ms;
+    padding-bottom: 40px;
 }
 
 .watch_control_window .big_button:hover .tooltip {
-    visibility: visible;
+    opacity: 1;
+    padding-bottom: 50px;
 }
