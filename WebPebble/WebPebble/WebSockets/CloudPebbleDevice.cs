@@ -4,14 +4,16 @@ using System.IO;
 using System.Text;
 using WebSocketSharp;
 using WebSocketSharp.Server;
+using System.Linq;
 
 namespace WebPebble.WebSockets
 {
-    public class CloudPebbleDevice : WebSocketBehavior
+    public partial class CloudPebbleDevice : WebSocketBehavior
     {
         public bool authenticated = false;
         public string user_uuid = "";
         public List<PebbleProtocolMessage> messageBuffer = new List<PebbleProtocolMessage>();
+        public List<InterruptOnRequest> interrupts = new List<InterruptOnRequest>();
 
         protected override void OnMessage(MessageEventArgs e)
         {
@@ -20,6 +22,18 @@ namespace WebPebble.WebSockets
             //Reject all but signin if not authorized.
             if (code != CloudPebbleCode.AUTH_TOKEN && !authenticated)
                 return;
+            //Check if there is an interrupt for this.
+            InterruptOnRequest inter = interrupts.Find(x => x.code == code);
+            if(inter != null)
+            {
+                //Remove this from the interrupts list.
+                interrupts.Remove(inter);
+                //Call the callback.
+                bool preventDefault = inter.callback(e.RawData);
+                //Check if we should prevent default
+                if (preventDefault)
+                    return;
+            }
             //Decide what to do based on this code.
             Console.WriteLine("Got message of type " + code.ToString() + " with length " + e.RawData.Length.ToString() + ".");
             switch (code)
@@ -61,6 +75,15 @@ namespace WebPebble.WebSockets
         public void SendData(byte[] data)
         {
             Send(data);
+        }
+
+        public void SendDataGetReplyType(byte[] data, CloudPebbleCode code, OnGetReply callback)
+        {
+            //All this does is register a type with the reply from this for the first reply. It is not reliable.
+            InterruptOnRequest interr = new InterruptOnRequest(code, callback);
+            interrupts.Add(interr);
+            //Send the data now.
+            SendData(data);
         }
 
         /* Helpers */
@@ -114,8 +137,8 @@ namespace WebPebble.WebSockets
             SendData(new byte[] {0x09, 0x00 });
             //Set the status in the app to "connected"
             SetStatus(true);
-            //Debug: Install app
-            InstallApp(File.ReadAllBytes("/home/roman/app.pbw"));
+            //Debug: Take screenshot
+            GetScreenshot();
         }
 
         /* External API */
@@ -139,7 +162,7 @@ namespace WebPebble.WebSockets
         public class PebbleProtocolMessage
         {
             public PebbleProtocolDirection direction;
-            public short id;
+            public PebbleEndpointType id;
             public byte[] data;
             public string stringData;
             public DateTime time;
@@ -152,9 +175,8 @@ namespace WebPebble.WebSockets
                     direction = PebbleProtocolDirection.WatchToPhone;
                 //Get length
                 short length = ReadShort(ms);
-                Console.WriteLine("Got type " + code.ToString() + " with length " + length);
                 //Get the ID
-                id = ReadShort(ms);
+                id = (PebbleEndpointType)ReadShort(ms);
                 //Read the data.
                 data = new byte[length];
                 ms.Read(data, 0, length);
@@ -176,6 +198,20 @@ namespace WebPebble.WebSockets
             {
                 WatchToPhone,
                 PhoneToWatch
+            }
+        }
+
+        public delegate bool OnGetReply(byte[] data);
+
+        public class InterruptOnRequest
+        {
+            public CloudPebbleCode code;
+            public OnGetReply callback;
+
+            public InterruptOnRequest(CloudPebbleCode _code, OnGetReply _callback)
+            {
+                code = _code;
+                callback = _callback;
             }
         }
     }
