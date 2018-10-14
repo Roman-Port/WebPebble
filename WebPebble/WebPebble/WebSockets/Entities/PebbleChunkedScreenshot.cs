@@ -74,7 +74,8 @@ namespace WebPebble.WebSockets.Entities
                     for (int y = 0; y < height; y++)
                     {
                         int pos = (x * width) + y;
-                        Console.WriteLine(x);
+                        image[x, y] = new Rgba32(0, 0, 0);
+                        Console.WriteLine("done");
                         if (oneBppMode)
                         {
                             //Read the bit instead of the byte.
