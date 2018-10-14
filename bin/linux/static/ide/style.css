@@ -557,3 +557,30 @@ body {
     background-repeat: no-repeat;
     background-image: url(https://romanport.com/static/webpebble/img/dropdown.png);
 }
+
+/* Watch control bottom */
+.watch_control_window {
+    bottom: 15px;
+    left: 15px;
+    position: fixed;
+    width: 300px;
+}
+
+.watch_control_window .big_button {
+    position: relative;
+}
+
+.watch_control_window .big_button .tooltip {
+    visibility: hidden;
+    background-color: black;
+    color: white;
+    border-radius: 4px;
+    padding: 5px;
+    position: absolute;
+    z-index: 10;
+    bottom:5px;
+}
+
+.watch_control_window .big_button:hover .tooltip {
+    visibility: visible;
+}
