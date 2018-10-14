@@ -1,4 +1,5 @@
 ﻿
+using FastBitmapLib;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -66,8 +67,9 @@ namespace WebPebble.WebSockets.Entities
             bool oneBppMode = version == 1;
             BitArray ba = new BitArray(bmp_buffer);
 
+            FastBitmap f = new FastBitmap(width, height);
 
-            /*for (int x = 0; x < width; x++)
+            for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
                 {
@@ -79,9 +81,9 @@ namespace WebPebble.WebSockets.Entities
                         bool on = ba[pos];
 
                         if (on)
-                            image[x, y] = new Rgba32(0, 0, 0);
+                            f.SetPixel(x, y, new FastColor(0,0,0));
                         else
-                            image[x, y] = new Rgba32(255, 255, 255);
+                            f.SetPixel(x, y, new FastColor(255, 255, 255));
                     }
                     else
                     {
@@ -91,16 +93,12 @@ namespace WebPebble.WebSockets.Entities
                         PebbleColorMap value = (PebbleColorMap)color_id;
                         string hex_code = value.ToString().Substring(1);
                         byte[] data = StringToByteArray(hex_code);
-                        image[x, y] = new Bgra<byte>(data[0], data[1], data[2],255);
+                        f.SetPixel(x, y, new FastColor(data[0], data[1], data[2]));
                     }
                 }
             }
 
-            image.Save();*/
-
-            Bitmap bm = new Bitmap(width, height);
-
-            bm.Save("/home/roman/img.png");
+            f.Save("/home/roman/img.bmp");
 
         }
 
