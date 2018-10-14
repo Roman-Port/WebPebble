@@ -39,6 +39,9 @@
     <None Update="static\ide\filemanager.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="static\ide\phoneconn.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="static\ide\project.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

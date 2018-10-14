@@ -20,3 +20,4 @@ C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\Services\Landing\landing_signedout.html
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\static\img\dropdown.png
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\static\ide\edit_resource.js
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\static\ide\phoneconn.js
