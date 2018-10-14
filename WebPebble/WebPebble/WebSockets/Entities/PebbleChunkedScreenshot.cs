@@ -64,7 +64,6 @@ namespace WebPebble.WebSockets.Entities
         public void FinalizeImage()
         {
             //Called after the buffer is complete.
-            bool oneBppMode = version == 1;
             BitArray ba = new BitArray(bmp_buffer);
 
             FastBitmap f = new FastBitmap(width, height);
