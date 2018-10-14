@@ -29,6 +29,7 @@ edit_resource.onSelectExisting = function (context) {
         "id": context
     };
     //Fill in DOM data.
+    document.getElementById('addresrc_entry_filename').value = media_data.nickname;
     document.getElementById('addresrc_entry_id').value = pebble_data.name; //C ID
     document.getElementById('addresrc_entry_type').value = pebble_data.type; //The type
     //Do chosen platforms later.
@@ -40,7 +41,7 @@ edit_resource.onSelectExisting = function (context) {
         //Trim the font size off of the identifier and fill in the font size and ID.
         var name_split = pebble_data.name.split('_');
         var font_size = name_split[name_split.length - 1];
-        var idd = pebble_data.name.substring(0, pebble_data.name.length - font_size - 1);
+        var idd = pebble_data.name.substring(0, pebble_data.name.length - font_size.length - 1);
         //Set elements
         document.getElementById('addresrc_entry_font_size').value = font_size;
         document.getElementById('addresrc_entry_id').value = idd;
@@ -51,7 +52,7 @@ edit_resource.onSelectExisting = function (context) {
         }
         //If compatability isn't latest, set it to 2.7.
         if (pebble_data.compatibility != null) {
-            document.getElementById('addresrc_entry_font_compat').value = "2.7";
+            document.getElementById('addresrc_entry_font_compat').value = "27";
         }
     }
     if (pebble_data.type == "bitmap") {
@@ -66,6 +67,8 @@ edit_resource.onSelectExisting = function (context) {
             document.getElementById('addresrc_entry_bitmap_storeformat').value = pebble_data.storageFormat;
         }
     }
+    edit_resource.onFontSizeChange();
+    document.getElementById('add_resrc_delete').style.display = "inline-block";
 }
 
 edit_resource.onTypeChange = function (type) {
@@ -81,9 +84,9 @@ edit_resource.onTypeChange = function (type) {
     }
 }
 
-edit_resource.onFontSizeChange = function (value) {
+edit_resource.onFontSizeChange = function () {
     //Fill in the "identifier" box.
-    document.getElementById('typeselect_font_id').innerText = document.getElementById('addresrc_entry_id').value + "_" + value;
+    document.getElementById('typeselect_font_id').innerText = document.getElementById('addresrc_entry_id').value + "_" + document.getElementById('addresrc_entry_font_size').value;
 }
 
 edit_resource.getUpdatedPebbleMedia = function (fileData) {
@@ -135,6 +138,17 @@ edit_resource.getUpdatedPebbleMedia = function (fileData) {
 }
 
 edit_resource.saveNow = function (callback) {
+    //Check if we need to create a new file, or if we just save this one.
+    if (edit_resource.openFile == null) {
+        //Create
+        edit_resource.createDataNow(callback);
+    } else {
+        //Edit
+        edit_resource.updateDataNow(callback);
+    }
+}
+
+edit_resource.createDataNow = function (callback) {
     //First, upload the new file. A check should be done to see if one was actually sent.
     project.showDialog("Creating Resource...", '<div class="inf_loader"></div>', [], [], null, false);
     //Determine the type of file.
@@ -159,6 +173,65 @@ edit_resource.saveNow = function (callback) {
             }
         });
     });
+}
+
+edit_resource.updateDataNow = function (callback) {
+    project.showDialog("Updating Resource...", '<div class="inf_loader"></div>', [], [], null, false);
+    //Determine the type of file.
+    var type = "images";
+    if (document.getElementById('addresrc_entry_type').value == "font") { type = "fonts"; }
+    if (document.getElementById('addresrc_entry_type').value == "raw") { type = "data"; }
+    var afterFileUpdate = function () {
+        var uploaded_file = edit_resource.openFile.media_data;
+        //Rename
+        uploaded_file.nickname = document.getElementById('addresrc_entry_filename').value;
+        //Generate the Pebble resource file.
+        var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
+        //Find the old copy version of this resource and replace it with ourself.
+        var old_pebble_data = project.appInfo.pebble.resources.media;
+        //Find this one.
+        for (var i = 0; i < old_pebble_data.length; i += 1) {
+            if (old_pebble_data[i].x_webpebble_media_id == edit_resource.openFile.id) {
+                //Remove this.
+                project.appInfo.pebble.resources.media.splice(i, 1);
+                break;
+            }
+        }
+        //Push it to the resources for the Pebble.
+        project.appInfo.pebble.resources.media.push(pbl_data);
+        //Save that file.
+        project.saveAppInfo(function () {
+            project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/rename/?name=" + encodeURIComponent(uploaded_file.nickname), function () {
+                //Rename object on sidebar.
+                sidebarmanager.items[uploaded_file.id].tab_ele.innerText = uploaded_file.nickname;
+                //Hide the loader.
+                project.hideDialog();
+                //Call the callback, if there is one.
+                if (callback != null) {
+                    callback(uploaded_file, pbl_data);
+                }
+            }, null, false);
+        });
+    }
+    if (edit_resource.checkIfFileIsPending()) {
+        //Upload a new file.
+        //Delete the old media.
+        project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/delete/?challenge=delete", function () {
+            //Now, reupload the new media.
+            edit_resource.uploadFile("resources", type, document.getElementById('addresrc_entry_filename').value, function (uploaded) {
+                edit_resource.openFile.media_data = uploaded;
+                //Call the main code now.
+                afterFileUpdate();
+            });
+        }, function () { }, false, "POST", "delete");
+    } else {
+        //Go forward and keep old file.
+        afterFileUpdate();
+    }
+}
+
+edit_resource.checkIfFileIsPending = function () {
+    return document.getElementById("add_resrc_uploader_file").files.length != 0;
 }
 
 edit_resource.uploadFile = function (type, sub_type, name, callback) {

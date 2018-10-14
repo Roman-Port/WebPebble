@@ -64,6 +64,13 @@ namespace WebPebble.Services.Projects
                 pp.WriteFile(fileName, data);
                 Program.QuickWriteToDoc(e, "OK");
             }
+            else if (action == "rename")
+            {
+                //We are just renaming an existing one.
+                asset.nickname = e.Request.Query["name"];
+                proj.SaveProject();
+                Program.QuickWriteToDoc(e, "OK");
+            }
             else if (action == "delete")
             {
                 //Get the challenge bytes.

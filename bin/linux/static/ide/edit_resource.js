@@ -183,6 +183,8 @@ edit_resource.updateDataNow = function (callback) {
     if (document.getElementById('addresrc_entry_type').value == "raw") { type = "data"; }
     var afterFileUpdate = function () {
         var uploaded_file = edit_resource.openFile.media_data;
+        //Rename
+        uploaded_file.nickname = document.getElementById('addresrc_entry_filename').value;
         //Generate the Pebble resource file.
         var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
         //Find the old copy version of this resource and replace it with ourself.
@@ -199,14 +201,16 @@ edit_resource.updateDataNow = function (callback) {
         project.appInfo.pebble.resources.media.push(pbl_data);
         //Save that file.
         project.saveAppInfo(function () {
-            //Add this file to the sidebar.
-            project.addResourceToSidebar(uploaded_file);
-            //Hide the loader.
-            project.hideDialog();
-            //Call the callback, if there is one.
-            if (callback != null) {
-                callback(uploaded_file, pbl_data);
-            }
+            project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/rename/?name=" + encodeURIComponent(uploaded_file.nickname), function () {
+                //Rename object on sidebar.
+                sidebarmanager.items[uploaded_file.id].tab_ele.innerText = uploaded_file.nickname;
+                //Hide the loader.
+                project.hideDialog();
+                //Call the callback, if there is one.
+                if (callback != null) {
+                    callback(uploaded_file, pbl_data);
+                }
+            }, null, false);
         });
     }
     if (edit_resource.checkIfFileIsPending()) {

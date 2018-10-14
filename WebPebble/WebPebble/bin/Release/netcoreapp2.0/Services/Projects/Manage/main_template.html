@@ -316,7 +316,7 @@
                     <div class="control_item">
                         <div class="label">Characters</div>
                         <div class="control">
-                            <input type="text" id="addresrc_entry_font_characters" />
+                            <input type="text" id="addresrc_entry_font_characters" placeholder="[0-9]" />
                         </div>
                         <div class="help">
                             Use a valid Python regex to select characters to include. You may only use these characters. You can use <a style="color: #87b4f9;" href="https://regexr.com/" target="_blank">regexr.com</a> to help you.
@@ -326,7 +326,7 @@
                     <div class="control_item">
                         <div class="label">Tracking Adjust</div>
                         <div class="control">
-                            <input type="number" id="addresrc_entry_font_tracking" value="0" />
+                            <input type="number" id="addresrc_entry_font_tracking" value="0" placeholder="0" />
                         </div>
                         <div class="help">
                             Number of additional pixels by which to shift each character.
@@ -352,7 +352,7 @@
                     <div class="control_item">
                         <div class="label">Identifier</div>
                         <div class="control">
-                            <input type="text" id="addresrc_entry_id" oninput="edit_resource.onFontSizeChange(document.getElementById('addresrc_entry_font_size').value);" />
+                            <input type="text" id="addresrc_entry_id" placeholder="EXAMPLE_C_IDENTIFIER" oninput="edit_resource.onFontSizeChange(document.getElementById('addresrc_entry_font_size').value);" />
                         </div>
                         <div class="help">
                             This is used in your code and must be a valid C identifier.
@@ -364,14 +364,14 @@
                     <div class="control_item">
                         <div class="label">Upload File</div>
                         <div class="control" style="background-color:transparent;">
-                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" /></form>
+                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" id="add_resrc_uploader_file"/></form>
                         </div>
                     </div>
                 </div>
                 <!-- Save buttons -->
                 <div class="container open_sans container_control">
-                    <div class="med_button">Save</div>
-                    <div class="med_button">Delete</div>
+                    <div class="med_button" onclick="edit_resource.saveNow();">Save</div>
+                    <div class="med_button" style="display:none;" id="add_resrc_delete">Delete</div>
                 </div>
             </div>
         </div>
