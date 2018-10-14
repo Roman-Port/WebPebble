@@ -64,10 +64,11 @@ namespace WebPebble.WebSockets.Entities
         public void FinalizeImage()
         {
             //Called after the buffer is complete.
+            Console.WriteLine("test 1");
             BitArray ba = new BitArray(bmp_buffer);
-
+            Console.WriteLine("test 2");
             FastBitmap f = new FastBitmap(width, height);
-
+            Console.WriteLine("test 3");
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
