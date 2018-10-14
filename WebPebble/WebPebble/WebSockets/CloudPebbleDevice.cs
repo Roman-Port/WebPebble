@@ -11,6 +11,7 @@ namespace WebPebble.WebSockets
     {
         public bool authenticated = false;
         public string user_uuid = "";
+        public List<PebbleProtocolMessage> messageBuffer = new List<PebbleProtocolMessage>();
 
         protected override void OnMessage(MessageEventArgs e)
         {
@@ -25,6 +26,14 @@ namespace WebPebble.WebSockets
                 case CloudPebbleCode.AUTH_TOKEN:
                     //This will contain a login request.
                     DoAuth(ms);
+                    break;
+
+                case CloudPebbleCode.PEBBLE_PROTOCOL_PHONE_TO_WATCH:
+                    messageBuffer.Add(new PebbleProtocolMessage(ms, code));
+                    break;
+
+                case CloudPebbleCode.PEBBLE_PROTOCOL_WATCH_TO_PHONE:
+                    messageBuffer.Add(new PebbleProtocolMessage(ms, code));
                     break;
 
                 default:
@@ -123,6 +132,49 @@ namespace WebPebble.WebSockets
             if (!connected)
                 flag = 0x00;
             SendData(new byte[] { 8, flag });
+        }
+
+        /* Classes */
+        public class PebbleProtocolMessage
+        {
+            public PebbleProtocolDirection direction;
+            public short id;
+            public byte[] data;
+            public string stringData;
+            public DateTime time;
+
+            public PebbleProtocolMessage(MemoryStream ms, CloudPebbleCode code)
+            {
+                //Set direction.
+                direction = PebbleProtocolDirection.PhoneToWatch;
+                if (code == CloudPebbleCode.PEBBLE_PROTOCOL_WATCH_TO_PHONE)
+                    direction = PebbleProtocolDirection.WatchToPhone;
+                //Get length
+                short length = ReadShort(ms);
+                Console.WriteLine("Got type " + code.ToString() + " with length " + length);
+                //Get the ID
+                id = ReadShort(ms);
+                //Read the data.
+                data = new byte[length];
+                ms.Read(data, 0, length);
+                //Convert that to a string.
+                stringData = Encoding.ASCII.GetString(data);
+                //Set time
+                time = DateTime.UtcNow;
+            }
+
+            private short ReadShort(MemoryStream ms)
+            {
+                byte[] buf = new byte[2];
+                ms.Read(buf, 0, 2);
+                return BitConverter.ToInt16(buf, 0);
+            }
+
+            public enum PebbleProtocolDirection
+            {
+                WatchToPhone,
+                PhoneToWatch
+            }
         }
     }
 
