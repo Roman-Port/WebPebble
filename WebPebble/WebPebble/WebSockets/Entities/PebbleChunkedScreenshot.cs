@@ -73,9 +73,18 @@ namespace WebPebble.WebSockets.Entities
 
             expanded_data = decode_image_8bit_corrected();
 
-            Console.WriteLine(JsonConvert.SerializeObject(expanded_data));
+            //The expanded data now consists of the colors channels. Place them in the image.
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    int pos = ((x * width) + y)*4;
+                    f.SetPixel(x, y, new FastColor((byte)expanded_data[pos], (byte)expanded_data[pos+1], (byte)expanded_data[pos+2]));
+                }
+            }
 
-            //f.Save("/home/roman/img.bmp");
+
+            f.Save("/home/roman/img.bmp");
 
         }
 
