@@ -60,7 +60,12 @@ namespace WebPebble.WebSockets
             {
                 //Use the object instead. Create one if it doesn't exist.
                 if (active_receive_img == null)
-                    active_receive_img = new PebbleChunkedScreenshot(callback);
+                    active_receive_img = new PebbleChunkedScreenshot((byte[] data) =>
+                    {
+                        //Clear active screenshot and then call callback.
+                        active_receive_img = null;
+                        callback(data);
+                    });
                 return active_receive_img.OnGotData(msg);
             });
         }

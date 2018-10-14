@@ -155,8 +155,8 @@ namespace WebPebble.WebSockets
             pair.phone.GetScreenshot((byte[] data) =>
            {
                //Create the reply and encode the image data as base64.
-               string output = "data:image/png;base64," + Convert.ToBase64String(data);
-               QuickReply(req.requestid, WebPebbleRequestType.Screenshot, new Dictionary<string, string>() { { "data", output } });
+               string output = Convert.ToBase64String(data);
+               QuickReply(req.requestid, WebPebbleRequestType.Screenshot, new Dictionary<string, string>() { { "data", output },{"img_header", "data:image/png;base64," }, {"download_header", "data:application/octet-stream;base64," } });
            });
         }
 

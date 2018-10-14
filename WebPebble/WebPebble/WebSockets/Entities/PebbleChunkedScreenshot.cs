@@ -24,6 +24,8 @@ namespace WebPebble.WebSockets.Entities
         public int width;
         public int height;
 
+        public const bool debug = false;
+
         public OnImageDone callback;
 
         public PebbleChunkedScreenshot(OnImageDone _callback)
@@ -31,9 +33,15 @@ namespace WebPebble.WebSockets.Entities
             callback = _callback;
         }
 
+        private void Log(string msg)
+        {
+            if (debug)
+                Console.WriteLine(msg);
+        }
+
         public AfterInterruptAction OnGotData(PebbleProtocolMessage msg)
         {
-            Console.WriteLine("Got screenshot chunk of size " + msg.data.Length);
+            Log("Got screenshot chunk of size " + msg.data.Length);
             if(chunkCount == 0)
             {
                 //This is a header chunk. Open it.
@@ -45,7 +53,7 @@ namespace WebPebble.WebSockets.Entities
                     height = ReadInt32(ms);
                     //Create the buffer based on the width and height.
                     bmp_buffer = new byte[width * height];
-                    Console.WriteLine("(Debug) Created image of size " + width.ToString() + "x" + height.ToString());
+                    Log("(Debug) Created image of size " + width.ToString() + "x" + height.ToString());
                     buffer_pos = 0;
                     //Copy the remainder of this content to the buffer.
                     byte[] buf = new byte[ms.Length - ms.Position];
@@ -57,12 +65,12 @@ namespace WebPebble.WebSockets.Entities
                 //Copy this content to the buffer.
                 msg.data.CopyTo(bmp_buffer, buffer_pos);
                 buffer_pos += msg.data.Length;
-                Console.WriteLine("(Debug) Buffer completeness: " + buffer_pos.ToString() + "/" + bmp_buffer.Length.ToString());
+                Log("(Debug) Buffer completeness: " + buffer_pos.ToString() + "/" + bmp_buffer.Length.ToString());
             }
             //If the buffer is complete, convert this into an actual image.
             if(buffer_pos == bmp_buffer.Length)
             {
-                Console.WriteLine("Buffer full. Creating image!");
+                Log("Buffer full. Creating image!");
                 FinalizeImage();
             }
             chunkCount++;
@@ -91,21 +99,9 @@ namespace WebPebble.WebSockets.Entities
                     int pixelPos = pos / 4;
                     int y = pixelPos / width;
                     int x = pixelPos % width;
-                    Console.WriteLine(x.ToString() + " " + y.ToString()+"_"+pos.ToString());
+                    Log(x.ToString() + " " + y.ToString()+"_"+pos.ToString());
                     image[x, y] = color;
                 }
-
-
-                /*for (int y = 0; y < height; y++)
-                {
-                    for (int x = 0; x < width; x++)
-                    {
-                        int pos = ((y * height) + x) * 4;
-                        var color = new Rgba32((byte)expanded_data[pos], (byte)expanded_data[pos + 1], (byte)expanded_data[pos + 2]);
-                        Console.WriteLine(x.ToString() + " " + y.ToString());
-                        image[x, y] = color;
-                    }
-                }*/
                 //Save the image to an array.
                 using (MemoryStream ms = new MemoryStream()) {
                     image.Save(ms, new SixLabors.ImageSharp.Formats.Png.PngEncoder());

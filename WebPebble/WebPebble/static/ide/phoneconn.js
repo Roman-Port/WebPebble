@@ -62,3 +62,15 @@ phoneconn.send = function (type, data, callback) {
     //Send on the websocket.
     phoneconn.ws.send(JSON.stringify(buf));
 }
+
+//API
+
+phoneconn.getScreenshot = function () {
+    project.showDialog("Taking Screenshot...", '<div class="inf_loader"></div>', [], [], null, false);
+    phoneconn.send(2, {}, function (data) {
+        project.showDialog("Pebble Screenshot", '<img src="' + data.img_header+data.data + '">', ["Save", "Dismiss"], [function () {
+            //Open iframe on this.
+            filemanager.DownloadUrl(data.download_header + data.data);
+        }, function () { }], null, false);
+    });
+}

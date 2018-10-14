@@ -147,24 +147,25 @@ namespace WebPebble.WebSockets
             user_uuid = user.uuid;
             authenticated = true;
             Console.WriteLine("User with UUID " + user_uuid + " connected.");
+            //Accept.
+            SendData(new byte[] { 0x09, 0x00 });
             //Add myself to the list of clients.
-            if(WebPebble.WebSockets.WebSocketServer.connectedClients.ContainsKey(user_uuid))
+            if (WebPebble.WebSockets.WebSocketServer.connectedClients.ContainsKey(user_uuid))
             {
                 //Replace old phone user, if any.
                 WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid].phone = this;
                 pair = WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid];
                 //If the web is connected, tell it we have connected.
-                SetStatus(true);
+                
                 try
                 {
                     pair.web.SetStatus(true);
-                    
+                    SetStatus(true);
                     pair.connected = true;
                 }
-                catch (Exception ex)
+                catch
                 {
-                    //Remain in "disconnected" state.
-                    Console.WriteLine("(Debug) " + ex.Message + ex.StackTrace);
+
                 }
             } else
             {
@@ -176,9 +177,6 @@ namespace WebPebble.WebSockets
                 WebPebble.WebSockets.WebSocketServer.connectedClients.Add(user_uuid, pair);
                 pair = WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid];
             }
-            
-            //Accept.
-            SendData(new byte[] {0x09, 0x00 });
             //Now, WebPebble will deal with it.
         }
 
