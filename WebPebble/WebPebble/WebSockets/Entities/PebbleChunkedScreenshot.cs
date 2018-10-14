@@ -89,7 +89,8 @@ namespace WebPebble.WebSockets.Entities
                         //Convert this to an RGB color.
                         PebbleColorMap value = (PebbleColorMap)color_id;
                         string hex_code = value.ToString().Substring(1);
-                        Console.WriteLine(hex_code);
+                        Console.WriteLine(color_id);
+                        Console.WriteLine(value.ToString());
                         byte[] data = StringToByteArray(hex_code);
                         Console.WriteLine(x);
                         Console.WriteLine(data.Length);
