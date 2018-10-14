@@ -67,7 +67,7 @@ namespace WebPebble.WebSockets.Entities
             bool oneBppMode = version == 1;
             BitArray ba = new BitArray(bmp_buffer);
 
-            using (Image<Rgba32> image = new Image<Rgba32>(width*2,height*2))
+            using (Image<Rgba32> image = new Image<Rgba32>(width,height))
             {
                 for (int x = 0; x < width; x++)
                 {
@@ -79,10 +79,11 @@ namespace WebPebble.WebSockets.Entities
                         {
                             //Read the bit instead of the byte.
                             bool on = ba[pos];
+                            Console.WriteLine(x);
                             if (on)
-                                image[x+1, y+1] = new Rgba32(0, 0, 0);
+                                image[x, y] = new Rgba32(0, 0, 0);
                             else
-                                image[x+1, y+1] = new Rgba32(255, 255, 255);
+                                image[x, y] = new Rgba32(255, 255, 255);
                         }
                         else
                         {
