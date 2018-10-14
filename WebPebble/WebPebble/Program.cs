@@ -61,7 +61,6 @@ namespace WebPebble
             AddService(true, Services.Projects.Compile.DoCompile, "/build/", true);
             AddService(true, Services.Projects.History.OnRequest, "/build_history/", true);
             AddService(true, Services.Projects.PbwMedia.OnRequest, "/pbw_media/", true);
-            AddService(true, WebSockets.WebSocketServer.HandleHttpSetup, "/ws_login/", true);
             //Start the WebSocket server.
             WebSocketServer.StartServer();
             //Start
@@ -227,10 +226,17 @@ namespace WebPebble
             services.Add(ser);
         }
 
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, IApplicationLifetime applicationLifetime)
         {
+            applicationLifetime.ApplicationStopping.Register(OnShutdown);
             app.Run(OnHttpRequest);
 
+        }
+
+        private void OnShutdown()
+        {
+            //Shutdown the WebSocket server gracefully.
+            WebSockets.WebSocketServer.wssv.Stop();
         }
 
         public static void QuickWriteToDoc(Microsoft.AspNetCore.Http.HttpContext context, string content, string type = "text/html", int code = 200)

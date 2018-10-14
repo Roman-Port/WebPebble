@@ -144,16 +144,13 @@ project.init = function () {
             n.className = "btn btn_active";
             //Fetch appinfo.json
             project.serverRequest("appinfo.json", function (app) {
-                //Log into the websocket. Get the IP.
-                project.serverRequest("ws_login/", function (url) {
-                    phoneconn.url = url + "webpebble";
-                    phoneconn.init(function () {
-                        project.appInfo = app;
-                        project.started = false;
-                        //Allow the user to use this.
-                        project.hideDialog();
-                    });
-                }, null, false);
+                //Log into the websocket.
+                phoneconn.init(function () {
+                    project.appInfo = app;
+                    project.started = false;
+                    //Allow the user to use this.
+                    project.hideDialog();
+                });
                 
             }, null, true);
             
