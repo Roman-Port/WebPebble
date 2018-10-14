@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -19,7 +19,6 @@ namespace WebPebble.WebSockets
             ws = _ws;
         }
 
-        /* Helper functions */
         public async Task<byte[]> WaitForData(int timeout = 2000, int bufferSize = 512)
         {
             //Ugly. Wait for data and lock thread.
@@ -75,7 +74,6 @@ namespace WebPebble.WebSockets
             ms.Read(buf, 0, len);
             return buf;
         }
-        /* API functions */
 
         public async Task<Oauth.E_RPWS_User> DoAuth()
         {
@@ -131,18 +129,5 @@ namespace WebPebble.WebSockets
         }
     }
 
-    public enum CloudPebbleCode
-    {
-        PEBBLE_PROTOCOL_WATCH_TO_PHONE = 0,
-        PEBBLE_PROTOCOL_PHONE_TO_WATCH = 1,
-        PHONE_APP_LOG = 2,
-        PHONE_SERVER_LOG = 3,
-        APP_INSTALL = 4,
-        STATUS_CODE = 5,
-        PHONE_INFO = 6,
-        CONNECTION_STATUS = 7,
-        PROXY_CONNECTION_STATUS = 8,
-        AUTH_TOKEN = 9,
-        TIMELINE_PIN_ACTION = 12
-    }
-}
+    
+}*/
