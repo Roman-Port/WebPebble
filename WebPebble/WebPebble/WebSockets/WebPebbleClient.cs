@@ -146,8 +146,10 @@ namespace WebPebble.WebSockets
             QuickReply(-1, WebPebbleRequestType.ConnectionStatus, new Dictionary<string, string>() { { "connected", connected.ToString().ToLower() } });
         }
 
+        private int pendingScreenshotRequestId = -2;
         private void DoGetScreenshot(WebPebbleRequest req)
         {
+            pendingScreenshotRequestId = req.requestid;
             //If we're not connected, tell them so.
             if (!CheckIfConnected(req))
                 return;
@@ -156,7 +158,7 @@ namespace WebPebble.WebSockets
            {
                //Create the reply and encode the image data as base64.
                string output = Convert.ToBase64String(data);
-               QuickReply(req.requestid, WebPebbleRequestType.Screenshot, new Dictionary<string, string>() { { "data", output },{"img_header", "data:image/png;base64," }, {"download_header", "data:application/octet-stream;base64," } });
+               QuickReply(pendingScreenshotRequestId, WebPebbleRequestType.Screenshot, new Dictionary<string, string>() { { "data", output },{"img_header", "data:image/png;base64," }, {"download_header", "data:application/octet-stream;base64," } });
            });
         }
 
