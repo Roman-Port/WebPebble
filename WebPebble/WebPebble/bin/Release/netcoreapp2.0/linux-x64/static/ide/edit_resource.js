@@ -29,6 +29,7 @@ edit_resource.onSelectExisting = function (context) {
         "id": context
     };
     //Fill in DOM data.
+    document.getElementById('addresrc_entry_filename').value = media_data.nickname;
     document.getElementById('addresrc_entry_id').value = pebble_data.name; //C ID
     document.getElementById('addresrc_entry_type').value = pebble_data.type; //The type
     //Do chosen platforms later.
@@ -40,7 +41,7 @@ edit_resource.onSelectExisting = function (context) {
         //Trim the font size off of the identifier and fill in the font size and ID.
         var name_split = pebble_data.name.split('_');
         var font_size = name_split[name_split.length - 1];
-        var idd = pebble_data.name.substring(0, pebble_data.name.length - font_size - 1);
+        var idd = pebble_data.name.substring(0, pebble_data.name.length - font_size.length - 1);
         //Set elements
         document.getElementById('addresrc_entry_font_size').value = font_size;
         document.getElementById('addresrc_entry_id').value = idd;
@@ -51,7 +52,7 @@ edit_resource.onSelectExisting = function (context) {
         }
         //If compatability isn't latest, set it to 2.7.
         if (pebble_data.compatibility != null) {
-            document.getElementById('addresrc_entry_font_compat').value = "2.7";
+            document.getElementById('addresrc_entry_font_compat').value = "27";
         }
     }
     if (pebble_data.type == "bitmap") {
