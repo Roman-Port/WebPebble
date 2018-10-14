@@ -12,6 +12,8 @@ using static WebPebble.WebSockets.CloudPebbleDevice;
 
 namespace WebPebble.WebSockets.Entities
 {
+
+    public delegate void OnImageDone(byte[] data);
     public class PebbleChunkedScreenshot
     {
         public int chunkCount = 0;
@@ -21,6 +23,13 @@ namespace WebPebble.WebSockets.Entities
         public int version;
         public int width;
         public int height;
+
+        public OnImageDone callback;
+
+        public PebbleChunkedScreenshot(OnImageDone _callback)
+        {
+            callback = _callback;
+        }
 
         public AfterInterruptAction OnGotData(PebbleProtocolMessage msg)
         {
@@ -66,6 +75,7 @@ namespace WebPebble.WebSockets.Entities
         {
             //Called after the buffer is complete.
             BitArray ba = new BitArray(bmp_buffer);
+            byte[] output_buffer;
 
             //Decode the image data.
             int[] expanded_data;
@@ -75,18 +85,26 @@ namespace WebPebble.WebSockets.Entities
             //The expanded data now consists of the colors channels. Place them in the image.
             using (Image<Rgba32> image = new Image<Rgba32>(width,height))
             {
-                for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
                 {
-                    for (int y = 0; y < height; y++)
+                    for (int x = 0; x < width; x++)
                     {
-                        int pos = ((x * width) + y) * 4;
+                        int pos = ((y * height) + x) * 4;
                         image[x, y] = new Rgba32((byte)expanded_data[pos], (byte)expanded_data[pos + 1], (byte)expanded_data[pos + 2]);
                     }
                 }
-                using (FileStream fs = new FileStream("/home/roman/test.png", FileMode.Create))
-                    image.Save(fs, new SixLabors.ImageSharp.Formats.Png.PngEncoder());
+                //Save the image to an array.
+                using (MemoryStream ms = new MemoryStream()) {
+                    image.Save(ms, new SixLabors.ImageSharp.Formats.Png.PngEncoder());
+                    //Copy to buffer.
+                    output_buffer = new byte[ms.Length];
+                    ms.Position = 0;
+                    ms.Read(output_buffer, 0, output_buffer.Length);
+                }
             }
 
+            //Call the final callback.
+            callback(output_buffer);
         }
 
         private int[] decode_image_8bit_corrected()
@@ -115,15 +133,6 @@ namespace WebPebble.WebSockets.Entities
             return BitConverter.ToInt32(buf,0);
         }
 
-        //thanks to https://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array for helping me at 2:30 AM
-        public static byte[] StringToByteArray(string hex)
-        {
-            byte[] d = new byte[3];
-            d[0] = Convert.ToByte(hex.Substring(0, 2), 16);
-            d[1] = Convert.ToByte(hex.Substring(2, 2), 16);
-            d[2] = Convert.ToByte(hex.Substring(4, 2), 16);
-            return d;
-        }
 
         public static int[] PebbleColorMap = new int[]
         {

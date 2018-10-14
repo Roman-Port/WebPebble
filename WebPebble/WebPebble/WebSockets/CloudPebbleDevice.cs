@@ -141,7 +141,8 @@ namespace WebPebble.WebSockets
             //Set the status in the app to "connected"
             SetStatus(true);
             //Debug: Take screenshot
-            GetScreenshot();
+            File.WriteAllBytes("/home/roman/test3.png", GetScreenshotAndWait());
+            Console.WriteLine("Screenshot finished.");
         }
 
         /* External API */
