@@ -21,6 +21,7 @@ namespace WebPebble.WebSockets
         {
             Console.WriteLine("Starting WebSocket server...");
             wssv = new WebSocketSharp.Server.WebSocketServer(IPAddress.Any, 43187, false);
+            wssv.ReuseAddress = true;
             wssv.AddWebSocketService<CloudPebbleDevice>("/device");
             wssv.AddWebSocketService<WebPebbleClient>("/webpebble");
             wssv.Start();

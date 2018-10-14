@@ -154,10 +154,11 @@ namespace WebPebble.WebSockets
                 WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid].phone = this;
                 pair = WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid];
                 //If the web is connected, tell it we have connected.
+                SetStatus(true);
                 try
                 {
                     pair.web.SetStatus(true);
-                    SetStatus(true);
+                    
                     pair.connected = true;
                 }
                 catch

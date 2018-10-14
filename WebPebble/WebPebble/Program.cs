@@ -236,7 +236,8 @@ namespace WebPebble
         private void OnShutdown()
         {
             //Shutdown the WebSocket server gracefully.
-            //WebSockets.WebSocketServer.wssv.Stop();
+            WebSockets.WebSocketServer.wssv.WaitTime = new TimeSpan(0, 0, 15);
+            WebSockets.WebSocketServer.wssv.Stop();
             Console.WriteLine("Shutting down WS server...");
         }
 

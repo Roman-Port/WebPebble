@@ -83,14 +83,15 @@ namespace WebPebble.WebSockets.Entities
             expanded_data = decode_image_8bit_corrected();
 
             //The expanded data now consists of the colors channels. Place them in the image.
-            using (Image<Rgba32> image = new Image<Rgba32>(width,height))
+            using (Image<Rgba32> image = new Image<Rgba32>(height,width))
             {
                 for (int y = 0; y < height; y++)
                 {
                     for (int x = 0; x < width; x++)
                     {
                         int pos = ((y * height) + x) * 4;
-                        image[x, y] = new Rgba32((byte)expanded_data[pos], (byte)expanded_data[pos + 1], (byte)expanded_data[pos + 2]);
+                        var color = new Rgba32((byte)expanded_data[pos], (byte)expanded_data[pos + 1], (byte)expanded_data[pos + 2]);
+                        image[x, y] = color;
                     }
                 }
                 //Save the image to an array.
