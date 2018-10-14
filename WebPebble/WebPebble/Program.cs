@@ -12,6 +12,7 @@ using WebPebble.Oauth;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using WebPebble.WebSockets;
 
 namespace WebPebble
 {
@@ -60,6 +61,8 @@ namespace WebPebble
             AddService(true, Services.Projects.Compile.DoCompile, "/build/", true);
             AddService(true, Services.Projects.History.OnRequest, "/build_history/", true);
             AddService(true, Services.Projects.PbwMedia.OnRequest, "/pbw_media/", true);
+            //Start the WebSocket server.
+            WebSocketServer.StartServer();
             //Start
             MainAsync().GetAwaiter().GetResult();
         }

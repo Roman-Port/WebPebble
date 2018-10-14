@@ -203,7 +203,7 @@ edit_resource.updateDataNow = function (callback) {
         project.saveAppInfo(function () {
             project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/rename/?name=" + encodeURIComponent(uploaded_file.nickname), function () {
                 //Rename object on sidebar.
-                sidebarmanager.items[uploaded_file.id].tab_ele.innerText = uploaded_file.nickname;
+                sidebarmanager.items[uploaded_file.id].tab_ele.firstChild.innerText = uploaded_file.nickname;
                 //Hide the loader.
                 project.hideDialog();
                 //Call the callback, if there is one.

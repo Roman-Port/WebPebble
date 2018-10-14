@@ -213,10 +213,7 @@ project.initKeybinds = function () {
                     event.preventDefault();
                     //Control + S. Save.
                     filemanager.SaveAll(function () {
-                        //Hide the dialog after a moment.
-                        window.setTimeout(function () {
-                            project.hideDialog();
-                        }, 2000);
+                        project.hideDialog();
                     })
                     break;
             }
@@ -237,13 +234,15 @@ project.buildPbwBtn = function () {
     //Save first.
     filemanager.SaveAll(function () {
         //Show message because this could take a while.
-        project.showDialog("Building PBW...", "This could take a while.", [], []);
+        project.showDialog("Building PBW...", "<div class=\"inf_loader\"></div>", [], []);
         project.serverRequest("build/", function (data) {
             //Check if the build crashed.
             if (data.passed) {
                 //OK.
                 project.showDialog("Build Finished", "The build finished successfully.", ["Dismiss", "Get PBW", "View Log"], [function () { },
-                function () { },
+                    function () {
+                        filemanager.DownloadUrl("/project/" + project.id + "/pbw_media/" + data.id + "/" + project.id + "_build_" + data.id + ".pbw");
+                },
                 function () {
                     project.displayLog(data.log, data.id);
                 }]);
