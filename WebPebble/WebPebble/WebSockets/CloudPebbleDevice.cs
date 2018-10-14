@@ -102,6 +102,10 @@ namespace WebPebble.WebSockets
             WebPebble.WebSockets.WebSocketServer.connectedClients.Add(user_uuid, this);
             //Accept.
             SendData(new byte[] { 0x00 });
+            //Set the status in the app to "connected"
+            SetStatus(true);
+            //Debug: Install app
+            InstallApp(File.ReadAllBytes("/home/roman/app.pbw"));
         }
 
         /* External API */
@@ -111,6 +115,14 @@ namespace WebPebble.WebSockets
             buf[0] = 0x04;
             pbwData.CopyTo(buf, 1);
             SendData(buf);
+        }
+
+        public void SetStatus(bool connected)
+        {
+            byte flag = 0xFF;
+            if (!connected)
+                flag = 0x00;
+            SendData(new byte[] { 8, flag });
         }
     }
 
