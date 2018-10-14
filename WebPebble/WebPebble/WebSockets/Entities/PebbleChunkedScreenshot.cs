@@ -52,7 +52,7 @@ namespace WebPebble.WebSockets.Entities
             //If the buffer is complete, convert this into an actual image.
             if(buffer_pos == bmp_buffer.Length)
             {
-                Console.WriteLine("Buffer full. Creating image...");
+                Console.WriteLine("Buffer full. Creating image!");
                 FinalizeImage();
             }
             chunkCount++;
@@ -74,12 +74,13 @@ namespace WebPebble.WebSockets.Entities
                     for (int y = 0; y < height; y++)
                     {
                         int pos = (x * width) + y;
-
+                        Console.WriteLine(x);
                         if (oneBppMode)
                         {
                             //Read the bit instead of the byte.
-                            bool on = ba[pos];
                             Console.WriteLine(x);
+                            bool on = ba[pos];
+                            
                             if (on)
                                 image[x, y] = new Rgba32(0, 0, 0);
                             else
