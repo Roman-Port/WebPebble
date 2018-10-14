@@ -32,6 +32,11 @@ namespace WebPebble.WebSockets.Entities
                     bmp_buffer = new byte[width * height];
                     Console.WriteLine("(Debug) Created image of size " + width.ToString() + "x" + height.ToString());
                     buffer_pos = 0;
+                    //Copy the remainder of this content to the buffer.
+                    byte[] buf = new byte[ms.Length - ms.Position];
+                    ms.Read(buf, 0, buf.Length);
+                    msg.data.CopyTo(buf, buffer_pos);
+                    buffer_pos += buf.Length;
                 }
             } else {
                 //Copy this content to the buffer.
