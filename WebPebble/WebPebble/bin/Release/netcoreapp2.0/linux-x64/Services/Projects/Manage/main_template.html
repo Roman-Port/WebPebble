@@ -364,14 +364,14 @@
                     <div class="control_item">
                         <div class="label">Upload File</div>
                         <div class="control" style="background-color:transparent;">
-                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" /></form>
+                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" id="add_resrc_uploader_file"/></form>
                         </div>
                     </div>
                 </div>
                 <!-- Save buttons -->
                 <div class="container open_sans container_control">
-                    <div class="med_button">Save</div>
-                    <div class="med_button">Delete</div>
+                    <div class="med_button" onclick="edit_resource.saveNow();">Save</div>
+                    <div class="med_button" style="display:none;" id="add_resrc_delete">Delete</div>
                 </div>
             </div>
         </div>
