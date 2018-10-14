@@ -15,6 +15,8 @@ namespace WebPebble.WebSockets
         public List<PebbleProtocolMessage> messageBuffer = new List<PebbleProtocolMessage>();
         public List<InterruptOnRequest> interrupts = new List<InterruptOnRequest>();
 
+        public WebSocketPair pair;
+
         protected override void OnMessage(MessageEventArgs e)
         {
             MemoryStream ms = new MemoryStream(e.RawData);
@@ -72,7 +74,24 @@ namespace WebPebble.WebSockets
 
         protected override void OnClose(CloseEventArgs e)
         {
+            //Send disconnect signal to each client.
+            try
+            {
+                pair.phone.SetStatus(false);
+            }
+            catch
+            {
 
+            }
+            try
+            {
+                pair.web.SetStatus(false);
+            }
+            catch
+            {
+
+            }
+            pair.connected = false;
         }
 
         public void SendData(byte[] data)
@@ -131,18 +150,34 @@ namespace WebPebble.WebSockets
             //Add myself to the list of clients.
             if(WebPebble.WebSockets.WebSocketServer.connectedClients.ContainsKey(user_uuid))
             {
-                //Disconnect old user.
-                WebPebble.WebSockets.WebSocketServer.connectedClients.Remove(user_uuid);
+                //Replace old phone user, if any.
+                WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid].phone = this;
+                pair = WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid];
+                //If the web is connected, tell it we have connected.
+                try
+                {
+                    pair.web.SetStatus(true);
+                    SetStatus(true);
+                    pair.connected = true;
+                }
+                catch
+                {
+                    //Remain in "disconnected" state.
+                }
+            } else
+            {
+                //Add ourself.
+                WebSocketPair pair = new WebSocketPair
+                {
+                    phone = this
+                };
+                WebPebble.WebSockets.WebSocketServer.connectedClients.Add(user_uuid, pair);
+                pair = WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid];
             }
-            //Add ourself.
-            WebPebble.WebSockets.WebSocketServer.connectedClients.Add(user_uuid, this);
+            
             //Accept.
             SendData(new byte[] {0x09, 0x00 });
-            //Set the status in the app to "connected"
-            SetStatus(true);
-            //Debug: Take screenshot
-            File.WriteAllBytes("/home/roman/test3.png", GetScreenshotAndWait());
-            Console.WriteLine("Screenshot finished.");
+            //Now, WebPebble will deal with it.
         }
 
         /* External API */

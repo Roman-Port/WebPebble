@@ -53,21 +53,26 @@ namespace WebPebble.WebSockets
 
         public PebbleChunkedScreenshot active_receive_img;
 
-        public byte[] GetScreenshotAndWait()
+        public void GetScreenshot(OnImageDone callback)
         {
             //Screenshots are sent in chunks. The first chunk has a header of 12 bytes.
-            byte[] output_buffer = null;
             SendEndpointMsg(PebbleEndpointType.SCREENSHOT, new byte[] { 0x00 }, (PebbleProtocolMessage msg) =>
             {
                 //Use the object instead. Create one if it doesn't exist.
                 if (active_receive_img == null)
-                    active_receive_img = new PebbleChunkedScreenshot((byte[] end_data) =>
-                    {
-                        //Reset the active image and return the output buffer.
-                        active_receive_img = null;
-                        output_buffer = end_data;
-                    });
+                    active_receive_img = new PebbleChunkedScreenshot(callback);
                 return active_receive_img.OnGotData(msg);
+            });
+        }
+
+        public byte[] GetScreenshotAndWait()
+        {
+            byte[] output_buffer = null;
+            GetScreenshot((byte[] end_data) =>
+            {
+                //Reset the active image and return the output buffer.
+                active_receive_img = null;
+                output_buffer = end_data;
             });
             //Wait
             while (output_buffer == null) ;

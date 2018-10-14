@@ -144,10 +144,13 @@ project.init = function () {
             n.className = "btn btn_active";
             //Fetch appinfo.json
             project.serverRequest("appinfo.json", function (app) {
-                project.appInfo = app;
-                project.started = false;
-                //Allow the user to use this.
-                project.hideDialog();
+                //Log into the websocket.
+                phoneconn.init(function () {
+                    project.appInfo = app;
+                    project.started = false;
+                    //Allow the user to use this.
+                    project.hideDialog();
+                });
             }, null, true);
             
         }, null, true);

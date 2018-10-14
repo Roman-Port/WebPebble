@@ -13,15 +13,24 @@ namespace WebPebble.WebSockets
 {
     public static class WebSocketServer
     {
-        public static Dictionary<string, CloudPebbleDevice> connectedClients = new Dictionary<string, CloudPebbleDevice>();
+        public static Dictionary<string, WebSocketPair> connectedClients = new Dictionary<string, WebSocketPair>();
 
         public static void StartServer()
         {
             Console.WriteLine("Starting WebSocket server...");
             var wssv = new WebSocketSharp.Server.WebSocketServer(IPAddress.Any, 43187, false);
             wssv.AddWebSocketService<CloudPebbleDevice>("/device");
+            wssv.AddWebSocketService<WebPebbleClient>("/webpebble");
             wssv.Start();
             Console.WriteLine("Started WebSocket server.");
         }
+    }
+
+    public class WebSocketPair
+    {
+        public CloudPebbleDevice phone;
+        public WebPebbleClient web;
+
+        public bool connected = false;
     }
 }
