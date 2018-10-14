@@ -64,11 +64,8 @@ namespace WebPebble.WebSockets.Entities
         public void FinalizeImage()
         {
             //Called after the buffer is complete.
-            Console.WriteLine("test 1");
             BitArray ba = new BitArray(bmp_buffer);
-            Console.WriteLine("test 2");
             FastBitmap f = new FastBitmap(width, height);
-            Console.WriteLine("test 3");
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -93,6 +90,8 @@ namespace WebPebble.WebSockets.Entities
                         PebbleColorMap value = (PebbleColorMap)color_id;
                         string hex_code = value.ToString().Substring(1);
                         byte[] data = StringToByteArray(hex_code);
+                        Console.WriteLine(x);
+                        Console.WriteLine(data.Length);
                         f.SetPixel(x, y, new FastColor(data[0], data[1], data[2]));
                     }
                 }
