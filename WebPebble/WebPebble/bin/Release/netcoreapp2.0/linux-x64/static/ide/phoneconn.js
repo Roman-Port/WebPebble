@@ -68,9 +68,9 @@ phoneconn.send = function (type, data, callback) {
 phoneconn.getScreenshot = function () {
     project.showDialog("Taking Screenshot...", '<div class="inf_loader"></div>', [], [], null, false);
     phoneconn.send(2, {}, function (data) {
-        project.showDialog("Pebble Screenshot", '<img src="' + data.img_header+data.data + '">', ["Save", "Dismiss"], [function () {
+        project.showDialog("Pebble Screenshot", '<img src="' + data.data.img_header + data.data.data + '">', ["Save", "Dismiss"], [function () {
             //Open iframe on this.
-            filemanager.DownloadUrl(data.download_header + data.data);
+            filemanager.DownloadUrl(data.data.download_header + data.data.data);
         }, function () { }], null, false);
     });
 }
