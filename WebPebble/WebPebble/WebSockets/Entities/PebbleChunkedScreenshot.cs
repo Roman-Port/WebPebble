@@ -35,7 +35,7 @@ namespace WebPebble.WebSockets.Entities
                     //Copy the remainder of this content to the buffer.
                     byte[] buf = new byte[ms.Length - ms.Position];
                     ms.Read(buf, 0, buf.Length);
-                    msg.data.CopyTo(buf, buffer_pos);
+                    buf.CopyTo(bmp_buffer, buffer_pos);
                     buffer_pos += buf.Length;
                 }
             } else {
