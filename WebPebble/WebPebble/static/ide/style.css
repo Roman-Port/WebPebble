@@ -567,6 +567,15 @@ body {
 }
 
 .watch_control_window .big_button {
+    height: 24px;
+    line-height: 24px;
+    padding: 8px;
+    background-color: #1b2432;
+    border-radius: 5px;
+    float: right;
+    display: inline-block;
+    margin-left: 8px;
+    cursor: pointer;
     position: relative;
 }
 
