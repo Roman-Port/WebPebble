@@ -41,8 +41,8 @@ phoneconn.onMessage = function (event) {
     console.log(data);
     //If the ID of this is -1, this is a event. 
     if (data.requestid == -1) {
-        var event = phoneconn.eventList[data.requestid];
-        event(data);
+        var target = phoneconn.eventList[data.type];
+        target(data);
     } else {
         //Find the target callback for this.
         var target = phoneconn.callbacks[data.requestid];
