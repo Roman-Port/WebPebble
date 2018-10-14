@@ -93,8 +93,11 @@ namespace WebPebble.WebSockets.Entities
                             PebbleColorMap value = (PebbleColorMap)color_id;
                             string hex_code = value.ToString().Substring(1);
                             byte[] data = StringToByteArray(hex_code);
-                            Console.WriteLine(x);
                             var c = new Rgba32(data[0], data[1], data[2]);
+                            Console.WriteLine(x);
+                            Console.WriteLine(y);
+                            Console.WriteLine(image.Width);
+                            Console.WriteLine(image.Height);
                             image[x, y] = c;
                         }
                     }
