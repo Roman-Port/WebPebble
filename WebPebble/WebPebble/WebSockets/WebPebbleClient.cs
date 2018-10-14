@@ -130,12 +130,12 @@ namespace WebPebble.WebSockets
                 else
                 {
                     //Add ourself.
-                    WebSocketPair pair = new WebSocketPair
+                    WebSocketPair new_pair = new WebSocketPair
                     {
                         web = this
                     };
-                    WebPebble.WebSockets.WebSocketServer.connectedClients.Add(user_uuid, pair);
-                    pair = WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid];
+                    WebPebble.WebSockets.WebSocketServer.connectedClients.Add(user_uuid, new_pair);
+                    this.pair = WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid];
                 }
             }
         }

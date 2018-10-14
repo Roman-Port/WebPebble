@@ -236,7 +236,8 @@ namespace WebPebble
         private void OnShutdown()
         {
             //Shutdown the WebSocket server gracefully.
-            WebSockets.WebSocketServer.wssv.Stop();
+            //WebSockets.WebSocketServer.wssv.Stop();
+            Console.WriteLine("Shutting down WS server...");
         }
 
         public static void QuickWriteToDoc(Microsoft.AspNetCore.Http.HttpContext context, string content, string type = "text/html", int code = 200)
