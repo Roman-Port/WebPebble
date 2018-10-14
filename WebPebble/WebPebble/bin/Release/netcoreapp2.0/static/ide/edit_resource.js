@@ -1,15 +1,71 @@
 ﻿var edit_resource = {};
+edit_resource.openFile = null;
 
 edit_resource.onSelect = function () {
     //Selected to start.
-
+    edit_resource.openFile = null;
     //Make sure we can see the selected type.
     edit_resource.onTypeChange('bitmap');
 }
 
-edit_resource.onSelectExisting = function () {
-    console.log(this);
-    console.log("todo");
+edit_resource.onSelectExisting = function (context) {
+    //Context contains our ID. Get the data for it.
+    var pebble_data = project.appInfo.pebble.resources.media;
+    //Find this one.
+    for (var i = 0; i < pebble_data.length; i += 1) {
+        if (pebble_data[i].x_webpebble_media_id == context) {
+            pebble_data = pebble_data[i];
+            break;
+        }
+    }
+    //Get the media data.
+    var media_data = project.mediaResourcesFiles[context];
+    console.log(pebble_data);
+    console.log(media_data);
+    //Store temporarily.
+    edit_resource.openFile = {
+        "media_data": media_data,
+        "pebble_data": pebble_data,
+        "id": context
+    };
+    //Fill in DOM data.
+    document.getElementById('addresrc_entry_id').value = pebble_data.name; //C ID
+    document.getElementById('addresrc_entry_type').value = pebble_data.type; //The type
+    //Do chosen platforms later.
+    edit_resource.onTypeChange(pebble_data.type);
+    //Type specific data.
+    if (pebble_data.type == "font") {
+        //Use the regex entered as the character regex.
+        document.getElementById('addresrc_entry_font_characters').value = pebble_data.characterRegex;
+        //Trim the font size off of the identifier and fill in the font size and ID.
+        var name_split = pebble_data.name.split('_');
+        var font_size = name_split[name_split.length - 1];
+        var idd = pebble_data.name.substring(0, pebble_data.name.length - font_size - 1);
+        //Set elements
+        document.getElementById('addresrc_entry_font_size').value = font_size;
+        document.getElementById('addresrc_entry_id').value = idd;
+        //If the tracking adjust isn't zero, set it.
+        var trackAdjust = pebble_data.trackingAdjust;
+        if (trackAdjust != null) {
+            document.getElementById('addresrc_entry_font_tracking').value = pebble_data.trackingAdjust;
+        }
+        //If compatability isn't latest, set it to 2.7.
+        if (pebble_data.compatibility != null) {
+            document.getElementById('addresrc_entry_font_compat').value = "2.7";
+        }
+    }
+    if (pebble_data.type == "bitmap") {
+        //Add each compression type.
+        if (pebble_data.memoryFormat != null) {
+            document.getElementById('addresrc_entry_bitmap_memformat').value = pebble_data.memoryFormat;
+        }
+        if (pebble_data.spaceOptimization != null) {
+            document.getElementById('addresrc_entry_bitmap_opti').value = pebble_data.spaceOptimization;
+        }
+        if (pebble_data.storageFormat != null) {
+            document.getElementById('addresrc_entry_bitmap_storeformat').value = pebble_data.storageFormat;
+        }
+    }
 }
 
 edit_resource.onTypeChange = function (type) {

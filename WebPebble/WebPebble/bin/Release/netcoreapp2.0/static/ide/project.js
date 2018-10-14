@@ -400,13 +400,20 @@ project.saveAppInfo = function (callback) {
     }, null, false, "PUT", JSON.stringify(project.appInfo));
 }
 
+project.mediaResourcesFiles = {};
+
 project.addResourceToSidebar = function (data) {
     //Add the tab for this.
-    var tab = sidebarmanager.addButton(data.nickname, 2, false, function (idd) {
-        //Show the edit menu.
-        edit_resource.onSelectExisting();
-        return true;
+    project.mediaResourcesFiles[data.id] = data;
+    var tab = sidebarmanager.addButton(data.nickname, 2, false, function (context) {
+        
     }, function () {
         //Show the save/cancel dialog.
-    }, document.getElementById('template_add_resource'), d.id, false, "");
+        }, document.getElementById('template_add_resource'), data.id, false, "", function (context) {
+            //Show the edit menu.
+            edit_resource.onSelectExisting(context);
+        }
+    );
+    //Set the data on the DOM.
+    tab.tab_ele.x_data = data;
 }

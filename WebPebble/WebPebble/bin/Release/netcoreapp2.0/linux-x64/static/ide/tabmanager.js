@@ -133,7 +133,7 @@ sidebarmanager.show_content = function (tab) {
 
     //Run after callback.
     if (tab.clickActionAfter != null) {
-        tab.clickActionAfter(tab.id);
+        tab.clickActionAfter(tab.internalId);
     }
 
     //Set this to the current view.

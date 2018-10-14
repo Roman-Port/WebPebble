@@ -21,6 +21,9 @@ namespace WebPebble.Entities.PebbleProject
         public string memoryFormat { get; set; }
         public string spaceOptimization { get; set; }
         public string storageFormat { get; set; }
+
+        //Internal.
+        public string x_webpebble_media_id { get; set; }
     }
 
     public class Resources
