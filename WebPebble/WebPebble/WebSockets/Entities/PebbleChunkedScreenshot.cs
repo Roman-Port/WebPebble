@@ -1,9 +1,8 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+﻿
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -67,44 +66,41 @@ namespace WebPebble.WebSockets.Entities
             bool oneBppMode = version == 1;
             BitArray ba = new BitArray(bmp_buffer);
 
-            using (Image<Rgba32> image = new Image<Rgba32>(width,height))
+
+            /*for (int x = 0; x < width; x++)
             {
-                for (int x = 0; x < width; x++)
+                for (int y = 0; y < height; y++)
                 {
-                    for (int y = 0; y < height; y++)
+                    int pos = (x * width) + y;
+                    if (false)
                     {
-                        int pos = (x * width) + y;
-                        if (false)
-                        {
-                            //Read the bit instead of the byte.
-                            Console.WriteLine(x);
-                            bool on = ba[pos];
-                            
-                            if (on)
-                                image[x, y] = new Rgba32(0, 0, 0);
-                            else
-                                image[x, y] = new Rgba32(255, 255, 255);
-                        }
+                        //Read the bit instead of the byte.
+                        Console.WriteLine(x);
+                        bool on = ba[pos];
+
+                        if (on)
+                            image[x, y] = new Rgba32(0, 0, 0);
                         else
-                        {
-                            //This is going to be slow....
-                            byte color_id = bmp_buffer[pos];
-                            //Convert this to an RGB color.
-                            PebbleColorMap value = (PebbleColorMap)color_id;
-                            string hex_code = value.ToString().Substring(1);
-                            byte[] data = StringToByteArray(hex_code);
-                            var c = new Rgba32(data[0], data[1], data[2]);
-                            Console.WriteLine(x);
-                            Console.WriteLine(y);
-                            Console.WriteLine(image.Width);
-                            Console.WriteLine(image.Height);
-                            image[x, y] = c;
-                        }
+                            image[x, y] = new Rgba32(255, 255, 255);
+                    }
+                    else
+                    {
+                        //This is going to be slow....
+                        byte color_id = bmp_buffer[pos];
+                        //Convert this to an RGB color.
+                        PebbleColorMap value = (PebbleColorMap)color_id;
+                        string hex_code = value.ToString().Substring(1);
+                        byte[] data = StringToByteArray(hex_code);
+                        image[x, y] = new Bgra<byte>(data[0], data[1], data[2],255);
                     }
                 }
-
-                image.Save("/home/roman/testimg.png");
             }
+
+            image.Save();*/
+
+            Bitmap bm = new Bitmap(width, height);
+
+            bm.Save("/home/roman/img.png");
 
         }
 
