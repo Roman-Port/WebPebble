@@ -1,8 +1,11 @@
-﻿using System;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using static WebPebble.WebSockets.CloudPebbleDevice;
 
@@ -64,38 +67,39 @@ namespace WebPebble.WebSockets.Entities
             bool oneBppMode = version == 1;
             BitArray ba = new BitArray(bmp_buffer);
 
-            using(Bitmap bm = new Bitmap(width,height))
+            using (Image<Rgba32> image = new Image<Rgba32>(width,height))
             {
-                for(int x = 0; x<width; x++)
+                for (int x = 0; x < width; x++)
                 {
-                    for(int y = 0; y<height; y++)
+                    for (int y = 0; y < height; y++)
                     {
                         int pos = (x * width) + y;
 
-                        if(oneBppMode)
+                        if (oneBppMode)
                         {
                             //Read the bit instead of the byte.
                             bool on = ba[pos];
                             if (on)
-                                bm.SetPixel(x, y, Color.Black);
+                                image[x, y] = new Rgba32(0, 0, 0);
                             else
-                                bm.SetPixel(x, y, Color.White);
-                        } else
+                                image[x, y] = new Rgba32(255, 255, 255);
+                        }
+                        else
                         {
                             //This is going to be slow....
                             byte color_id = bmp_buffer[pos];
                             //Convert this to an RGB color.
                             PebbleColorMap value = (PebbleColorMap)color_id;
-                            string hex_code = "#" + value.ToString().Substring(1);
-                            var color = ColorTranslator.FromHtml(hex_code);
-                            bm.SetPixel(x, y, color);
+                            string hex_code = value.ToString().Substring(1);
+                            byte[] data = StringToByteArray(hex_code);
+                            image[x, y] = new Rgba32(data[0],data[1],data[2]);
                         }
                     }
                 }
-                //Save this image to RAM.
-                using (FileStream fs = new FileStream("/home/roman/test.png", FileMode.Create))
-                    bm.Save(fs, System.Drawing.Imaging.ImageFormat.Png);
+
+                image.Save("/home/roman/testimg.png");
             }
+
         }
 
         private int ReadInt32(MemoryStream ms)
@@ -104,6 +108,15 @@ namespace WebPebble.WebSockets.Entities
             ms.Read(buf, 0, 4);
             Array.Reverse(buf);
             return BitConverter.ToInt32(buf,0);
+        }
+
+        //thanks to https://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array for helping me at 2:30 AM
+        public static byte[] StringToByteArray(string hex)
+        {
+            return Enumerable.Range(0, hex.Length)
+                             .Where(x => x % 2 == 0)
+                             .Select(x => Convert.ToByte(hex.Substring(x, 2), 16))
+                             .ToArray();
         }
 
         enum PebbleColorMap
