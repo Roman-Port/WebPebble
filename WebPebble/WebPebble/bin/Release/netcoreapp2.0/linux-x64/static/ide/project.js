@@ -241,7 +241,7 @@ project.buildPbwBtn = function () {
                 //OK.
                 project.showDialog("Build Finished", "The build finished successfully.", ["Dismiss", "Get PBW", "View Log"], [function () { },
                     function () {
-                        filemanager.DownloadUrl("/projects/" + project.id + "/pbw_media/" + data.id + "/" + project.id + "_build_" + data.id + ".pbw");
+                        filemanager.DownloadUrl("/project/" + project.id + "/pbw_media/" + data.id + "/" + project.id + "_build_" + data.id + ".pbw");
                 },
                 function () {
                     project.displayLog(data.log, data.id);
