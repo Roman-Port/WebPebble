@@ -94,7 +94,8 @@ namespace WebPebble.WebSockets.Entities
                             string hex_code = value.ToString().Substring(1);
                             byte[] data = StringToByteArray(hex_code);
                             Console.WriteLine(x);
-                            image[x, y] = new Rgba32(data[0],data[1],data[2]);
+                            var c = new Rgba32(data[0], data[1], data[2]);
+                            image[x, y] = c;
                         }
                     }
                 }
