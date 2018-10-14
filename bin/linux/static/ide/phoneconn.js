@@ -5,6 +5,8 @@ phoneconn.ws = null;
 phoneconn.currentId = 1;
 phoneconn.callbacks = {};
 
+phoneconn.authorized = false;
+
 phoneconn.init = function (callback) {
     //Create a WebSocket connection.
     console.log("Connecting to " + phoneconn.url);
@@ -18,6 +20,14 @@ phoneconn.init = function (callback) {
         phoneconn.send(1, { "token": token }, function (data) {
             console.log("Got auth data:");
             console.log(data);
+            if (data.data["ok"] == "true") {
+                //Logged in OK
+                phoneconn.authorized = true;
+                callback();
+            } else {
+                //Failed. Tell the user.
+                project.showDialog("Failed to Authenticate", 'Failed to authenticate with the WebSocket connection. Try reloading, or log in again.', [], [], null, false);
+            }
         });
     });
 }

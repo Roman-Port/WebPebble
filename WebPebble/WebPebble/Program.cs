@@ -61,6 +61,7 @@ namespace WebPebble
             AddService(true, Services.Projects.Compile.DoCompile, "/build/", true);
             AddService(true, Services.Projects.History.OnRequest, "/build_history/", true);
             AddService(true, Services.Projects.PbwMedia.OnRequest, "/pbw_media/", true);
+            AddService(true, WebSockets.WebSocketServer.HandleHttpSetup, "/ws_login/", true);
             //Start the WebSocket server.
             WebSocketServer.StartServer();
             //Start
