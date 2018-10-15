@@ -16,6 +16,8 @@ phoneconn.init = function (callback) {
     phoneconn.ws = new WebSocket(phoneconn.url);
     //Establish events.
     phoneconn.ws.addEventListener('message', phoneconn.onMessage);
+    phoneconn.ws.addEventListener('close', phoneconn.onClose);
+    phoneconn.ws.addEventListener('error', phoneconn.onClose);
     //Connect and do auth.
     phoneconn.ws.addEventListener('open', function (event) {
         //We've connected. Do first time authoriation.
@@ -33,6 +35,18 @@ phoneconn.init = function (callback) {
             }
         });
     });
+}
+
+phoneconn.onClose = function (event) {
+    phoneconn.authorized = false;
+    project.showDialog("WebPebble Connection Lost", 'Connection to CloudPebble was lost. You might\'ve signed in at another location, or lost connection to the internet.', ["Reconnect"], [function () {
+        project.showDialog("Reconnecting to WebPebble...", '<div class="inf_loader"></div>', [], [], null, false);
+        phoneconn.init(function () {
+            phoneconn.authorized = true;
+            project.hideDialog();
+        });
+    }], null, false);
+    
 }
 
 phoneconn.onMessage = function (event) {
