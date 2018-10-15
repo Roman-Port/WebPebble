@@ -28,7 +28,7 @@ namespace WebPebble.WebSockets.Entities
 
         public int bits_per_pixel;
 
-        public const bool debug = true;
+        public const bool debug = false;
 
         public OnImageDone callback;
 
@@ -156,7 +156,6 @@ namespace WebPebble.WebSockets.Entities
             for (var i = 0; i < bmp_buffer.Length; ++i)
             {
                 int expanded_pos = i * 4;
-                Console.WriteLine(i.ToString() + "_" + expanded_pos.ToString());
                 bool bit = ba[i];
                 int color = 255;
                 if (!bit)

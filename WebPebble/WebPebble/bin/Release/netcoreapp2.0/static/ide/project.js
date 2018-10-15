@@ -246,7 +246,7 @@ project.buildPbwBtn = function () {
                 //If the Pebble is connected, install this file onto it. Else, show the dialog
                 if (phoneconn.deviceConnected) {
                     //Install on phone.
-                    phoneconn.installApp("/project/" + project.id + "/pbw_media/" + data.id + "/" + project.id + "_build_" + data.id + ".pbw", data);
+                    phoneconn.installApp(location.protocol + "//" + location.hostname + "/project/" + project.id + "/pbw_media/" + data.id + "/" + project.id + "_build_" + data.id + ".pbw", data);
                 } else {
                     project.showDialog("Build Finished", "The build finished successfully.", ["Dismiss", "Get PBW", "View Log"], [function () { },
                     function () {
