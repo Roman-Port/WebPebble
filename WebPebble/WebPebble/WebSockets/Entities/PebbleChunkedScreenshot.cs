@@ -150,19 +150,19 @@ namespace WebPebble.WebSockets.Entities
 
         private int[] decode_image_1bit()
         {
-            int[] expanded_data = new int[(width * height) * 4];
-            BitArray ba = new BitArray(bmp_buffer);
-            for (var i = 0; i < bmp_buffer.Length*8; i += 1)
+            int[] expanded_data = new int[width * height * 4];
+            for (var i = 0; i < bmp_buffer.Length; ++i)
             {
-                var pixel = bmp_buffer[i];
-                var pos = i * 4;
-                int color = 0;
-                if (ba[i] == true)
-                    color = 255;
-                expanded_data[pos + 0] = color;
-                expanded_data[pos + 1] = color;
-                expanded_data[pos + 2] = color;
-                expanded_data[pos + 3] = 255; // always fully opaque.
+                for (var j = 0; j < 8; ++j)
+                {
+                    var pixel = (bmp_buffer[i] >> j) & 1;
+                    var colour = pixel * 255;
+                    var pos = ((i * 8) + j) * 4;
+                    expanded_data[pos + 0] = colour;
+                    expanded_data[pos + 1] = colour;
+                    expanded_data[pos + 2] = colour;
+                    expanded_data[pos + 3] = 255; // always fully opaque.
+                }
             }
             return expanded_data;
         }
