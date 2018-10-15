@@ -150,11 +150,15 @@ namespace WebPebble.WebSockets.Entities
 
         private int[] decode_image_1bit()
         {
+            Console.WriteLine("1");
             int[] expanded_data = new int[width * height * 4];
+            Console.WriteLine("2");
             for (var i = 0; i < bmp_buffer.Length; ++i)
             {
+                Console.WriteLine("3");
                 for (var j = 0; j < 8; ++j)
                 {
+                    Console.WriteLine("4");
                     var pixel = (bmp_buffer[i] >> j) & 1;
                     var colour = pixel * 255;
                     var pos = ((i * 8) + j) * 4;
