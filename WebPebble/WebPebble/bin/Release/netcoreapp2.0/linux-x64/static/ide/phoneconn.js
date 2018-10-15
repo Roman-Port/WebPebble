@@ -109,10 +109,16 @@ phoneconn.installApp = function (pbwUrl, buildData) {
 
 
 //Events
-phoneconn.onPhoneStatusMsg = function () {
-    document.getElementById('watch_control_main').style.display = "block";
-    document.getElementById('watch_control_warning').style.display = "none";
-    phoneconn.deviceConnected = true;
+phoneconn.onPhoneStatusMsg = function (data) {
+    if (data.data.connected == "true") {
+        document.getElementById('watch_control_main').style.display = "block";
+        document.getElementById('watch_control_warning').style.display = "none";
+        phoneconn.deviceConnected = true;
+    } else {
+        document.getElementById('watch_control_main').style.display = "none";
+        document.getElementById('watch_control_warning').style.display = "block";
+        phoneconn.deviceConnected = false;
+    }
 }
 
 phoneconn.onPebbleProtocolMsg = function (data) {
