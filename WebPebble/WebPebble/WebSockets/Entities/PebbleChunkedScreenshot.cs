@@ -153,7 +153,7 @@ namespace WebPebble.WebSockets.Entities
             int[] expanded_data = new int[width * height * 4];
             BitArray ba = new BitArray(bmp_buffer);
 
-            for (var i = 0; i < bmp_buffer.Length*8; ++i)
+            for (var i = 0; i < bmp_buffer.Length; ++i)
             {
                 int expanded_pos = i * 4;
                 Console.WriteLine(i.ToString() + "_" + expanded_pos.ToString());
