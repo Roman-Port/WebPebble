@@ -24,7 +24,11 @@ namespace WebPebble.WebSockets.Entities
         public int width;
         public int height;
 
-        public const bool debug = false;
+        public int target_buffer_size;
+
+        public int bits_per_pixel;
+
+        public const bool debug = true;
 
         public OnImageDone callback;
 
@@ -49,8 +53,15 @@ namespace WebPebble.WebSockets.Entities
                 {
                     ms.Position += 1;
                     version = ReadInt32(ms);
+                    bits_per_pixel = 8;
+                    if (version == 1)
+                        bits_per_pixel = 1;
+                    
                     width = ReadInt32(ms);
                     height = ReadInt32(ms);
+                    target_buffer_size = (width * height);
+                    if (version == 1)
+                        target_buffer_size = target_buffer_size / 8; //Version 1 images are 1bpp
                     //Create the buffer based on the width and height.
                     bmp_buffer = new byte[width * height];
                     Log("(Debug) Created image of size " + width.ToString() + "x" + height.ToString());
@@ -65,10 +76,10 @@ namespace WebPebble.WebSockets.Entities
                 //Copy this content to the buffer.
                 msg.data.CopyTo(bmp_buffer, buffer_pos);
                 buffer_pos += msg.data.Length;
-                Log("(Debug) Buffer completeness: " + buffer_pos.ToString() + "/" + bmp_buffer.Length.ToString());
+                Log("(Debug) Buffer completeness: " + buffer_pos.ToString() + "/" + target_buffer_size.ToString());
             }
             //If the buffer is complete, convert this into an actual image.
-            if(buffer_pos == bmp_buffer.Length)
+            if(buffer_pos == target_buffer_size)
             {
                 Log("Buffer full. Creating image!");
                 FinalizeImage();
@@ -88,7 +99,10 @@ namespace WebPebble.WebSockets.Entities
             //Decode the image data.
             int[] expanded_data;
 
-            expanded_data = decode_image_8bit_corrected();
+            if (bits_per_pixel == 8)
+                expanded_data = decode_image_8bit_corrected();
+            else
+                expanded_data = decode_image_1bit();
 
             //The expanded data now consists of the colors channels. Place them in the image.
             using (Image<Rgba32> image = new Image<Rgba32>(width,height))
@@ -131,6 +145,25 @@ namespace WebPebble.WebSockets.Entities
                 expanded_data[pos + 3] = 255; // always fully opaque.
             }
 
+            return expanded_data;
+        }
+
+        private int[] decode_image_1bit()
+        {
+            int[] expanded_data = new int[(width * height) * 4];
+            BitArray ba = new BitArray(bmp_buffer);
+            for (var i = 0; i < bmp_buffer.Length*8; i += 1)
+            {
+                var pixel = bmp_buffer[i];
+                var pos = i * 4;
+                int color = 0;
+                if (ba[i] == true)
+                    color = 255;
+                expanded_data[pos + 0] = color;
+                expanded_data[pos + 1] = color;
+                expanded_data[pos + 2] = color;
+                expanded_data[pos + 3] = 255; // always fully opaque.
+            }
             return expanded_data;
         }
 

@@ -16,6 +16,8 @@ phoneconn.init = function (callback) {
     phoneconn.ws = new WebSocket(phoneconn.url);
     //Establish events.
     phoneconn.ws.addEventListener('message', phoneconn.onMessage);
+    phoneconn.ws.addEventListener('close', phoneconn.onClose);
+    phoneconn.ws.addEventListener('error', phoneconn.onClose);
     //Connect and do auth.
     phoneconn.ws.addEventListener('open', function (event) {
         //We've connected. Do first time authoriation.
@@ -35,14 +37,26 @@ phoneconn.init = function (callback) {
     });
 }
 
+phoneconn.onClose = function (event) {
+    phoneconn.authorized = false;
+    project.showDialog("WebPebble Connection Lost", 'Connection to CloudPebble was lost. You might\'ve signed in at another location, or lost connection to the internet.', ["Reconnect"], [function () {
+        project.showDialog("Reconnecting to WebPebble...", '<div class="inf_loader"></div>', [], [], null, false);
+        phoneconn.init(function () {
+            phoneconn.authorized = true;
+            project.hideDialog();
+        });
+    }], null, false);
+    
+}
+
 phoneconn.onMessage = function (event) {
     var data = JSON.parse(event.data);
     //Debug log
     console.log(data);
     //If the ID of this is -1, this is a event. 
     if (data.requestid == -1) {
-        var event = phoneconn.eventList[data.requestid];
-        event(data);
+        var target = phoneconn.eventList[data.type];
+        target(data);
     } else {
         //Find the target callback for this.
         var target = phoneconn.callbacks[data.requestid];
@@ -95,10 +109,16 @@ phoneconn.installApp = function (pbwUrl, buildData) {
 
 
 //Events
-phoneconn.onPhoneStatusMsg = function () {
-    document.getElementById('watch_control_main').style.display = "block";
-    document.getElementById('watch_control_warning').style.display = "none";
-    phoneconn.deviceConnected = true;
+phoneconn.onPhoneStatusMsg = function (data) {
+    if (data.data.connected == "true") {
+        document.getElementById('watch_control_main').style.display = "block";
+        document.getElementById('watch_control_warning').style.display = "none";
+        phoneconn.deviceConnected = true;
+    } else {
+        document.getElementById('watch_control_main').style.display = "none";
+        document.getElementById('watch_control_warning').style.display = "block";
+        phoneconn.deviceConnected = false;
+    }
 }
 
 phoneconn.onPebbleProtocolMsg = function (data) {
