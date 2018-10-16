@@ -159,13 +159,15 @@ namespace WebPebble.WebSockets
                 try
                 {
                     pair.web.SetStatus(true);
-                    SetStatus(true);
+                    
                     pair.connected = true;
                 }
                 catch
                 {
-
+                    pair.connected = false;
                 }
+
+                SetStatus(pair.connected);
             } else
             {
                 //Add ourself.

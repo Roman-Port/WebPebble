@@ -121,7 +121,6 @@ namespace WebPebble.WebSockets
                     WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid].web = this;
                     pair = WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid];
                     //If the phone is connected, tell it we have connected.
-                    SetStatus(true);
                     try
                     {
                         pair.phone.SetStatus(true);
@@ -130,7 +129,9 @@ namespace WebPebble.WebSockets
                     } catch
                     {
                         //Remain in "disconnected" state.
+                        pair.connected = false;
                     }
+                    SetStatus(pair.connected);
                 }
                 else
                 {
