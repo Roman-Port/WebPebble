@@ -184,7 +184,7 @@ namespace WebPebble.WebSockets
         private void OnPPMMessage(PebbleProtocolMessage ppm)
         {
             //Send this on to the web client.
-            Dictionary<string, string> data = new Dictionary<string, string>();
+            Dictionary<string, object> data = new Dictionary<string, object>();
             data["msg"] = ppm.stringData;
             data["direction"] = ((int)ppm.direction).ToString();
             data["type"] = ppm.id.ToString();

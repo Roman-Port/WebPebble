@@ -10,7 +10,7 @@ using WebSocketSharp.Server;
 
 namespace WebPebble.WebSockets
 {
-    public class WebPebbleClient : WebSocketBehavior
+    public partial class WebPebbleClient : WebSocketBehavior
     {
         //This is the connection from WebPebble. It pretty much just calls 
         public bool authenticated = false;
@@ -36,6 +36,9 @@ namespace WebPebble.WebSockets
                     break;
                 case WebPebbleRequestType.InstallApp:
                     InstallApp(request);
+                    break;
+                case WebPebbleRequestType.YcmdComplete:
+                    OnYcmdRequest(request);
                     break;
             }
         }
@@ -75,7 +78,7 @@ namespace WebPebble.WebSockets
             Send(data);
         }
 
-        public void QuickReply(int id, WebPebbleRequestType type, Dictionary<string,string> dict)
+        public void QuickReply(int id, WebPebbleRequestType type, Dictionary<string,object> dict)
         {
             WebPebbleRequest req = new WebPebbleRequest
             {
@@ -91,7 +94,7 @@ namespace WebPebble.WebSockets
             if(!pair.connected)
             {
                 //Tell client we are disconnected.
-                QuickReply(req.requestid, WebPebbleRequestType.Auth, new Dictionary<string, string>() { { "error", "Phone not connected." } });
+                QuickReply(req.requestid, WebPebbleRequestType.Auth, new Dictionary<string, object>() { { "error", "Phone not connected." } });
                 return false;
             }
             return true;
@@ -101,19 +104,19 @@ namespace WebPebble.WebSockets
         private void DoAuth(WebPebbleRequest req)
         {
             //Get the token that was offered.
-            string token = req.data["token"];
+            string token = (string)req.data["token"];
             //Check this against the RPWS server.
             E_RPWS_User user = Oauth.RpwsAuth.AuthenticateUser(token);
             if(user == null)
             {
                 //Respond with failure.
-                QuickReply(req.requestid, WebPebbleRequestType.Auth, new Dictionary<string, string>() { { "ok","false"} });
+                QuickReply(req.requestid, WebPebbleRequestType.Auth, new Dictionary<string, object>() { { "ok","false"} });
             } else
             {
                 user_uuid = user.uuid;
                 authenticated = true;
                 //Respond with ok.
-                QuickReply(req.requestid, WebPebbleRequestType.Auth, new Dictionary<string, string>() { { "ok", "true" } });
+                QuickReply(req.requestid, WebPebbleRequestType.Auth, new Dictionary<string, object>() { { "ok", "true" } });
                 //Add myself to the list of clients.
                 if (WebPebble.WebSockets.WebSocketServer.connectedClients.ContainsKey(user_uuid))
                 {
@@ -148,7 +151,7 @@ namespace WebPebble.WebSockets
 
         public void SetStatus(bool connected)
         {
-            QuickReply(-1, WebPebbleRequestType.ConnectionStatus, new Dictionary<string, string>() { { "connected", connected.ToString().ToLower() } });
+            QuickReply(-1, WebPebbleRequestType.ConnectionStatus, new Dictionary<string, object>() { { "connected", connected.ToString().ToLower() } });
         }
 
         private int pendingScreenshotRequestId = -2;
@@ -163,7 +166,7 @@ namespace WebPebble.WebSockets
            {
                //Create the reply and encode the image data as base64.
                string output = Convert.ToBase64String(data);
-               QuickReply(pendingScreenshotRequestId, WebPebbleRequestType.Screenshot, new Dictionary<string, string>() { { "data", output },{"img_header", "data:image/png;base64," }, {"download_header", "data:application/octet-stream;base64," } });
+               QuickReply(pendingScreenshotRequestId, WebPebbleRequestType.Screenshot, new Dictionary<string, object>() { { "data", output },{"img_header", "data:image/png;base64," }, {"download_header", "data:application/octet-stream;base64," } });
            });
         }
 
@@ -175,7 +178,7 @@ namespace WebPebble.WebSockets
             //Download the PBW file prompted.
             using (var client = new WebClient())
             {
-                byte[] pbw = client.DownloadData(req.data["url"]);
+                byte[] pbw = client.DownloadData((string)req.data["url"]);
                 pair.phone.InstallApp(pbw);
             }
         }
@@ -185,7 +188,7 @@ namespace WebPebble.WebSockets
             public int requestid; //This will be echoed back to the client. -1 if this is a event and not a reply.
             public WebPebbleRequestType type;
 
-            public Dictionary<string, string> data = new Dictionary<string, string>(); //Optional data.
+            public Dictionary<string, object> data = new Dictionary<string, object>(); //Optional data.
         }
 
         public enum WebPebbleRequestType
@@ -195,7 +198,8 @@ namespace WebPebble.WebSockets
             Screenshot = 2,
             ConnectionStatus = 3,
             PebbleProtocolMsg = 4,
-            InstallApp = 5
+            InstallApp = 5,
+            YcmdComplete = 6
         }
     }
 }
