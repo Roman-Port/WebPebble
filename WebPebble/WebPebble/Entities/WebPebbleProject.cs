@@ -103,6 +103,11 @@ namespace WebPebble.Entities
 
         public AssetType type { get; set; }
         public InnerAssetType innerType { get; set; }
+
+        public string GetAbsolutePath(string projectId)
+        {
+            return Program.config.user_project_dir + projectId + "/" + type.ToString() + "/" + innerType.ToString() + "/" + filename; 
+        }
     }
 
     public class WebPebbleProjectBuild
