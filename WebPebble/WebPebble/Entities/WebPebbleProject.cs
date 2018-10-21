@@ -106,7 +106,7 @@ namespace WebPebble.Entities
 
         public string GetAbsolutePath(string projectId)
         {
-            return Program.config.user_project_dir + projectId + "/" + type.ToString() + "/" + innerType.ToString() + "/" + filename; 
+            return Program.config.user_project_dir + projectId + "/"+ filename; 
         }
     }
 
