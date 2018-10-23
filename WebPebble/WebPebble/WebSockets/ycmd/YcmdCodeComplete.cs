@@ -16,7 +16,7 @@ namespace WebPebble.WebSockets.ycmd
             req.line_num = line;
             req.filepath = filename;
             req.force_semantic = true;
-
+            req.file_data = new Dictionary<string, FileData>();
             req.file_data.Add(filename, GenerateFileData(data));
             //Send this data to the server and get a reply.
             CompletionResponse reply = YcmdController.SendYcmdRequest<CompletionResponse>("/completions", req);
