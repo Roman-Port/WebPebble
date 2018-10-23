@@ -75,8 +75,7 @@ namespace WebPebble.WebSockets.ycmd
 
         private static byte[] CalculateHmac(byte[] data)
         {
-            HMAC h = new HMACSHA256();
-            h.Key = Encoding.UTF8.GetBytes(YCMD_SECRET);
+            HMAC h = new HMACSHA256(Encoding.ASCII.GetBytes(YCMD_SECRET));
             return h.ComputeHash(data);
         }
     }
