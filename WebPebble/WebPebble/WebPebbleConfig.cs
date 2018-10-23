@@ -11,6 +11,7 @@ namespace WebPebble
         public string user_project_build_dir;
         public string static_files_dir;
         public string pebble_sdk_dir;
+        public string media_dir; //Root of the binary data.
 
         public string ycmd_binary;
         public string temp_files;
