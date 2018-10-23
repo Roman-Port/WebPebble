@@ -24,7 +24,6 @@ namespace WebPebble.WebSockets.ycmd
         {
             var request = (HttpWebRequest)WebRequest.Create(GenerateUri(path));
             string requestJson = JsonConvert.SerializeObject(requestData);
-            requestJson = "test";
             var data = Encoding.UTF8.GetBytes(requestJson);
             request.Method = "POST";
             request.ContentType = "application/json";
