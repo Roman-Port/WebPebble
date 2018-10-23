@@ -13,7 +13,7 @@ namespace WebPebble.WebSockets.ycmd
         public const string YCMD_HOSTNAME = "localhost.localdomain";
         public const int YCMD_PORT = 43585;
 
-        public const string YCMD_SECRET = "RUw3MzlMemlHbkJSeEgzag==";
+        public static byte[] secret_key;
 
         public static string GenerateUri(string pathname)
         {
@@ -32,7 +32,7 @@ namespace WebPebble.WebSockets.ycmd
 
             //Add x-ycm-hmac header.
             string hmac = GenerateHmac("POST", path, requestJson);
-            request.Headers.Add("x-ycm-hmac", hmac);
+            request.Headers.Add("X-Ycm-Hmac", hmac);
             Console.WriteLine(hmac);
 
             using (var stream = request.GetRequestStream())
@@ -72,7 +72,7 @@ namespace WebPebble.WebSockets.ycmd
                 ms.Read(joined, 0, joined.Length);
             }
 
-            return Convert.ToBase64String(CalculateHmac(b_body));
+            return Convert.ToBase64String(CalculateHmac(joined));
         }
 
         private static void WriteHmacToMs(byte[] data, Stream s)
@@ -83,7 +83,7 @@ namespace WebPebble.WebSockets.ycmd
 
         private static byte[] CalculateHmac(byte[] data)
         {
-            HMAC h = new HMACSHA256(Convert.FromBase64String(YCMD_SECRET));
+            HMAC h = new HMACSHA256(secret_key);
             return h.ComputeHash(data);
         }
     }
