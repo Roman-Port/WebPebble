@@ -24,13 +24,13 @@ namespace WebPebble.WebSockets.ycmd
         {
             var request = (HttpWebRequest)WebRequest.Create(GenerateUri(path));
             string requestJson = JsonConvert.SerializeObject(requestData);
-            var data = Encoding.ASCII.GetBytes(requestJson);
+            var data = Encoding.UTF8.GetBytes(requestJson);
             request.Method = "POST";
             request.ContentType = "application/json";
             request.ContentLength = data.Length;
 
             //Add x-ycm-hmac header.
-            string hmac = GenerateHmac("POST", path, requestJson);
+            string hmac = GenerateHmac("POST", path.TrimStart('/'), requestJson);
             request.Headers.Add("x-ycm-hmac", hmac);
             Console.WriteLine(hmac);
 
