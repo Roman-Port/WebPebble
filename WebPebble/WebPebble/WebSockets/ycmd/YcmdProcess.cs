@@ -24,7 +24,7 @@ namespace WebPebble.WebSockets.ycmd
             string tempFile = Program.config.temp_files + "ycmd_conf.json";
             File.WriteAllText(tempFile, conf);
             //Run Python and execute this file.
-            ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = "/bin/bash", Arguments = "python3 "+Program.config.ycmd_binary+ "  --options_file "+tempFile+" --port "+YcmdController.YCMD_PORT, };
+            ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = "/bin/bash", Arguments = "python3 "/*+Program.config.ycmd_binary+ "  --options_file "+tempFile+" --port "+YcmdController.YCMD_PORT*/, };
             p = new Process() { StartInfo = startInfo, };
             p.Start();
             Console.WriteLine("YCMD server started.");
