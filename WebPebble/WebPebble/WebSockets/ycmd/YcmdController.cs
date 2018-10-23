@@ -13,7 +13,7 @@ namespace WebPebble.WebSockets.ycmd
         public const string YCMD_HOSTNAME = "localhost.localdomain";
         public const int YCMD_PORT = 43585;
 
-        public const string YCMD_SECRET = "EL739LziGnBRxH3j";
+        public const string YCMD_SECRET = "RUw3MzlMemlHbkJSeEgzag==";
 
         public static string GenerateUri(string pathname)
         {
