@@ -46,6 +46,12 @@ namespace WebPebble.WebSockets.ycmd
 
         public static string GenerateHmac(string method, string path, string body)
         {
+            Console.WriteLine("DATA:");
+            Console.WriteLine(method);
+            Console.WriteLine(path);
+            Console.WriteLine(body);
+            Console.WriteLine("");
+            
             //Convert all to text
             byte[] b_method = Encoding.UTF8.GetBytes(method);
             byte[] b_path = Encoding.UTF8.GetBytes(path);
