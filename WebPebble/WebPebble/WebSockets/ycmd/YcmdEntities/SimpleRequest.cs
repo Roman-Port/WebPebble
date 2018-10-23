@@ -9,7 +9,7 @@ namespace WebPebble.WebSockets.ycmd.YcmdEntities
         public int column_num;
         public int line_num;
         public string filepath;
-        public FileData file_data;
+        public Dictionary<string, FileData> file_data;
         public bool force_semantic;
     }
 

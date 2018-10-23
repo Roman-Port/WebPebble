@@ -16,6 +16,7 @@ namespace WebPebble.WebSockets
             string projectId = (string)data.data["project_id"];
             long lineNo = (long)data.data["line_no"];
             long colNo = (long)data.data["col_no"];
+            string unsavedBuffer = (string)data.data["buffer"];
             //Get the project requested.
             WebPebbleProject proj = null;
             var collect = Program.database.GetCollection<WebPebbleProject>("projects");
@@ -29,7 +30,7 @@ namespace WebPebble.WebSockets
             if (asset == null)
                 return;
             //Now that we have the pathname, prompt the proxy.
-            var reply = ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo);
+            var reply = ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer);
             //Reply with this data.
             QuickReply(data.requestid, data.type, new Dictionary<string, object>() { { "ycmd", reply } });
         }
