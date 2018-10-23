@@ -72,7 +72,7 @@ namespace WebPebble.WebSockets.ycmd
                 ms.Read(joined, 0, joined.Length);
             }
 
-            return Convert.ToBase64String(CalculateHmac(joined));
+            return Convert.ToBase64String(CalculateHmac(b_body));
         }
 
         private static void WriteHmacToMs(byte[] data, Stream s)
