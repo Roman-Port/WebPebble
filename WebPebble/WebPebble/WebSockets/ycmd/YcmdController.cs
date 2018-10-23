@@ -10,7 +10,7 @@ namespace WebPebble.WebSockets.ycmd
 {
     public static class YcmdController
     {
-        public const string YCMD_HOSTNAME = "localhost.localdomain";
+        public const string YCMD_HOSTNAME = "localhost";
         public const int YCMD_PORT = 43585;
 
         public static byte[] secret_key;
