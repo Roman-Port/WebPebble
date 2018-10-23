@@ -15,11 +15,6 @@ namespace WebPebble.WebSockets.ycmd.YcmdEntities
 
     public class FileData
     {
-        public FileDataPath path;
-    }
-
-    public class FileDataPath
-    {
         public string contents;
         public string[] filetypes;
     }

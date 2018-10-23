@@ -26,9 +26,8 @@ namespace WebPebble.WebSockets.ycmd
         private static FileData GenerateFileData(string data)
         {
             var fs = new FileData();
-            fs.path = new FileDataPath();
-            fs.path.contents = data;
-            fs.path.filetypes = new string[] { "c" };
+            fs.contents = data;
+            fs.filetypes = new string[] { "c" };
             return fs;
         }
     }
