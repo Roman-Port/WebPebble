@@ -24,6 +24,7 @@ namespace WebPebble.WebSockets.ycmd
         {
             var request = (HttpWebRequest)WebRequest.Create(GenerateUri(path));
             string requestJson = JsonConvert.SerializeObject(requestData);
+            requestJson = "test";
             var data = Encoding.UTF8.GetBytes(requestJson);
             request.Method = "POST";
             request.ContentType = "application/json";
@@ -46,7 +47,6 @@ namespace WebPebble.WebSockets.ycmd
 
         public static string GenerateHmac(string method, string path, string body)
         {
-            return "OhNJn95JMdukJZ2NjD8kccm2PhL+Mf3eVSd0uaPxn1k=";
 
             Console.WriteLine("DATA:");
             Console.WriteLine(method);
