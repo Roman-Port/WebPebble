@@ -31,7 +31,7 @@ namespace WebPebble.WebSockets.ycmd
             request.ContentLength = data.Length;
 
             //Add x-ycm-hmac header.
-            string hmac = GenerateHmac("POST", path.TrimStart('/'), requestJson);
+            string hmac = GenerateHmac("POST", path, requestJson);
             request.Headers.Add("x-ycm-hmac", hmac);
             Console.WriteLine(hmac);
 
@@ -83,7 +83,7 @@ namespace WebPebble.WebSockets.ycmd
 
         private static byte[] CalculateHmac(byte[] data)
         {
-            HMAC h = new HMACSHA256(Encoding.ASCII.GetBytes(YCMD_SECRET));
+            HMAC h = new HMACSHA256(Convert.FromBase64String(YCMD_SECRET));
             return h.ComputeHash(data);
         }
     }
