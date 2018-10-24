@@ -610,6 +610,7 @@ body {
     position: absolute;
     width: 200px;
     min-height:80px;
+    max-height:200px;
     background-color: #2B3745;
     box-shadow: 5px 5px 16px 0px rgba(0,0,0,0.23);
     bottom:0;
@@ -618,6 +619,11 @@ body {
     overflow-x:hidden;
     overflow-y:scroll;
     padding:5px;
+}
+
+.completion_window_top {
+    bottom:unset;
+    top:30px;
 }
 
 .completion_window_hidden {

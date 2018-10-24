@@ -55,7 +55,7 @@ ycmd.onGotYcmdComp = function (data) {
     console.log(data);
     //Create html for the predictions.
     var e = document.createElement('div');
-    e.className = "completion_frame";
+    e.className = "completion_frame text";
     var ee = document.createElement('div');
     ee.className = "completion_window";
     ee.x_complete = [];
@@ -85,8 +85,17 @@ ycmd.onGotYcmdComp = function (data) {
 };
 
 ycmd.setBoxPos = function (e) {
-    e.style.top = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop + 60).toString() + "px";
+    var top = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop + 60);
+    e.style.top = top.toString() + "px";
     e.style.left = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetWidth + 315).toString() + "px";
+
+    if (top < 310) {
+        //Not enough space. Use bottom.
+        var f = e.firstChild;
+        if (f !== null) {
+            f.className = "completion_window completion_window_top";
+        }
+    }
 };
 
 ycmd.hideBox = function () {
