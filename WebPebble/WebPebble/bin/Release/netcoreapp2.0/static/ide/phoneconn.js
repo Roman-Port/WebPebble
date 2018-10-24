@@ -79,6 +79,7 @@ phoneconn.send = function (type, data, callback) {
     buf.requestid = id;
     //Send on the websocket.
     phoneconn.ws.send(JSON.stringify(buf));
+    return buf.requestid;
 }
 
 //API

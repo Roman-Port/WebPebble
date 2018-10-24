@@ -39,6 +39,9 @@
     <None Update="static\ide\edit_resource.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="static\ide\external\textarea-caret-position.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="static\ide\filemanager.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

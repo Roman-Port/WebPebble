@@ -602,11 +602,11 @@ body {
 /* Completeers */
 .completion_frame {
     position: fixed;
+    z-index: 900;
 }
 
 .completion_window {
     position: absolute;
-    z-index: 996;
     width: 200px;
     min-height:80px;
     background-color: #2B3745;
