@@ -106,6 +106,18 @@
     background-color: #2B3745;
 }
 
-    .completion_window .c_item_select {
-        background-color: #4286f4;
-    }
+.completion_window .c_item_select {
+    background-color: #4286f4;
+}
+
+body::-webkit-scrollbar {
+    background-color: #2D2D2D;
+}
+
+body::-webkit-scrollbar-track {
+    background-color: #2D2D2D;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #3E3E40;
+}
