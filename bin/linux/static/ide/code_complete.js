@@ -43,5 +43,5 @@ ycmd.onGotYcmdComp = function (data) {
     e.style.top = document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop;
     e.style.left = 0;
     //Insert into DOM.
-    ycmd.frame.parentNode.replaceChild(ycmd.frame, e);
+    ycmd.frame.parentNode.replaceChild(e, ycmd.frame);
 }
