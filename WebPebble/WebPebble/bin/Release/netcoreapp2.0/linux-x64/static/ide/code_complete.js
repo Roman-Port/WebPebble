@@ -6,19 +6,19 @@ ycmd.subscribe = function () {
     //Subscribe to events from the editor.
     editor.on("change", ycmd.onEditorChange);
     //Subscribe to keybinds.
-    KeyboardJS.on('up', function () {
+    keyboardJS.on('up', function () {
         console.log('up');
         ycmd.hideBox();
     });
-    KeyboardJS.on('down', function () {
+    keyboardJS.on('down', function () {
         console.log('down');
         ycmd.hideBox();
     });
-    KeyboardJS.on('left', function () {
+    keyboardJS.on('left', function () {
         console.log('right');
         ycmd.hideBox();
     });
-    KeyboardJS.on('right', function () {
+    keyboardJS.on('right', function () {
         console.log('left');
         ycmd.hideBox();
     });
