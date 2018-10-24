@@ -186,6 +186,11 @@ body {
     width:20px;
 }
 
+.assets_type_container .btn_fill_active {
+    display: block;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+}
 
 .assets_type_container .btn_fill_active .action_window {
     display:block;

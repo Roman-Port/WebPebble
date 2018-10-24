@@ -7,11 +7,11 @@
 }
 
 .header .line {
-    background-color: #3E3E40;
+    background-color: #4e4e4e;
 }
 
 .header {
-    border-bottom:1px solid gray;
+    border-bottom: 1px solid #4e4e4e;
 }
 
 .ide_window {
@@ -33,19 +33,19 @@
 }
 
 .assets_type_container .btn .action_window div {
-    background-color: #4F6272;
+    background-color: #3E3E40;
 }
 
 .assets_type_container .btn:hover {
-    background-color: #1B2432;
+    background-color: unset;
 }
 
 .assets_type_container .btn_active {
-    background-color: #1B2432;
+    background-color: unset;
 }
 
 .assets_type_container .btn_fill_active {
-    background-color: #1B2432;
+    background-color: #353535;
 }
 
 .assets_window .line {
