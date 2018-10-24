@@ -30,7 +30,6 @@ ycmd.onEditorChange = function (conte) {
     pos.column += 1;
     pos.row += 1;
     var content = filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.getValue();
-    keyboardJS.watch(document.getElementsByClassName('ace_text-input')[0]);
     //Make a request to YCMD.
     var data = {
         "project_id": project.id,
@@ -59,7 +58,18 @@ ycmd.onGotYcmdComp = function (data) {
     e.className = "completion_frame";
     var ee = document.createElement('div');
     ee.className = "completion_window";
-
+    ee.x_complete = [];
+    for (var i = 0; i < data.completions.length; i += 1) {
+        var o = document.createElement('div');
+        var d = data.completions[i];
+        o.className = "c_item";
+        o.innerText = d.menu_text;
+        if (d.type !== "UNKNOWN") {
+            console.log(d.type);
+        }
+        ee.appendChild(o);
+        ee.x_complete.push(o);
+    }
     e.appendChild(ee);
 
     //Set position.
@@ -67,6 +77,11 @@ ycmd.onGotYcmdComp = function (data) {
     //Insert into DOM.
     ycmd.frame.parentNode.replaceChild(e, ycmd.frame);
     ycmd.frame = e;
+    //Start listening if there are things to listen for.
+    if (data.completions.length > 0) {
+        keyboardJS.watch(document.getElementsByClassName('ace_text-input')[0]);
+        ee.x_complete[0].className = "c_item c_item_select"; 
+    } 
 };
 
 ycmd.setBoxPos = function (e) {
@@ -79,4 +94,5 @@ ycmd.hideBox = function () {
     if (ee !== null) {
         ee.className = "completion_window completion_window_hidden";
     }
+    keyboardJS.stop();
 }
