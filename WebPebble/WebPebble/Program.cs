@@ -64,10 +64,7 @@ namespace WebPebble
             //Start the WebSocket server.
             WebSocketServer.StartServer();
             //Start YCMDs.
-            WebPebble.WebSockets.ycmd.YcmdProcess.StartServer( WebSockets.ycmd.YcmdProcesses.Sdk2Aplite, "ycm_extra_conf_sdk3.py");
-            WebPebble.WebSockets.ycmd.YcmdProcess.StartServer(WebSockets.ycmd.YcmdProcesses.Sdk3Aplite, "ycm_extra_conf_sdk3.py");
-            WebPebble.WebSockets.ycmd.YcmdProcess.StartServer(WebSockets.ycmd.YcmdProcesses.Sdk3Basalt, "ycm_extra_conf_sdk3.py");
-            WebPebble.WebSockets.ycmd.YcmdProcess.StartServer(WebSockets.ycmd.YcmdProcesses.Sdk3Chalk, "ycm_extra_conf_sdk3.py");
+            WebPebble.WebSockets.ycmd.YcmdProcess.StartServer( WebSockets.ycmd.YcmdProcesses.Any, "ycm_extra_conf_sdk3.py");
             //Start
             MainAsync().GetAwaiter().GetResult();
         }

@@ -31,17 +31,18 @@ namespace WebPebble.WebSockets
                 return;
             //Now that we have the pathname, prompt the proxy.
             YcmdCodeCompleteReplyWs reply = new YcmdCodeCompleteReplyWs();
-            if(new WebPebble.Entities.PebbleProject.PebbleProject(proj.projectId).package.pebble.sdkVersion == "2")
+            /*if(new WebPebble.Entities.PebbleProject.PebbleProject(proj.projectId).package.pebble.sdkVersion == "2")
             {
                 //Prompt only SDK 2.
-                reply.sdks.Add("sdk2_aplite", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Sdk2Aplite));
+                reply.sdks.Add("sdk2_aplite", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Any));
             } else
             {
                 //Prompt all platforms on SDK 3.
-                reply.sdks.Add("sdk3_aplite", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Sdk3Aplite));
-                reply.sdks.Add("sdk3_diorite", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Sdk3Basalt));
-                reply.sdks.Add("sdk3_chalk", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Sdk3Chalk));
-            }
+                reply.sdks.Add("sdk3_aplite", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Any));
+                reply.sdks.Add("sdk3_diorite", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Any));
+                reply.sdks.Add("sdk3_chalk", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Any));
+            }*/
+            reply.sdks.Add("sdk", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Any));
             //Reply with this data.
             QuickReply(data.requestid, data.type, new Dictionary<string, object>() { { "ycmd", reply } });
         }

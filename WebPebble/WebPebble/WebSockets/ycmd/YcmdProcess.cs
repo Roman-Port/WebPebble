@@ -71,9 +71,6 @@ namespace WebPebble.WebSockets.ycmd
 
     public enum YcmdProcesses
     {
-        Sdk2Aplite =    43585,
-        Sdk3Aplite =    43586,
-        Sdk3Basalt =    43587,
-        Sdk3Chalk  =    43588
+        Any =    43585
     }
 }
