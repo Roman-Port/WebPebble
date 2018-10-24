@@ -11,18 +11,15 @@ namespace WebPebble.WebSockets.ycmd
     public static class YcmdController
     {
         public const string YCMD_HOSTNAME = "localhost";
-        public const int YCMD_PORT = 43585;
 
-        public static byte[] secret_key;
-
-        public static string GenerateUri(string pathname)
+        public static string GenerateUri(string pathname, YcmdProcess p)
         {
-            return "http://" + YCMD_HOSTNAME + ":" + YCMD_PORT.ToString() + pathname;
+            return "http://" + YCMD_HOSTNAME + ":" + p.port.ToString() + pathname;
         }
 
-        public static T SendYcmdRequest<T>(string path, object requestData )
+        public static T SendYcmdRequest<T>(string path, object requestData, YcmdProcess p )
         {
-            var request = (HttpWebRequest)WebRequest.Create(GenerateUri(path));
+            var request = (HttpWebRequest)WebRequest.Create(GenerateUri(path, p));
             string requestJson = JsonConvert.SerializeObject(requestData);
             var data = Encoding.UTF8.GetBytes(requestJson);
             request.Method = "POST";
@@ -30,7 +27,7 @@ namespace WebPebble.WebSockets.ycmd
             request.ContentLength = data.Length;
 
             //Add x-ycm-hmac header.
-            string hmac = GenerateHmac("POST", path, requestJson);
+            string hmac = GenerateHmac("POST", path, requestJson, p);
             request.Headers.Add("X-Ycm-Hmac", hmac);
             Console.WriteLine(hmac);
 
@@ -44,15 +41,8 @@ namespace WebPebble.WebSockets.ycmd
             return JsonConvert.DeserializeObject<T>(jsonString);
         }
 
-        public static string GenerateHmac(string method, string path, string body)
-        {
-
-            Console.WriteLine("DATA:");
-            Console.WriteLine(method);
-            Console.WriteLine(path);
-            Console.WriteLine(body);
-            Console.WriteLine("");
-            
+        public static string GenerateHmac(string method, string path, string body, YcmdProcess p)
+        {            
             //Convert all to text
             byte[] b_method = Encoding.UTF8.GetBytes(method);
             byte[] b_path = Encoding.UTF8.GetBytes(path);
@@ -62,27 +52,27 @@ namespace WebPebble.WebSockets.ycmd
 
             using(MemoryStream ms = new MemoryStream())
             {
-                WriteHmacToMs(b_method, ms);
-                WriteHmacToMs(b_path, ms);
-                WriteHmacToMs(b_body, ms);
+                WriteHmacToMs(b_method, ms,p);
+                WriteHmacToMs(b_path, ms,p);
+                WriteHmacToMs(b_body, ms,p);
 
                 ms.Position = 0;
                 joined = new byte[ms.Length];
                 ms.Read(joined, 0, joined.Length);
             }
 
-            return Convert.ToBase64String(CalculateHmac(joined));
+            return Convert.ToBase64String(CalculateHmac(joined,p));
         }
 
-        private static void WriteHmacToMs(byte[] data, Stream s)
+        private static void WriteHmacToMs(byte[] data, Stream s, YcmdProcess p)
         {
-            byte[] buf = CalculateHmac(data);
+            byte[] buf = CalculateHmac(data, p);
             s.Write(buf, 0, buf.Length);
         }
 
-        private static byte[] CalculateHmac(byte[] data)
+        private static byte[] CalculateHmac(byte[] data, YcmdProcess p)
         {
-            HMAC h = new HMACSHA256(secret_key);
+            HMAC h = new HMACSHA256(p.secret_key);
             return h.ComputeHash(data);
         }
     }

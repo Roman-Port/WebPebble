@@ -30,9 +30,25 @@ namespace WebPebble.WebSockets
             if (asset == null)
                 return;
             //Now that we have the pathname, prompt the proxy.
-            var reply = ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer);
+            YcmdCodeCompleteReplyWs reply = new YcmdCodeCompleteReplyWs();
+            if(new WebPebble.Entities.PebbleProject.PebbleProject(proj.projectId).package.pebble.sdkVersion == "2")
+            {
+                //Prompt only SDK 2.
+                reply.sdks.Add("sdk2_aplite", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Sdk2Aplite));
+            } else
+            {
+                //Prompt all platforms on SDK 3.
+                reply.sdks.Add("sdk3_aplite", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Sdk3Aplite));
+                reply.sdks.Add("sdk3_diorite", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Sdk3Basalt));
+                reply.sdks.Add("sdk3_chalk", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Sdk3Chalk));
+            }
             //Reply with this data.
             QuickReply(data.requestid, data.type, new Dictionary<string, object>() { { "ycmd", reply } });
+        }
+
+        class YcmdCodeCompleteReplyWs
+        {
+            public Dictionary<string, ycmd.YcmdEntities.CompletionResponse> sdks = new Dictionary<string, ycmd.YcmdEntities.CompletionResponse>();
         }
     }
 }

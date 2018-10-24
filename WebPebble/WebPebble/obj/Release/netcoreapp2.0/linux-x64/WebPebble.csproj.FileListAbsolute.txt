@@ -22,3 +22,4 @@ C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\static\ide\edit_resource.js
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\static\ide\phoneconn.js
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\WebSockets\ycmd\DefaultYcmdSettings.json
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\linux-x64\WebSockets\ycmd\YcmdConfig\ycm_extra_conf_sdk3.py

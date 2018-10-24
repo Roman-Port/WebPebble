@@ -3,38 +3,76 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace WebPebble.WebSockets.ycmd
 {
-    public static class YcmdProcess
+    public class YcmdProcess
     {
-        public static Process p;
+        public static Dictionary<YcmdProcesses, YcmdProcess> process_dict = new Dictionary<YcmdProcesses, YcmdProcess>();
 
-        public static void StartServer()
+        public Process p;
+        public YcmdProcesses name;
+        public int port;
+        public string extra_config_path;
+
+        public byte[] secret_key;
+
+        public static YcmdProcess StartServer(YcmdProcesses name, string extra_config)
         {
-            Console.WriteLine("Starting YCMD server...");
+            YcmdProcess pp = new YcmdProcess();
+            pp.name = name;
+            pp.port = (int)name;
+            pp.extra_config_path = extra_config;
+
+            Console.WriteLine("Starting YCMD server '"+name.ToString()+"'...");
             //Generate the secret key.
             byte[] secretKey = new byte[16];
             LibRpws.LibRpwsCore.rand.NextBytes(secretKey);
-            YcmdController.secret_key = secretKey;
+            pp.secret_key = secretKey;
             //Create the config file.
             string conf = File.ReadAllText(Program.config.media_dir + "WebSockets/ycmd/DefaultYcmdSettings.json");
             conf = conf.Replace("%KEY%", Convert.ToBase64String(secretKey));
+            conf = conf.Replace("%CONF%", Program.config.media_dir + "WebSockets/ycmd/YcmdConfig/"+extra_config);
             //Save to a temporary directory.
             string tempFile = Program.config.temp_files + "ycmd_conf.json";
             File.WriteAllText(tempFile, conf);
             //Run Python and execute this file.
-            ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = "/usr/bin/python3", Arguments = Program.config.ycmd_binary+ "  --options_file "+tempFile+" --port "+YcmdController.YCMD_PORT, };
-            p = new Process() { StartInfo = startInfo, };
-            p.Start();
-            Console.WriteLine("YCMD server started.");
+            ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = "/usr/bin/python3", Arguments = Program.config.ycmd_binary+ "  --options_file "+tempFile+" --port "+pp.port, };
+            pp.p = new Process() { StartInfo = startInfo, };
+            pp.p.Start();
+
+            Console.WriteLine("YCMD server '"+name.ToString()+"' started.");
+            //Add process
+            process_dict.Add(name, pp);
+            return GetServer(name);
         }
 
-        public static void KillServer()
+        public static YcmdProcess GetServer(YcmdProcesses name)
         {
-            Console.WriteLine("Killing YCMD...");
-            p.Kill();
-            Console.WriteLine("YCMD Killed.");
+            return process_dict[name];
         }
+
+        public static void KillAll()
+        {
+            foreach(var o in process_dict.Values)
+            {
+                o.KillServer();
+            }
+        }
+
+        public void KillServer()
+        {
+            p.Kill();
+            Console.WriteLine("YCMD server '" + name + "' Killed.");
+        }
+    }
+
+    public enum YcmdProcesses
+    {
+        Sdk2Aplite =    43585,
+        Sdk3Aplite =    43586,
+        Sdk3Basalt =    43587,
+        Sdk3Chalk  =    43588
     }
 }

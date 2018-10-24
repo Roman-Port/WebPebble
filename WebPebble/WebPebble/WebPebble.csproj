@@ -57,6 +57,9 @@
     <None Update="WebSockets\ycmd\DefaultYcmdSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="WebSockets\ycmd\YcmdConfig\ycm_extra_conf_sdk3.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

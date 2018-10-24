@@ -63,8 +63,11 @@ namespace WebPebble
             AddService(true, Services.Projects.PbwMedia.OnRequest, "/pbw_media/", true);
             //Start the WebSocket server.
             WebSocketServer.StartServer();
-            //Start YCMD
-            WebPebble.WebSockets.ycmd.YcmdProcess.StartServer();
+            //Start YCMDs.
+            WebPebble.WebSockets.ycmd.YcmdProcess.StartServer( WebSockets.ycmd.YcmdProcesses.Sdk2Aplite, "ycm_extra_conf_sdk3.py");
+            WebPebble.WebSockets.ycmd.YcmdProcess.StartServer(WebSockets.ycmd.YcmdProcesses.Sdk3Aplite, "ycm_extra_conf_sdk3.py");
+            WebPebble.WebSockets.ycmd.YcmdProcess.StartServer(WebSockets.ycmd.YcmdProcesses.Sdk3Basalt, "ycm_extra_conf_sdk3.py");
+            WebPebble.WebSockets.ycmd.YcmdProcess.StartServer(WebSockets.ycmd.YcmdProcesses.Sdk3Chalk, "ycm_extra_conf_sdk3.py");
             //Start
             MainAsync().GetAwaiter().GetResult();
         }
@@ -241,7 +244,7 @@ namespace WebPebble
             //WebSockets.WebSocketServer.wssv.WaitTime = new TimeSpan(0, 0, 3);
             //WebSockets.WebSocketServer.wssv.Stop();
             //Console.WriteLine("Shutting down WS server...");
-            WebPebble.WebSockets.ycmd.YcmdProcess.KillServer();
+            WebPebble.WebSockets.ycmd.YcmdProcess.KillAll();
         }
 
         public static void QuickWriteToDoc(Microsoft.AspNetCore.Http.HttpContext context, string content, string type = "text/html", int code = 200)

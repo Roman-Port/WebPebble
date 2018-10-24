@@ -8,7 +8,7 @@ namespace WebPebble.WebSockets.ycmd
 {
     public static class YcmdCodeComplete
     {
-        public static CompletionResponse GetCodeComplete(string filename, int col, int line, string data)
+        public static CompletionResponse GetCodeComplete(string filename, int col, int line, string data, YcmdProcesses p)
         {
             //Create the request data to send.
             SimpleRequest req = new SimpleRequest();
@@ -19,7 +19,7 @@ namespace WebPebble.WebSockets.ycmd
             req.file_data = new Dictionary<string, FileData>();
             req.file_data.Add(filename, GenerateFileData(data));
             //Send this data to the server and get a reply.
-            CompletionResponse reply = YcmdController.SendYcmdRequest<CompletionResponse>("/completions", req);
+            CompletionResponse reply = YcmdController.SendYcmdRequest<CompletionResponse>("/completions", req, YcmdProcess.GetServer(p));
             return reply;
         }
 
