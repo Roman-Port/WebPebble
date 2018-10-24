@@ -117,7 +117,7 @@ ycmd.hideBox = function () {
 };
 
 ycmd.onUpDown = function (key) {
-    console.log(key);
+    /*console.log(key);
     //If this is open, set the cursor back and scroll through the dialog.
     if (ycmd.open) {
         var pos = editor.getCursorPosition();
@@ -130,7 +130,8 @@ ycmd.onUpDown = function (key) {
         }
     } else {
         //Continue normally.
-    }
+    }*/
+    ycmd.hideBox();
 };
 
 ycmd.setCursorPosInWindow = function (newPos) {
