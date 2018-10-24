@@ -5,7 +5,23 @@ ycmd.frame = document.getElementById('completion_frame');
 ycmd.subscribe = function () {
     //Subscribe to events from the editor.
     editor.on("change", ycmd.onEditorChange);
-    
+    //Subscribe to keybinds.
+    KeyboardJS.on('up', function () {
+        console.log('up');
+        ycmd.hideBox();
+    });
+    KeyboardJS.on('down', function () {
+        console.log('down');
+        ycmd.hideBox();
+    });
+    KeyboardJS.on('left', function () {
+        console.log('right');
+        ycmd.hideBox();
+    });
+    KeyboardJS.on('right', function () {
+        console.log('left');
+        ycmd.hideBox();
+    });
 };
 
 ycmd.onEditorChange = function (conte) {
@@ -31,6 +47,8 @@ ycmd.onEditorChange = function (conte) {
             ycmd.onGotYcmdComp(ycmd_reply.data.ycmd.sdks.sdk);
         }
     });
+    //Finally, move the existing box.
+    ycmd.setBoxPos(ycmd.frame);
 };
 
 ycmd.onGotYcmdComp = function (data) {
@@ -44,10 +62,20 @@ ycmd.onGotYcmdComp = function (data) {
     e.appendChild(ee);
 
     //Set position.
-    e.style.top = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop + 60).toString() + "px";
-    e.style.left = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetWidth + 315).toString() + "px";
+    ycmd.setBoxPos(e);
     //Insert into DOM.
     ycmd.frame.parentNode.replaceChild(e, ycmd.frame);
     ycmd.frame = e;
-}
+};
 
+ycmd.setBoxPos = function (e) {
+    e.style.top = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop + 60).toString() + "px";
+    e.style.left = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetWidth + 315).toString() + "px";
+};
+
+ycmd.hideBox = function () {
+    var ee = ycmd.frame.firstChild;
+    if (ee != null) {
+        ee.className = "completion_window completion_window_hidden";
+    }
+}

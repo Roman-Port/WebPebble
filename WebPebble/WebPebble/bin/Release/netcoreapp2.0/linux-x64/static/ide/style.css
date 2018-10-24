@@ -603,6 +603,7 @@ body {
 .completion_frame {
     position: fixed;
     z-index: 900;
+    transition:all 50ms;
 }
 
 .completion_window {
@@ -610,11 +611,16 @@ body {
     width: 200px;
     min-height:80px;
     background-color: #2B3745;
-    -webkit-box-shadow: 5px 5px 16px 0px rgba(0,0,0,0.23);
-    -moz-box-shadow: 5px 5px 16px 0px rgba(0,0,0,0.23);
     box-shadow: 5px 5px 16px 0px rgba(0,0,0,0.23);
     bottom:0;
     left:0;
+    transition:all 150ms;
+}
+
+.completion_window_hidden {
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0,0);
+    pointer-events:none;
+    opacity:0;
 }
 
 .completion_window .c_item {
