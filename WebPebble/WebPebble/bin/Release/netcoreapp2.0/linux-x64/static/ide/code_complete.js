@@ -37,11 +37,15 @@ ycmd.onGotYcmdComp = function (data) {
     //Create html for the predictions.
     var e = document.createElement('div');
     e.className = "completion_frame";
+    var ee = document.createElement('div');
+    ee.className = "completion_window";
 
+    e.appendChild(ee);
 
     //Set position.
-    e.style.top = document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop;
-    e.style.left = 0;
+    e.style.top = document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop.toString() + "px";
+    e.style.left = "0px";
     //Insert into DOM.
     ycmd.frame.parentNode.replaceChild(e, ycmd.frame);
+    ycmd.frame = e;
 }
