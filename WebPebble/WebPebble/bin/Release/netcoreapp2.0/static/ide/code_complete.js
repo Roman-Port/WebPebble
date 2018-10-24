@@ -1,14 +1,11 @@
 ﻿var ycmd = {};
 ycmd.latestRequest = -1;
 ycmd.frame = document.getElementById('completion_frame');
-ycmd.external = {};
-ycmd.external.getCaretCoordinates = null;
 
 ycmd.subscribe = function () {
     //Subscribe to events from the editor.
     editor.on("change", ycmd.onEditorChange);
-    // Init the external thingy here. The way we use it is gross, but it works.
-    ycmd.external.getCaretCoordinates = require('textarea-caret');
+    
 };
 
 ycmd.onEditorChange = function (conte) {
@@ -47,12 +44,8 @@ ycmd.onGotYcmdComp = function (data) {
     e.appendChild(ee);
 
     //Set position.
-    var textArea = document.getElementsByClassName('ace_text-input')[0];
-    var caret = getCaretCoordinates(this, this.selectionEnd);
-    console.log('(top, left, height) = (%s, %s, %s)', caret.top, caret.left, caret.height);
-
-    e.style.top = (caret.top + 60).toString() + "px";
-    e.style.left = (caret.left + 80 + document.getElementsByClassName('ace_gutter-active-lin')[0].offsetWidth).toString() + "px";
+    e.style.top = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop + 60).toString() + "px";
+    e.style.left = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetWidth + 315).toString() + "px";
     //Insert into DOM.
     ycmd.frame.parentNode.replaceChild(e, ycmd.frame);
     ycmd.frame = e;

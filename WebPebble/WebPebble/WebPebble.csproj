@@ -39,9 +39,6 @@
     <None Update="static\ide\edit_resource.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="static\ide\external\textarea-caret-position.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="static\ide\filemanager.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -66,6 +63,10 @@
     <None Update="WebSockets\ycmd\YcmdConfig\ycm_extra_conf_sdk3.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="static\ide\external\" />
   </ItemGroup>
 
 </Project>
