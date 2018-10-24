@@ -1,25 +1,23 @@
 ﻿var ycmd = {};
 ycmd.latestRequest = -1;
 ycmd.frame = document.getElementById('completion_frame');
+ycmd.open = false;
+ycmd.cursorPos = 0;
 
 ycmd.subscribe = function () {
     //Subscribe to events from the editor.
     editor.on("change", ycmd.onEditorChange);
     //Subscribe to keybinds.
     keyboardJS.on('up', function () {
-        console.log('up');
-        ycmd.hideBox();
+        ycmd.onUpDown('up');
     });
     keyboardJS.on('down', function () {
-        console.log('down');
-        ycmd.hideBox();
+        ycmd.onUpDown('down');
     });
     keyboardJS.on('left', function () {
-        console.log('right');
         ycmd.hideBox();
     });
     keyboardJS.on('right', function () {
-        console.log('left');
         ycmd.hideBox();
     });
 };
@@ -55,7 +53,7 @@ ycmd.onGotYcmdComp = function (data) {
     console.log(data);
     //Create html for the predictions.
     var e = document.createElement('div');
-    e.className = "completion_frame text";
+    e.className = "completion_frame open_sans";
     var ee = document.createElement('div');
     ee.className = "completion_window";
     ee.x_complete = [];
@@ -70,18 +68,31 @@ ycmd.onGotYcmdComp = function (data) {
         ee.appendChild(o);
         ee.x_complete.push(o);
     }
-    e.appendChild(ee);
+    
 
     //Set position.
     ycmd.setBoxPos(e);
-    //Insert into DOM.
+    
+    
+    if (data.completions.length > 0) {
+        //Insert into DOM.
+        e.appendChild(ee);
+        //Start listening if there are things to listen for.
+        keyboardJS.watch(document.getElementsByClassName('ace_text-input')[0]);
+        ee.x_complete[0].className = "c_item c_item_select";
+        ycmd.cursorPos = 0;
+        ycmd.open = true;
+    } else {
+        //Hide.
+        ee = document.createElement('div');
+        ee.className = "completion_window completion_window_hidden";
+        e.appendChild(ee);
+        ycmd.open = false;
+    }
+
+    //Insert final
     ycmd.frame.parentNode.replaceChild(e, ycmd.frame);
     ycmd.frame = e;
-    //Start listening if there are things to listen for.
-    if (data.completions.length > 0) {
-        keyboardJS.watch(document.getElementsByClassName('ace_text-input')[0]);
-        ee.x_complete[0].className = "c_item c_item_select"; 
-    } 
 };
 
 ycmd.setBoxPos = function (e) {
@@ -104,4 +115,36 @@ ycmd.hideBox = function () {
         ee.className = "completion_window completion_window_hidden";
     }
     keyboardJS.stop();
-}
+    ycmd.open = false;
+};
+
+ycmd.onUpDown = function (key) {
+    //If this is open, set the cursor back and scroll through the dialog.
+    if (ycmd.open) {
+        var pos = editor.getCursorPosition();
+        if (key === 'up') {
+            editor.moveCursorTo(pos.row, pos.column - 1);
+            ycmd.setCursorPosInWindow(ycmd.cursorPos + 1);
+        } else {
+            editor.moveCursorTo(pos.row, pos.column + 1);
+            ycmd.setCursorPosInWindow(ycmd.cursorPos - 1);
+        }
+    } else {
+        //Continue normally.
+    }
+};
+
+ycmd.setCursorPosInWindow = function (newPos) {
+    var ee = ycmd.frame.firstChild;
+    //Check.
+    if (newPos < 0) {
+        newPos = 0;
+    }
+    if (newPos > ee.x_complete.length - 1) {
+        newPos = ee.x_complete.length - 1;
+    }
+    //Unset the existing one.
+    ee.x_complete[ycmd.cursorPos].style = "c_item";
+    ee.x_complete[newPos].style = "c_item c_item_select";
+    ycmd.cursorPos = newPos;
+};

@@ -636,6 +636,7 @@ body {
     padding:2px 5px;
     color:white;
     font-size:16px;
+    transition:background-color 50ms;
 
 }
 
