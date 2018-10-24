@@ -62,9 +62,7 @@ ycmd.onGotYcmdComp = function (data) {
         var d = data.completions[i];
         o.className = "c_item";
         o.innerText = d.menu_text;
-        if (d.type !== "UNKNOWN") {
-            console.log(d.type);
-        }
+
         ee.appendChild(o);
         ee.x_complete.push(o);
     }
@@ -119,10 +117,11 @@ ycmd.hideBox = function () {
 };
 
 ycmd.onUpDown = function (key) {
+    console.log(key);
     //If this is open, set the cursor back and scroll through the dialog.
     if (ycmd.open) {
         var pos = editor.getCursorPosition();
-        if (key === 'up') {
+        if (key == 'up') {
             editor.moveCursorTo(pos.row, pos.column - 1);
             ycmd.setCursorPosInWindow(ycmd.cursorPos + 1);
         } else {
