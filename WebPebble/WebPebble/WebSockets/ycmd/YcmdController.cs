@@ -19,6 +19,12 @@ namespace WebPebble.WebSockets.ycmd
 
         public static T SendYcmdRequest<T>(string path, object requestData, YcmdProcess p )
         {
+            string jsonString = SendYcmdRequestRaw(path, requestData, p);
+            return JsonConvert.DeserializeObject<T>(jsonString);
+        }
+
+        public static string SendYcmdRequestRaw(string path, object requestData, YcmdProcess p)
+        {
             var request = (HttpWebRequest)WebRequest.Create(GenerateUri(path, p));
             string requestJson = JsonConvert.SerializeObject(requestData);
             var data = Encoding.UTF8.GetBytes(requestJson);
@@ -38,7 +44,7 @@ namespace WebPebble.WebSockets.ycmd
             var r = (HttpWebResponse)request.GetResponse();
             var jsonString = new StreamReader(r.GetResponseStream()).ReadToEnd();
 
-            return JsonConvert.DeserializeObject<T>(jsonString);
+            return (jsonString);
         }
 
         public static string GenerateHmac(string method, string path, string body, YcmdProcess p)
