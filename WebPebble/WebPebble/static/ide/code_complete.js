@@ -39,6 +39,7 @@ ycmd.onEditorChange = function (conte) {
     console.log(data);
     //Create a request to YCMD.
     ycmd.latestRequest = phoneconn.send(6, data, function (ycmd_reply) {
+        ycmd.setSavedCursorPos();
         //Check if this is the latest request.
         if (ycmd_reply.requestid === ycmd.latestRequest) {
             //Okay. Move on.
@@ -80,7 +81,7 @@ ycmd.onGotYcmdComp = function (data) {
         ee.x_complete[0].className = "c_item c_item_select";
         ycmd.boxPos = 0;
         ycmd.open = true;
-        ycmd.onShowBox();
+        
     } else {
         //Hide.
         ee = document.createElement('div');
@@ -108,9 +109,9 @@ ycmd.setBoxPos = function (e) {
     }
 };
 
-ycmd.onShowBox = function () {
+ycmd.setSavedCursorPos = function () {
     ycmd.cursorPos = editor.getCursorPosition();
-}
+};
 
 ycmd.hideBox = function () {
     var ee = ycmd.frame.firstChild;
@@ -145,7 +146,7 @@ ycmd.setCursorPosInWindow = function (newPos) {
         newPos = ee.x_complete.length - 1;
     }
     //Unset the existing one.
-    ee.x_complete[ycmd.boxPos].style = "c_item";
-    ee.x_complete[newPos].style = "c_item c_item_select";
+    ee.x_complete[ycmd.boxPos].className = "c_item";
+    ee.x_complete[newPos].className = "c_item c_item_select";
     ycmd.boxPos = newPos;
 };
