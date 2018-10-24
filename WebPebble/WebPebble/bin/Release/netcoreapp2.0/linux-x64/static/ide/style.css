@@ -582,7 +582,7 @@ body {
 
 .completion_window_top {
     bottom:unset;
-    top:30px;
+    top:50px;
 }
 
 .completion_window_hidden {

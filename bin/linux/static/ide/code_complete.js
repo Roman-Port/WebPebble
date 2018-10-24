@@ -20,6 +20,8 @@ ycmd.subscribe = function () {
     keyboardJS.on('right', function () {
         ycmd.hideBox();
     });
+    //Subscribe to clicks on the box.
+    document.getElementsByClassName('ace_content')[0].addEventListener('click', ycmd.hideBox);
 };
 
 ycmd.onEditorChange = function (conte) {
