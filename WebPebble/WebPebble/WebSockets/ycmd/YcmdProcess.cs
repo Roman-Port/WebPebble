@@ -31,11 +31,11 @@ namespace WebPebble.WebSockets.ycmd
             LibRpws.LibRpwsCore.rand.NextBytes(secretKey);
             pp.secret_key = secretKey;
             //Create the config file.
-            string conf = File.ReadAllText(Program.config.media_dir + "WebSockets/ycmd/DefaultYcmdSettings_"+name.ToString()+".json");
+            string conf = File.ReadAllText(Program.config.media_dir + "WebSockets/ycmd/DefaultYcmdSettings.json");
             conf = conf.Replace("%KEY%", Convert.ToBase64String(secretKey));
             conf = conf.Replace("%CONF%", Program.config.media_dir + "WebSockets/ycmd/YcmdConfig/"+extra_config);
             //Save to a temporary directory.
-            string tempFile = Program.config.temp_files + "ycmd_conf.json";
+            string tempFile = Program.config.temp_files + "ycmd_temp_config_" +name.ToString() + ".json";
             File.WriteAllText(tempFile, conf);
             //Run Python and execute this file.
             ProcessStartInfo startInfo = new ProcessStartInfo() { FileName = "/usr/bin/python3", Arguments = Program.config.ycmd_binary+ "  --options_file "+tempFile+" --port "+pp.port, };
