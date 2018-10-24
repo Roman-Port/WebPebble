@@ -67,11 +67,6 @@ ycmd.onGotYcmdComp = function (data) {
         ee.x_complete.push(o);
     }
     
-
-    //Set position.
-    ycmd.setBoxPos(e);
-    
-    
     if (data.completions.length > 0) {
         //Insert into DOM.
         e.appendChild(ee);
@@ -88,6 +83,9 @@ ycmd.onGotYcmdComp = function (data) {
         e.appendChild(ee);
         ycmd.open = false;
     }
+
+    //Set position.
+    ycmd.setBoxPos(e);
 
     //Insert final
     ycmd.frame.parentNode.replaceChild(e, ycmd.frame);
