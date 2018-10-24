@@ -80,6 +80,7 @@ ycmd.onGotYcmdComp = function (data) {
         ee.x_complete[0].className = "c_item c_item_select";
         ycmd.cursorPos = 0;
         ycmd.open = true;
+        ycmd.onShowBox();
     } else {
         //Hide.
         ee = document.createElement('div');
@@ -107,6 +108,10 @@ ycmd.setBoxPos = function (e) {
     }
 };
 
+ycmd.onShowBox = function () {
+    ycmd.cursorPos = editor.getCursorPosition();
+}
+
 ycmd.hideBox = function () {
     var ee = ycmd.frame.firstChild;
     if (ee !== null) {
@@ -119,18 +124,15 @@ ycmd.hideBox = function () {
 ycmd.onUpDown = function (key) {
     console.log(key);
     //If this is open, set the cursor back and scroll through the dialog.
-    if (ycmd.open) {
-        var pos = editor.getCursorPosition();
-        if (key == 'up') {
-            editor.moveCursorTo(pos.row + 1, pos.column);
-            ycmd.setCursorPosInWindow(ycmd.cursorPos + 1);
-        } else {
-            editor.moveCursorTo(pos.row - 1, pos.column);
-            ycmd.setCursorPosInWindow(ycmd.cursorPos - 1);
-        }
+    var pos = ycmd.cursorPos;
+    if (key == 'up') {
+        //editor.moveCursorTo(pos.row + 1, pos.column);
+        ycmd.setCursorPosInWindow(ycmd.cursorPos + 1);
     } else {
-        //Continue normally.
+        //editor.moveCursorTo(pos.row - 1, pos.column);
+        ycmd.setCursorPosInWindow(ycmd.cursorPos - 1);
     }
+    editor.moveCursorTo(pos.row, pos.column);
 };
 
 ycmd.setCursorPosInWindow = function (newPos) {
