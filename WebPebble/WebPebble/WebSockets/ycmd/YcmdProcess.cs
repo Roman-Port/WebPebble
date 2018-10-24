@@ -23,7 +23,7 @@ namespace WebPebble.WebSockets.ycmd
             YcmdProcess pp = new YcmdProcess();
             pp.name = name;
             pp.port = (int)name;
-            pp.extra_config_path = extra_config;
+            pp.extra_config_path = Program.config.media_dir + "WebSockets/ycmd/YcmdConfig/" + extra_config;
 
             Console.WriteLine("Starting YCMD server '"+name.ToString()+"'...");
             //Generate the secret key.
@@ -33,7 +33,8 @@ namespace WebPebble.WebSockets.ycmd
             //Create the config file.
             string conf = File.ReadAllText(Program.config.media_dir + "WebSockets/ycmd/DefaultYcmdSettings.json");
             conf = conf.Replace("%KEY%", Convert.ToBase64String(secretKey));
-            conf = conf.Replace("%CONF%", Program.config.media_dir + "WebSockets/ycmd/YcmdConfig/"+extra_config);
+            conf = conf.Replace("%CONF%", pp.extra_config_path);
+            Console.WriteLine(pp.extra_config_path);
             //Save to a temporary directory.
             string tempFile = Program.config.temp_files + "ycmd_temp_config_" +name.ToString() + ".json";
             File.WriteAllText(tempFile, conf);

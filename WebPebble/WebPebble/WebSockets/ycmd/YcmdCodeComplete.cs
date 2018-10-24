@@ -19,6 +19,10 @@ namespace WebPebble.WebSockets.ycmd
             req.file_data = new Dictionary<string, FileData>();
             req.file_data.Add(filename, GenerateFileData(data));
             //Send this data to the server and get a reply.
+            YcmdController.SendYcmdRequest<CompletionResponse>("/load_extra_conf_file", new Dictionary<string, string>
+            {
+                {"filepath",YcmdProcess.GetServer(p).extra_config_path }
+            }, YcmdProcess.GetServer(p));
             CompletionResponse reply = YcmdController.SendYcmdRequest<CompletionResponse>("/completions", req, YcmdProcess.GetServer(p));
             return reply;
         }
