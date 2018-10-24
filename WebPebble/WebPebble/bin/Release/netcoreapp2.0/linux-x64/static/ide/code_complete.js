@@ -122,10 +122,10 @@ ycmd.onUpDown = function (key) {
     if (ycmd.open) {
         var pos = editor.getCursorPosition();
         if (key == 'up') {
-            editor.moveCursorTo(pos.row - 1, pos.column);
+            editor.moveCursorTo(pos.row + 1, pos.column);
             ycmd.setCursorPosInWindow(ycmd.cursorPos + 1);
         } else {
-            editor.moveCursorTo(pos.row + 1, pos.column);
+            editor.moveCursorTo(pos.row - 1, pos.column);
             ycmd.setCursorPosInWindow(ycmd.cursorPos - 1);
         }
     } else {
