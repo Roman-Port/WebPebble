@@ -33,6 +33,9 @@
     <None Update="static\ide\boot.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="static\ide\code_complete.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="static\ide\edit_resource.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
