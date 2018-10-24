@@ -31,7 +31,7 @@ namespace WebPebble.WebSockets.ycmd
             LibRpws.LibRpwsCore.rand.NextBytes(secretKey);
             pp.secret_key = secretKey;
             //Create the config file.
-            string conf = File.ReadAllText(Program.config.media_dir + "WebSockets/ycmd/DefaultYcmdSettings.json");
+            string conf = File.ReadAllText(Program.config.media_dir + "WebSockets/ycmd/DefaultYcmdSettings_"+name.ToString()+".json");
             conf = conf.Replace("%KEY%", Convert.ToBase64String(secretKey));
             conf = conf.Replace("%CONF%", Program.config.media_dir + "WebSockets/ycmd/YcmdConfig/"+extra_config);
             //Save to a temporary directory.
