@@ -128,10 +128,10 @@ ycmd.onUpDown = function (key) {
     var pos = ycmd.cursorPos;
     if (key == 'up') {
         //editor.moveCursorTo(pos.row + 1, pos.column);
-        ycmd.setCursorPosInWindow(ycmd.boxPos + 1);
+        ycmd.setCursorPosInWindow(ycmd.boxPos - 1);
     } else {
         //editor.moveCursorTo(pos.row - 1, pos.column);
-        ycmd.setCursorPosInWindow(ycmd.boxPos - 1);
+        ycmd.setCursorPosInWindow(ycmd.boxPos + 1);
     }
     editor.moveCursorTo(pos.row, pos.column);
 };
@@ -149,4 +149,6 @@ ycmd.setCursorPosInWindow = function (newPos) {
     ee.x_complete[ycmd.boxPos].className = "c_item";
     ee.x_complete[newPos].className = "c_item c_item_select";
     ycmd.boxPos = newPos;
+    //Scroll to view.
+    ee.x_complete[ycmd.boxPos].scrollIntoView();
 };
