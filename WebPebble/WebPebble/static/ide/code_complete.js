@@ -43,7 +43,7 @@ ycmd.onGotYcmdComp = function (data) {
     e.appendChild(ee);
 
     //Set position.
-    e.style.top = document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop.toString() + "px";
+    e.style.top = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop.toString() + 40) + "px";
     e.style.left = "0px";
     //Insert into DOM.
     ycmd.frame.parentNode.replaceChild(e, ycmd.frame);

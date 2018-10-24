@@ -605,10 +605,10 @@ body {
 }
 
 .completion_window {
-    position: fixed;
+    position: absolute;
     z-index: 996;
-    width: 400px;
-    min-height:100px;
+    width: 200px;
+    min-height:80px;
     background-color: #2B3745;
     -webkit-box-shadow: 5px 5px 16px 0px rgba(0,0,0,0.23);
     -moz-box-shadow: 5px 5px 16px 0px rgba(0,0,0,0.23);
