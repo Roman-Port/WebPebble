@@ -56,7 +56,6 @@ ycmd.onGotYcmdComp = function (data) {
     var e = document.createElement('div');
     e.className = "completion_frame open_sans";
     var ee = document.createElement('div');
-    ycmd.setBoxPos(ee);
     ee.x_complete = [];
     for (var i = 0; i < data.completions.length; i += 1) {
         var o = document.createElement('div');
