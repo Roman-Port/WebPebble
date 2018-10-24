@@ -30,6 +30,7 @@ ycmd.onEditorChange = function (conte) {
     pos.column += 1;
     pos.row += 1;
     var content = filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.getValue();
+    keyboardJS.watch(document.getElementsByClassName('ace_text-input')[0]);
     //Make a request to YCMD.
     var data = {
         "project_id": project.id,
@@ -75,7 +76,7 @@ ycmd.setBoxPos = function (e) {
 
 ycmd.hideBox = function () {
     var ee = ycmd.frame.firstChild;
-    if (ee != null) {
+    if (ee !== null) {
         ee.className = "completion_window completion_window_hidden";
     }
 }
