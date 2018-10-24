@@ -43,7 +43,6 @@ body {
     height: 24px;
     line-height: 24px;
     padding: 8px;
-    background-color: #1b2432;
     border-radius: 5px;
     float: right;
     display: inline-block;
@@ -58,7 +57,6 @@ body {
 
 .header .line {
     height: 100%;
-    background-color: #1b2432;
     width: 2px;
     border-radius: 2px;
     display: inline-block;
@@ -76,7 +74,6 @@ body {
     -webkit-box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);
     -moz-box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);
     box-shadow: 2px 5px 20px 0px rgba(0,0,0,0.46);*/
-    background-color: #1B2432;
     top:80px;
     bottom:0;
     right:0;
@@ -102,14 +99,7 @@ body {
     padding-right: 16px;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
-    border: 2px solid #1B2432;
-    background-color: #1B2432;
     margin-left: 4px;
-}
-
-.ide_window_tabs .tab_active {
-    background-color: #2e3b4e;
-    border: 2px solid #2e3b4e;
 }
 
 .tab img {
@@ -143,7 +133,6 @@ body {
     padding: 8px;
     padding-left: 16px;
     padding-right: 16px;
-    background-color: #4F6272;
     border-radius: 5px;
     display: inline-block;
 }
@@ -189,7 +178,7 @@ body {
     height:20px;
     padding:5px;
     border-radius:3px;
-    background-color:#4F6272;
+    
 }
 
 .assets_type_container .btn .action_window div img {
@@ -197,20 +186,6 @@ body {
     width:20px;
 }
 
-.assets_type_container .btn:hover {
-    background-color: #1B2432;
-}
-
-.assets_type_container .btn_active {
-    background-color: #1B2432;
-}
-
-.assets_type_container .btn_fill_active {
-    background-color: #1B2432;
-    display:block;
-    border-top-right-radius:0;
-    border-bottom-right-radius:0;
-}
 
 .assets_type_container .btn_fill_active .action_window {
     display:block;
@@ -219,7 +194,6 @@ body {
 .assets_window .line {
     margin-right:15px;
     height: 2px;
-    background-color: #1B2432;
     border-radius: 1px;
 }
 
@@ -259,7 +233,6 @@ body {
     margin-left: 10px;
     margin-right: 10px;
     max-width: 600px;
-    background-color: #364958;
     border-radius: 10px;
     overflow: hidden;
     transition: all 120ms;
@@ -275,7 +248,6 @@ body {
     padding: 10px;
     text-align: center;
     font-size: 18px;
-    background-color: #4F6272;
     padding-bottom: 15px;
     padding-top: 15px;
 }
@@ -303,7 +275,6 @@ body {
     padding: 8px;
     padding-left: 16px;
     padding-right: 16px;
-    background-color: #4F6272;
     border-radius: 5px;
     display: inline-block;
     margin-left: 4px;
@@ -317,7 +288,6 @@ body {
     bottom: 0;
     right: 0;
     left: 0;
-    background-color: #1B2432;
     z-index: 900;
     width: 100%;
     color: white;
@@ -399,12 +369,10 @@ body {
 }
 
 .template_inner p {
-    color:#e5e5e5;
     font-size:17px;
 }
 
 .template_inner .container {
-    background-color:#2b3745;
     padding:12px;
     color:white;
     border-radius:5px;
@@ -423,12 +391,10 @@ body {
     padding: 5px;
     padding-left: 12px;
     padding-right: 12px;
-    background-color: #1b2432;
     border-radius: 5px;
     display: inline-block;
     margin-right: 4px;
     cursor: pointer;
-    border: 1px solid #111721;
 }
 
 .template_inner .big_button {
@@ -438,24 +404,14 @@ body {
     padding: 8px;
     padding-left: 12px;
     padding-right: 12px;
-    background-color: #1b2432;
     border-radius: 5px;
     display: inline-block;
     margin-right: 4px;
     cursor: pointer;
-    border: 1px solid #111721;
 }
 
 .blur {
     filter:blur(4px);
-}
-
-.red_btn {
-    color:#ff9999;
-}
-
-.green_btn {
-    color: #94fcae;
 }
 
 /* Thanks to https://codepen.io/brunjo/pen/azdWjY */
@@ -507,7 +463,7 @@ body {
     padding:5px;
     margin-top:15px;
     font-size:14px;
-    color:#e2e2e2;
+    
 }
 
 .control_item .control {
@@ -570,7 +526,6 @@ body {
     height: 24px;
     line-height: 24px;
     padding: 8px;
-    background-color: #1b2432;
     border-radius: 5px;
     display: inline-block;
     margin-right: 8px;
@@ -580,7 +535,7 @@ body {
 
 .watch_control_window .big_button .tooltip {
     opacity: 0;
-    /* background-color: #1b2432; */
+    
     color: white;
     border-radius: 4px;
     /* padding: 5px 8px; */
@@ -608,10 +563,9 @@ body {
 
 .completion_window {
     position: absolute;
-    width: 200px;
+    width: 300px;
     min-height:80px;
     max-height:200px;
-    background-color: #2B3745;
     box-shadow: 5px 5px 16px 0px rgba(0,0,0,0.23);
     bottom:0;
     left:0;
@@ -635,11 +589,7 @@ body {
 .completion_window .c_item {
     padding:2px 5px;
     color:white;
-    font-size:16px;
+    font-size:13px;
     transition:background-color 50ms;
 
-}
-
-.completion_window .c_item_select {
-    background-color: #4286f4;
 }

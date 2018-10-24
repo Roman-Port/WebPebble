@@ -25,3 +25,5 @@ C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\WebSockets\ycmd\YcmdConfig\ycm_extra_conf_sdk3.py
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\static\ide\code_complete.js
 C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\static\ide\external\keyboard.min.js
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\static\ide\themes\dark_visualstudio.css
+C:\Users\Roman\source\repos\WebPebble\WebPebble\WebPebble\bin\Release\netcoreapp2.0\static\ide\themes\old_default.css
