@@ -56,7 +56,7 @@ ycmd.onGotYcmdComp = function (data) {
     var e = document.createElement('div');
     e.className = "completion_frame open_sans";
     var ee = document.createElement('div');
-    ee.className = "completion_window";
+    ycmd.setBoxPos(ee);
     ee.x_complete = [];
     for (var i = 0; i < data.completions.length; i += 1) {
         var o = document.createElement('div');
@@ -100,13 +100,18 @@ ycmd.setBoxPos = function (e) {
     e.style.top = top.toString() + "px";
     e.style.left = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetWidth + 315).toString() + "px";
 
-    if (top < 310) {
-        //Not enough space. Use bottom.
-        var f = e.firstChild;
-        if (f !== null) {
+
+    
+    var f = e.firstChild;
+    if (f !== null) {
+        if (top < 310) {
+            //Not enough space. Use bottom.
             f.className = "completion_window completion_window_top";
+        } else {
+            f.className = "completion_window";
         }
     }
+    
 };
 
 ycmd.setSavedCursorPos = function () {
