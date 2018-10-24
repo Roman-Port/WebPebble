@@ -78,7 +78,7 @@ ycmd.onGotYcmdComp = function (data) {
         //Start listening if there are things to listen for.
         keyboardJS.watch(document.getElementsByClassName('ace_text-input')[0]);
         ee.x_complete[0].className = "c_item c_item_select";
-        ycmd.cursorPos = 0;
+        ycmd.boxPos = 0;
         ycmd.open = true;
         ycmd.onShowBox();
     } else {
@@ -127,10 +127,10 @@ ycmd.onUpDown = function (key) {
     var pos = ycmd.cursorPos;
     if (key == 'up') {
         //editor.moveCursorTo(pos.row + 1, pos.column);
-        ycmd.setCursorPosInWindow(ycmd.cursorPos + 1);
+        ycmd.setCursorPosInWindow(ycmd.boxPos + 1);
     } else {
         //editor.moveCursorTo(pos.row - 1, pos.column);
-        ycmd.setCursorPosInWindow(ycmd.cursorPos - 1);
+        ycmd.setCursorPosInWindow(ycmd.boxPos - 1);
     }
     editor.moveCursorTo(pos.row, pos.column);
 };
@@ -145,7 +145,7 @@ ycmd.setCursorPosInWindow = function (newPos) {
         newPos = ee.x_complete.length - 1;
     }
     //Unset the existing one.
-    ee.x_complete[ycmd.cursorPos].style = "c_item";
+    ee.x_complete[ycmd.boxPos].style = "c_item";
     ee.x_complete[newPos].style = "c_item c_item_select";
-    ycmd.cursorPos = newPos;
+    ycmd.boxPos = newPos;
 };
