@@ -598,3 +598,28 @@ body {
     opacity: 1;
     padding-bottom: 50px;
 }
+
+/* Completeers */
+.completion_frame {
+    position: fixed;
+}
+
+.completion_window {
+    position: fixed;
+    z-index: 996;
+    width: 400px;
+    min-height:100px;
+    background-color: #2B3745;
+    -webkit-box-shadow: 5px 5px 16px 0px rgba(0,0,0,0.23);
+    -moz-box-shadow: 5px 5px 16px 0px rgba(0,0,0,0.23);
+    box-shadow: 5px 5px 16px 0px rgba(0,0,0,0.23);
+    bottom:0;
+    left:0;
+}
+
+.completion_window .c_item {
+    padding:2px 5px;
+    color:white;
+    font-size:16px;
+
+}

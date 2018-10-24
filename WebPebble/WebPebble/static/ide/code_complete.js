@@ -1,4 +1,6 @@
 ﻿var ycmd = {};
+ycmd.latestRequest = -1;
+ycmd.frame = document.getElementById('completion_frame');
 
 ycmd.subscribe = function () {
     //Subscribe to events from the editor.
@@ -21,11 +23,25 @@ ycmd.onEditorChange = function (conte) {
     };
     console.log(data);
     //Create a request to YCMD.
-    phoneconn.send(6, data, function (ycmd_reply) {
-        console.log(ycmd_reply);
+    ycmd.latestRequest = phoneconn.send(6, data, function (ycmd_reply) {
+        //Check if this is the latest request.
+        if (ycmd_reply.requestid === ycmd.latestRequest) {
+            //Okay. Move on.
+            ycmd.onGotYcmdComp(ycmd_reply.data.ycmd.sdks.sdk);
+        }
     });
 };
 
+ycmd.onGotYcmdComp = function (data) {
+    console.log(data);
+    //Create html for the predictions.
+    var e = document.createElement('div');
+    e.className = "completion_frame";
 
 
-ycmd.subscribe();
+    //Set position.
+    e.style.top = document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop;
+    e.style.left = 0;
+    //Insert into DOM.
+    ycmd.frame.parentNode.replaceChild(ycmd.frame, e);
+}

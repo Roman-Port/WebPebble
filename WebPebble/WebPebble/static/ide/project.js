@@ -149,6 +149,7 @@ project.init = function () {
                     project.appInfo = app;
                     project.started = false;
                     //Allow the user to use this.
+                    ycmd.subscribe();
                     project.hideDialog();
                 });
                 
