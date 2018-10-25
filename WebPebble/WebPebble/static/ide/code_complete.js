@@ -225,10 +225,12 @@ ycmd.chooseOption = function (data) {
     for (i = 0; i < lines.length; i += 1) {
         o += lines[i] + "\n";
     }
-    filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.setValue(o, 0);
-    window.setTimeout(function () {
+    //Add a dummy callback to prevent the edited function being called.
+    ycmd.onEditCallback = function () {
         editor.moveCursorTo(cursorPos.row, cursorPos.column);
-    }, 1000);
+    };
+    //Apply
+    filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.setValue(o, 0);
     //Hide the box
     ycmd.hideBox();
 }
