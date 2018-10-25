@@ -133,6 +133,12 @@ ycmd.checkIfKeypressIsTarget = function () {
     return editor.isFocused() && ycmd.open;
 }
 
+ycmd.onHijackKeypress = function (e) {
+    console.log(e);
+
+    return true;
+}
+
 ycmd.onKeyDirPress = function (lineDir, boxDir) {
     //Linedir is -1 if up, 1 if down. Boxdir is generally the other way.
 
