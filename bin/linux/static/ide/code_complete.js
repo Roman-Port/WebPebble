@@ -54,8 +54,9 @@ ycmd.onEditorChange = function (conte) {
     }
     //Set
     ycmd.setSavedCursorPos();
-    ycmd.lastContent = content;
     var content = filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.getValue();
+    ycmd.lastContent = content;
+    
     //Get the position of the cursor.
     var pos = editor.getCursorPosition();
     pos.column += 1;
