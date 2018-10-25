@@ -52,11 +52,15 @@ ycmd.onEditorChange = function (conte) {
         ycmd.onEditCallback();
         return;
     }
+    //Set
+    ycmd.setSavedCursorPos();
+    ycmd.lastContent = content;
+    var content = filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.getValue();
     //Get the position of the cursor.
     var pos = editor.getCursorPosition();
     pos.column += 1;
     pos.row += 1;
-    var content = filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.getValue();
+    
     //Make a request to YCMD.
     var data = {
         "project_id": project.id,
@@ -68,13 +72,13 @@ ycmd.onEditorChange = function (conte) {
     console.log(data);
     //Create a request to YCMD.
     ycmd.latestRequest = phoneconn.send(6, data, function (ycmd_reply) {
-        ycmd.setSavedCursorPos();
+        
         //Check if this is the latest request.
         if (ycmd_reply.requestid === ycmd.latestRequest) {
             //Okay. Move on.
             ycmd.onGotYcmdComp(ycmd_reply.data.ycmd.sdks.sdk);
             console.log(data);
-            ycmd.lastContent = content;
+            
         }
     });
     //Finally, move the existing box.
@@ -225,12 +229,13 @@ ycmd.chooseOption = function (data) {
     for (i = 0; i < lines.length; i += 1) {
         o += lines[i] + "\n";
     }
-    //Add a dummy callback to prevent the edited function being called.
-    ycmd.onEditCallback = function () {
-        editor.moveCursorTo(cursorPos.row, cursorPos.column);
-    };
     //Apply
     filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.setValue(o, 0);
+    cursorPos.column += data.insertion_text.length;
+    window.setTimeout(function () {
+        editor.moveCursorTo(cursorPos.row, cursorPos.column);
+    }, 5);
+    editor.moveCursorTo(cursorPos.row, cursorPos.column);
     //Hide the box
     ycmd.hideBox();
 }
