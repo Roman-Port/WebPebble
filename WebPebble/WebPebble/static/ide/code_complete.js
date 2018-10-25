@@ -41,11 +41,18 @@ ycmd.onEditorChange = function (conte) {
 
 ycmd.onGotYcmdComp = function (data) {
 
-    var e = ycmd.showBox(data);
+    if (data.completions.length == 0) {
+        //Hide box.
+        ycmd.hideBox();
+    } else {
+        //Show box.
+        var e = ycmd.showBox(data);
+        //Insert final
+        ycmd.frame.parentNode.replaceChild(e, ycmd.frame);
+        ycmd.frame = e;
+    }
 
-    //Insert final
-    ycmd.frame.parentNode.replaceChild(e, ycmd.frame);
-    ycmd.frame = e;
+    
 };
 
 ycmd.getBoxClassname = function (e) {
@@ -123,6 +130,7 @@ ycmd.showBox = function (data) {
     //Set box position and show it.
     ycmd.setBoxPos(e);
     ycmd.boxPos = 0;
+    ycmd.open = true;
 
     //Return box.
     return e;
@@ -151,6 +159,14 @@ ycmd.onHijackKeypress = function (e) {
         //Down.
         ycmd.onKeyDirPress(1);
     }
+    if (e.keyCode == 37 || e.keyCode == 39 || e.keyCode == 27) {
+        //Exit.
+        ycmd.hideBox();
+    }
+    if (e.keyCode == 13) {
+        //Enter.
+        ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data);
+    }
 
     return true;
 }
@@ -159,4 +175,47 @@ ycmd.onKeyDirPress = function (boxDir) {
     //Box dir is the direction to scroll in the box.
     //Scroll in the box.
     ycmd.setCursorPosInWindow(ycmd.boxPos + boxDir);
+}
+
+//This is pretty ugly and janky.
+ycmd.chooseOption = function (data) {
+    //Get the current line.
+    var lines = filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.getValue().toString().split('\n');
+    var cursorPos = editor.getCursorPosition();
+    var x = cursorPos.column;
+    var y = cursorPos.row;
+    //Work on our current line.
+    var l = lines[y];
+    var i = x;
+    //Work backwards to find the last space, or end of the line.
+    while (i > 0) {
+        if (i >= l.length) {
+            i -= 1;
+            continue;
+        }
+        if (l[i] == ' ') {
+            i += 1;
+            break;
+        }
+        //Remove this character.
+        l = l.slice(0, i) + l.slice(i + 1);
+    }
+    //Now, at the new position, insert this.
+    l = l.slice(0, i) + data.insertion_text + l.slice(i + 1);
+    //Set this back to a string.
+    lines[y] = l;
+    i = 0;
+    var o = "";
+    for (i = 0; i < lines.length; i += 1) {
+        o += lines[i] + "\n";
+    }
+    //Apply
+    filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.setValue(o, 0);
+    cursorPos.column += data.insertion_text.length;
+    window.setTimeout(function () {
+        editor.moveCursorTo(cursorPos.row, cursorPos.column);
+    }, 5);
+    editor.moveCursorTo(cursorPos.row, cursorPos.column);
+    //Hide the box
+    ycmd.hideBox();
 }
