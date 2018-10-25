@@ -170,7 +170,7 @@ ycmd.onHijackKeypress = function (e) {
     }
     if (e.keyCode == 13) {
         //Enter.
-        ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data);
+        //This has been moved to the taken new line character.
     }
 
     return true;
@@ -178,7 +178,12 @@ ycmd.onHijackKeypress = function (e) {
 
 ycmd.onHijackNewline = function () {
     //If the YCMD box is open, we're confirming the selection. Stop this newline.
-    return ycmd.checkIfKeypressIsTarget();
+    if (ycmd.checkIfKeypressIsTarget()) {
+        //Do correction now
+        ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data);
+        return true;
+    }
+    return false;
 }
 
 ycmd.onKeyDirPress = function (boxDir) {
