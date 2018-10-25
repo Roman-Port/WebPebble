@@ -28,6 +28,7 @@ ycmd.subscribe = function () {
         ycmd.hideBox();
     });
     keyboardJS.on('enter', function () {
+        console.log("enter pressed");
         if (ycmd.open) {
             //Use the active one.
             //Since we're unsure if we'll be called before the edit, we'll add this to the "on edit" callback. We'll also run this in 50 ms if that doesn't happen.
@@ -209,6 +210,7 @@ ycmd.chooseOption = function (data) {
             continue;
         }
         if (l[i] == ' ') {
+            i += 1;
             break;
         }
         //Remove this character.
