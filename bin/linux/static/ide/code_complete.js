@@ -8,7 +8,7 @@ ycmd.subscribe = function () {
     //Subscribe to events from the editor.
     editor.on("change", ycmd.onEditorChange);
     //Subscribe to changes in the filler. These changes will just be mirrored in the input.
-    ycmd.filler_input.onchange = function () {
+    ycmd.filler_input.oninput = function () {
         var d = this.value;
         //Append this at the current position.
         editor.insert(d);
@@ -16,6 +16,10 @@ ycmd.subscribe = function () {
         console.log("Redirected character typed: " + d);
         //Clear.
         this.value = "";
+        //Advance cursor.
+        var pos = editor.getCursorPosition();
+        pos.column += 1;
+        editor.moveCursorTo(pos.column, pos.row);
     };
 };
 
@@ -51,7 +55,8 @@ ycmd.onEditorChange = function (conte) {
 
 ycmd.onGotYcmdComp = function (data) {
     console.log(data);
-    
+
+    var e = ycmd.showBox(data);
 
     //Insert final
     ycmd.frame.parentNode.replaceChild(e, ycmd.frame);
@@ -92,7 +97,7 @@ ycmd.hideBox = function () {
     ycmd.open = false;
 };
 
-ycmd.showBox = function (options) {
+ycmd.showBox = function (data) {
     //Create html for the predictions.
     var e = document.createElement('div');
     e.className = "completion_frame open_sans";
@@ -118,4 +123,7 @@ ycmd.showBox = function (options) {
     //Take control.
     ycmd.filler_input.value = "";
     ycmd.filler_input.focus();
+
+    //Return box.
+    return e;
 };
