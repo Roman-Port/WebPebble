@@ -34,9 +34,19 @@ ycmd.subscribe = function () {
         //Clear.
         this.value = "▄▅";
         //Set inner range
-        var range = this.createTextRange();
-        range.move('character', 1);
-        range.select();
+        if (this.createTextRange) {
+            var range = this.createTextRange();
+            range.move('character', 1);
+            range.select();
+        }
+        else {
+            if (this.selectionStart) {
+                this.focus();
+                this.setSelectionRange(1, 1);
+            }
+            else
+                this.focus();
+        }
     };
 };
 
