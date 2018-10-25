@@ -2,52 +2,17 @@
 ycmd.latestRequest = -1;
 ycmd.frame = document.getElementById('completion_frame');
 ycmd.open = false;
-ycmd.filler_input = document.getElementById('completion_input');
 
 ycmd.subscribe = function () {
     //Subscribe to events from the editor.
     editor.on("change", ycmd.onEditorChange);
-    //Subscribe to changes in the filler. These changes will just be mirrored in the input.
-    ycmd.filler_input.oninput = function () {
-        var d = this.value;
-        //Check if the leading or leadout characters are missing.
-        if (d[0] == '▄' && d[d.length - 1] == '▅') {
-            //Both are there. Just add the message.
-            //Append this at the current position.
-            editor.insert(d.slice(1, d.length - 2));
-            //Advance cursor.
-            var pos = editor.getCursorPosition();
-            pos.column += 1;
-            editor.moveCursorTo(pos.row, pos.column);
-        } else if (d[0] == '▄' && d[d.length - 1] != '▅') {
-            //Lead out is missing. User pressed delete.
-        } else if (d[0] != '▄' && d[d.length - 1] == '▅') {
-            //Lead in is missing. User pressed backspace.
-            //Append this at the current position.
-            editor.insert('\b');
-            //Advance cursor.
-            var pos = editor.getCursorPosition();
-            pos.column -= 1;
-            editor.moveCursorTo(pos.row, pos.column);
-        }
-        
-        //Clear.
-        this.value = "▄▅";
-        //Set inner range
-        if (this.createTextRange) {
-            var range = this.createTextRange();
-            range.move('character', 1);
-            range.select();
-        }
-        else {
-            if (this.selectionStart) {
-                this.focus();
-                this.setSelectionRange(1, 1);
-            }
-            else
-                this.focus();
-        }
-    };
+    //Subscribe to keybinds.
+    keyboardJS.on('up', function () {
+        console.log('up');
+    });
+    keyboardJS.on('down', function () {
+        console.log('down');
+    });
 };
 
 ycmd.onEditorChange = function (conte) {
@@ -65,24 +30,26 @@ ycmd.onEditorChange = function (conte) {
         "col_no": pos.column,
         "buffer": content
     };
-    console.log(data);
     //Create a request to YCMD.
     ycmd.latestRequest = phoneconn.send(6, data, function (ycmd_reply) {
         
         //Check if this is the latest request.
         if (ycmd_reply.requestid === ycmd.latestRequest) {
+            var d = ycmd_reply.data.ycmd.sdks.sdk;
+            console.log(d);
             //Okay. Move on.
-            ycmd.onGotYcmdComp(ycmd_reply.data.ycmd.sdks.sdk);
-            console.log(data);
+            //Disabled because this is really buggy
+            //ycmd.onGotYcmdComp(ycmd_reply.data.ycmd.sdks.sdk);
             
         }
     });
+    //Start listening to this.
+    keyboardJS.watch(document.getElementsByClassName('ace_text-input')[0]);
     //Finally, move the existing box.
     ycmd.setBoxPos(ycmd.frame);
 };
 
 ycmd.onGotYcmdComp = function (data) {
-    console.log(data);
 
     var e = ycmd.showBox(data);
 
@@ -126,6 +93,7 @@ ycmd.hideBox = function () {
 };
 
 ycmd.showBox = function (data) {
+    console.log(data);
     //Create html for the predictions.
     var e = document.createElement('div');
     e.className = "completion_frame open_sans";
@@ -134,7 +102,6 @@ ycmd.showBox = function (data) {
     for (var i = 0; i < data.completions.length; i += 1) {
         var o = document.createElement('div');
         var d = data.completions[i];
-        console.log(d.type);
         o.className = "c_item";
         o.innerText = d.menu_text;
 
@@ -149,10 +116,25 @@ ycmd.showBox = function (data) {
     //Set box position and show it.
     ycmd.setBoxPos(e);
 
-    //Take control.
-    ycmd.filler_input.value = "";
-    ycmd.filler_input.focus();
-
     //Return box.
     return e;
 };
+
+ycmd.offsetCursor = function (x, y) {
+    var pos = editor.getCursorPosition();
+    pos.column += x;
+    pos.row += y;
+    editor.moveCursorTo(pos.row, pos.column);
+}
+
+/* On key presses */
+ycmd.checkIfKeypressIsTarget = function () {
+    //Check if a keypress was actually directed at us.
+    return editor.isFocused() && ycmd.open;
+}
+
+ycmd.onKeyDirPress = function (lineDir, boxDir) {
+    //Linedir is -1 if up, 1 if down. Boxdir is generally the other way.
+
+    //Move the cursor the other way.
+}
