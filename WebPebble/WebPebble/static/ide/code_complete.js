@@ -10,14 +10,30 @@ ycmd.subscribe = function () {
     //Subscribe to changes in the filler. These changes will just be mirrored in the input.
     ycmd.filler_input.oninput = function () {
         var d = this.value;
-        //Append this at the current position.
-        editor.insert(d);
+        //Check if the leading or leadout characters are missing.
+        if (d[0] == '▄' && d[d.length - 1] == '▅') {
+            //Both are there. Just add the message.
+            //Append this at the current position.
+            editor.insert(d.slice(1, d.length - 2));
+            //Advance cursor.
+            var pos = editor.getCursorPosition();
+            pos.column += 1;
+            editor.moveCursorTo(pos.row, pos.column);
+        } else if (d[0] == '▄' && d[d.length - 1] != '▅') {
+            //Lead out is missing. User pressed delete.
+        } else if (d[0] != '▄' && d[d.length - 1] == '▅') {
+            //Lead in is missing. User pressed backspace.
+            //Append this at the current position.
+            editor.insert('\b');
+            //Advance cursor.
+            var pos = editor.getCursorPosition();
+            pos.column -= 1;
+            editor.moveCursorTo(pos.row, pos.column);
+        }
+        
         //Clear.
-        this.value = "";
-        //Advance cursor.
-        var pos = editor.getCursorPosition();
-        pos.column += 1;
-        editor.moveCursorTo(pos.row, pos.column);
+        this.value = "▄▅";
+        
     };
 };
 
