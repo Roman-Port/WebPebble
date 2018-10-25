@@ -41,7 +41,7 @@ ycmd.onEditorChange = function (conte) {
 
 ycmd.onGotYcmdComp = function (data) {
 
-    if (data.completions.length == 0) {
+    if (data.completions.length == 0 && data.completions.length < 15) {
         //Hide box.
         ycmd.hideBox();
     } else {
@@ -132,6 +132,9 @@ ycmd.showBox = function (data) {
     ycmd.boxPos = 0;
     ycmd.open = true;
 
+    //Set first
+    ycmd.setCursorPosInWindow(0);
+
     //Return box.
     return e;
 };
@@ -193,7 +196,7 @@ ycmd.chooseOption = function (data) {
             i -= 1;
             continue;
         }
-        if (l[i] == ' ') {
+        if (l[i] == ' ' || l[i] == '\t') {
             i += 1;
             break;
         }
