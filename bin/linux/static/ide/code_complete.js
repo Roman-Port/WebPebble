@@ -3,6 +3,7 @@ ycmd.latestRequest = -1;
 ycmd.frame = document.getElementById('completion_frame');
 ycmd.open = false;
 ycmd.cursorPos = 0;
+ycmd.lastContent = "";
 
 ycmd.subscribe = function () {
     //Subscribe to events from the editor.
@@ -26,7 +27,7 @@ ycmd.subscribe = function () {
     keyboardJS.on('enter', function () {
         if (ycmd.open) {
             //Use the active one.
-            ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.cursorPos].x_complete_data);
+            ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data);
         }
     });
     //Subscribe to clicks on the box.
@@ -56,6 +57,7 @@ ycmd.onEditorChange = function (conte) {
             //Okay. Move on.
             ycmd.onGotYcmdComp(ycmd_reply.data.ycmd.sdks.sdk);
             console.log(data);
+            ycmd.lastContent = content;
         }
     });
     //Finally, move the existing box.
@@ -171,7 +173,38 @@ ycmd.setCursorPosInWindow = function (newPos) {
 };
 
 ycmd.chooseOption = function (data) {
-    console.log(data);
+    //Get the current line.
+    var lines = ycmd.lastContent.toString().split('\n');
+    console.log(lines);
+    var cursorPos = ycmd.cursorPos;
+    var x = cursorPos.column;
+    var y = cursorPos.row;
+    //Work on our current line.
+    var l = lines[y];
+    var i = x;
+    //Work backwards to find the last space, or end of the line.
+    while (i > 0) {
+        if (i >= l.length) {
+            i -= 1;
+            continue;
+        }
+        if (l[i] == ' ') {
+            break;
+        }
+        //Remove this character.
+        l = l.slice(0, i) + l.slice(i+1);
+    }
+    //Now, at the new position, insert this.
+    l = l.slice(0, i) + "insert me" + l.slice(i + 1);
+    //Set this back to a string.
+    lines[y] = l;
+    i = 0;
+    var o = "";
+    for (i = 0; i < lines.length; i += 1) {
+        o += lines[i] + "\n";
+    }
+    filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.setValue(o, 0);
+    ycmd.cursorPos = editor.setCursorPos(x,y);
     //Hide the box
     ycmd.hideBox();
 }
