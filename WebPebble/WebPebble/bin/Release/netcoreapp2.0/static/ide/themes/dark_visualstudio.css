@@ -7,11 +7,11 @@
 }
 
 .header .line {
-    background-color: #3E3E40;
+    background-color: #4e4e4e;
 }
 
 .header {
-    border-bottom:1px solid gray;
+    border-bottom: 1px solid #4e4e4e;
 }
 
 .ide_window {
@@ -33,23 +33,23 @@
 }
 
 .assets_type_container .btn .action_window div {
-    background-color: #4F6272;
+    background-color: #3E3E40;
 }
 
 .assets_type_container .btn:hover {
-    background-color: #1B2432;
+    background-color: unset;
 }
 
 .assets_type_container .btn_active {
-    background-color: #1B2432;
+    background-color: unset;
 }
 
 .assets_type_container .btn_fill_active {
-    background-color: #1B2432;
+    background-color: #353535;
 }
 
 .assets_window .line {
-    background-color: #1B2432;
+    background-color: #404040;
 }
 
 .popup_window {
@@ -99,13 +99,25 @@
 }
 
 .watch_control_window .big_button {
-    background-color: #1b2432;
+    background-color: #353535;
 }
 
 .completion_window {
     background-color: #2B3745;
 }
 
-    .completion_window .c_item_select {
-        background-color: #4286f4;
-    }
+.completion_window .c_item_select {
+    background-color: #4286f4;
+}
+
+body::-webkit-scrollbar {
+    background-color: #2D2D2D;
+}
+
+body::-webkit-scrollbar-track {
+    background-color: #2D2D2D;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: #3E3E40;
+}
