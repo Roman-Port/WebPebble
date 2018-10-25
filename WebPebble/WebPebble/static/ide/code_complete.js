@@ -41,7 +41,7 @@ ycmd.onEditorChange = function (conte) {
 
 ycmd.onGotYcmdComp = function (data) {
 
-    if (data.completions.length == 0 && data.completions.length < 15) {
+    if (data.completions.length == 0 || data.completions.length > 15) {
         //Hide box.
         ycmd.hideBox();
     } else {
