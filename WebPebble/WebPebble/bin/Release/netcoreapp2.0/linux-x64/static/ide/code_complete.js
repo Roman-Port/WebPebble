@@ -6,13 +6,6 @@ ycmd.open = false;
 ycmd.subscribe = function () {
     //Subscribe to events from the editor.
     editor.on("change", ycmd.onEditorChange);
-    //Subscribe to keybinds.
-    keyboardJS.on('up', function () {
-        console.log('up');
-    });
-    keyboardJS.on('down', function () {
-        console.log('down');
-    });
 };
 
 ycmd.onEditorChange = function (conte) {
@@ -38,13 +31,10 @@ ycmd.onEditorChange = function (conte) {
             var d = ycmd_reply.data.ycmd.sdks.sdk;
             console.log(d);
             //Okay. Move on.
-            //Disabled because this is really buggy
-            //ycmd.onGotYcmdComp(ycmd_reply.data.ycmd.sdks.sdk);
+            ycmd.onGotYcmdComp(ycmd_reply.data.ycmd.sdks.sdk);
             
         }
     });
-    //Start listening to this.
-    keyboardJS.watch(document.getElementsByClassName('ace_text-input')[0]);
     //Finally, move the existing box.
     ycmd.setBoxPos(ycmd.frame);
 };
@@ -77,6 +67,23 @@ ycmd.setBoxPos = function (e) {
         f.className = ycmd.getBoxClassname(e);
     }
     
+};
+
+ycmd.setCursorPosInWindow = function (newPos) {
+    var ee = ycmd.frame.firstChild;
+    //Check.
+    if (newPos < 0) {
+        newPos = 0;
+    }
+    if (newPos > ee.x_complete.length - 1) {
+        newPos = ee.x_complete.length - 1;
+    }
+    //Unset the existing one.
+    ee.x_complete[ycmd.boxPos].className = "c_item";
+    ee.x_complete[newPos].className = "c_item c_item_select";
+    ycmd.boxPos = newPos;
+    //Scroll to view.
+    ee.x_complete[ycmd.boxPos].scrollIntoView();
 };
 
 ycmd.setSavedCursorPos = function () {
@@ -115,6 +122,7 @@ ycmd.showBox = function (data) {
 
     //Set box position and show it.
     ycmd.setBoxPos(e);
+    ycmd.boxPos = 0;
 
     //Return box.
     return e;
@@ -134,13 +142,21 @@ ycmd.checkIfKeypressIsTarget = function () {
 }
 
 ycmd.onHijackKeypress = function (e) {
-    console.log(e);
+    //Called from Ace. This is a key event.
+    if (e.keyCode == 38) {
+        //Up.
+        ycmd.onKeyDirPress(-1);
+    }
+    if (e.keyCode == 40) {
+        //Down.
+        ycmd.onKeyDirPress(1);
+    }
 
     return true;
 }
 
-ycmd.onKeyDirPress = function (lineDir, boxDir) {
-    //Linedir is -1 if up, 1 if down. Boxdir is generally the other way.
-
-    //Move the cursor the other way.
+ycmd.onKeyDirPress = function (boxDir) {
+    //Box dir is the direction to scroll in the box.
+    //Scroll in the box.
+    ycmd.setCursorPosInWindow(ycmd.boxPos + boxDir);
 }
