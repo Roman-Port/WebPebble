@@ -19,7 +19,7 @@ namespace WebPebble.Services
             {
                 ProjectsListFormat f = new ProjectsListFormat();
                 var proj = projects[i];
-                f.href = "/projects/" + proj.projectId + "/manage/";
+                f.href = "/project/" + proj.projectId + "/manage/";
                 f.icon = "";
                 f.id = proj.projectId;
                 f.name = proj.name;

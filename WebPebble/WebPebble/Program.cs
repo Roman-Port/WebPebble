@@ -36,7 +36,7 @@ namespace WebPebble
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting WebPebble rev2");
+            Console.WriteLine("Starting WebPebble ver 3");
             //Set everything up
             //Get the config.
             string pathname = "E:/RPWS_Production/WebPebble/conf.json";
@@ -50,7 +50,7 @@ namespace WebPebble
             AddService(false, Services.Landing.Landing.OnRequest, "/", false);
             AddService(false, Services.CreateProject.CreateProject.OnRequest, "/create", true);
             AddService(false, Services.QuickLogin.Serve, "/token/", false);
-            AddService(false, Services.ProjectList.Serve, "/api/projects/", true);
+            AddService(false, Services.ProjectList.Serve, "/myprojects", true);
             //Add services that are in the project.
             AddService(true, Services.Projects.Manage.ManageProject.HandleRequest, "/manage", true);
             AddService(true, Services.Projects.FileManager.OnRequest, "/media/", true);
