@@ -117,6 +117,9 @@ ycmd.showBox = function (data) {
         var o = document.createElement('div');
         var d = data.completions[i];
         o.className = "c_item";
+        if (i == 0) {
+            o.className = "c_item c_item_select";
+        }
         o.innerText = d.menu_text;
 
         o.x_complete_data = d;
@@ -131,9 +134,6 @@ ycmd.showBox = function (data) {
     ycmd.setBoxPos(e);
     ycmd.boxPos = 0;
     ycmd.open = true;
-
-    //Set first
-    ycmd.setCursorPosInWindow(0);
 
     //Return box.
     return e;
