@@ -36,7 +36,9 @@ ycmd.onEditorChange = function (conte) {
         }
     });
     //Finally, move the existing box.
-    ycmd.setBoxPos(ycmd.frame);
+    if (ycmd.open) {
+        ycmd.setBoxPos(ycmd.frame);
+    }
 };
 
 ycmd.onGotYcmdComp = function (data) {
