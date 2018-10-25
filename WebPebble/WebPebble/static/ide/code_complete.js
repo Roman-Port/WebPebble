@@ -12,14 +12,12 @@ ycmd.subscribe = function () {
         var d = this.value;
         //Append this at the current position.
         editor.insert(d);
-        //Debug
-        console.log("Redirected character typed: " + d);
         //Clear.
         this.value = "";
         //Advance cursor.
         var pos = editor.getCursorPosition();
         pos.column += 1;
-        editor.moveCursorTo(pos.column, pos.row);
+        editor.moveCursorTo(pos.row, pos.column);
     };
 };
 
@@ -117,6 +115,7 @@ ycmd.showBox = function (data) {
         ee.appendChild(o);
         ee.x_complete.push(o);
     }
+    e.appendChild(ee);
 
     //Set box position and show it.
     ycmd.setBoxPos(e);
