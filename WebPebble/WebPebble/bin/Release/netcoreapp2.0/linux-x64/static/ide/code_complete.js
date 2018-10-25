@@ -49,6 +49,7 @@ ycmd.onEditorChange = function (conte) {
     //If there is a pending callback, run it.
     if (ycmd.onEditCallback != null) {
         ycmd.onEditCallback();
+        return;
     }
     //Get the position of the cursor.
     var pos = editor.getCursorPosition();
@@ -125,21 +126,25 @@ ycmd.onGotYcmdComp = function (data) {
     ycmd.frame = e;
 };
 
-ycmd.setBoxPos = function (e) {
+ycmd.getBoxClassname = function (e) {
     var top = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetTop + 60);
     e.style.top = top.toString() + "px";
     e.style.left = (document.getElementsByClassName('ace_gutter-active-line')[0].offsetWidth + 315).toString() + "px";
 
+    if (top < 310) {
+        //Not enough space. Use bottom.
+        return "completion_window completion_window_top";
+    } else {
+        return "completion_window";
+    }
 
     
+}
+
+ycmd.setBoxPos = function (e) {
     var f = e.firstChild;
     if (f !== null) {
-        if (top < 310) {
-            //Not enough space. Use bottom.
-            f.className = "completion_window completion_window_top";
-        } else {
-            f.className = "completion_window";
-        }
+        f.className = ycmd.getBoxClassname(e);
     }
     
 };
@@ -151,7 +156,7 @@ ycmd.setSavedCursorPos = function () {
 ycmd.hideBox = function () {
     var ee = ycmd.frame.firstChild;
     if (ee !== null) {
-        ee.className = "completion_window completion_window_hidden";
+        ee.className = ycmd.getBoxClassname(ycmd.frame) + " completion_window_hidden";
     }
     keyboardJS.stop();
     ycmd.open = false;
@@ -210,7 +215,7 @@ ycmd.chooseOption = function (data) {
         l = l.slice(0, i) + l.slice(i+1);
     }
     //Now, at the new position, insert this.
-    l = l.slice(0, i) + "insert me" + l.slice(i + 1);
+    l = l.slice(0, i) + data.insertion_text + l.slice(i + 1);
     //Set this back to a string.
     lines[y] = l;
     i = 0;
