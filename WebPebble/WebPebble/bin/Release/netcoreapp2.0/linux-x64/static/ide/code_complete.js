@@ -20,6 +20,15 @@ ycmd.subscribe = function () {
     keyboardJS.on('right', function () {
         ycmd.hideBox();
     });
+    keyboardJS.on('escape', function () {
+        ycmd.hideBox();
+    });
+    keyboardJS.on('enter', function () {
+        if (ycmd.open) {
+            //Use the active one.
+            ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.cursorPos].x_complete_data);
+        }
+    });
     //Subscribe to clicks on the box.
     document.getElementsByClassName('ace_content')[0].addEventListener('click', ycmd.hideBox);
 };
@@ -64,6 +73,9 @@ ycmd.onGotYcmdComp = function (data) {
         var d = data.completions[i];
         o.className = "c_item";
         o.innerText = d.menu_text;
+
+        o.x_complete_data = d;
+        o.x_complete_id = i;
 
         ee.appendChild(o);
         ee.x_complete.push(o);
@@ -156,3 +168,9 @@ ycmd.setCursorPosInWindow = function (newPos) {
     //Scroll to view.
     ee.x_complete[ycmd.boxPos].scrollIntoView();
 };
+
+ycmd.chooseOption = function (data) {
+    console.log(data);
+    //Hide the box
+    ycmd.hideBox();
+}

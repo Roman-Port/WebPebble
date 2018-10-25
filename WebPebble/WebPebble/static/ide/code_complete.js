@@ -20,6 +20,15 @@ ycmd.subscribe = function () {
     keyboardJS.on('right', function () {
         ycmd.hideBox();
     });
+    keyboardJS.on('escape', function () {
+        ycmd.hideBox();
+    });
+    keyboardJS.on('enter', function () {
+        if (ycmd.open) {
+            //Use the active one.
+            ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.cursorPos].x_complete_data);
+        }
+    });
     //Subscribe to clicks on the box.
     document.getElementsByClassName('ace_content')[0].addEventListener('click', ycmd.hideBox);
 };
@@ -46,6 +55,7 @@ ycmd.onEditorChange = function (conte) {
         if (ycmd_reply.requestid === ycmd.latestRequest) {
             //Okay. Move on.
             ycmd.onGotYcmdComp(ycmd_reply.data.ycmd.sdks.sdk);
+            console.log(data);
         }
     });
     //Finally, move the existing box.
@@ -62,8 +72,12 @@ ycmd.onGotYcmdComp = function (data) {
     for (var i = 0; i < data.completions.length; i += 1) {
         var o = document.createElement('div');
         var d = data.completions[i];
+        console.log(d.type);
         o.className = "c_item";
         o.innerText = d.menu_text;
+
+        o.x_complete_data = d;
+        o.x_complete_id = i;
 
         ee.appendChild(o);
         ee.x_complete.push(o);
@@ -127,7 +141,6 @@ ycmd.hideBox = function () {
 };
 
 ycmd.onUpDown = function (key) {
-    console.log(key);
     //If this is open, set the cursor back and scroll through the dialog.
     var pos = ycmd.cursorPos;
     if (key == 'up') {
@@ -156,3 +169,9 @@ ycmd.setCursorPosInWindow = function (newPos) {
     //Scroll to view.
     ee.x_complete[ycmd.boxPos].scrollIntoView();
 };
+
+ycmd.chooseOption = function (data) {
+    console.log(data);
+    //Hide the box
+    ycmd.hideBox();
+}

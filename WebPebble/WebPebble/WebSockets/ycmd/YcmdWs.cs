@@ -42,9 +42,9 @@ namespace WebPebble.WebSockets
                 reply.sdks.Add("sdk3_diorite", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Any));
                 reply.sdks.Add("sdk3_chalk", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Any));
             }*/
-            reply.sdks.Add("sdk", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Any));
+            reply.sdks.Add("sdk", ycmd.YcmdCodeComplete.GetCodeComplete(asset.GetAbsolutePath(projectId), (int)colNo, (int)lineNo, unsavedBuffer, ycmd.YcmdProcesses.Any, out string commands));
             //Reply with this data.
-            QuickReply(data.requestid, data.type, new Dictionary<string, object>() { { "ycmd", reply } });
+            QuickReply(data.requestid, data.type, new Dictionary<string, object>() { { "ycmd", reply }, {"ycmd_commands",commands } });
         }
 
         class YcmdCodeCompleteReplyWs
