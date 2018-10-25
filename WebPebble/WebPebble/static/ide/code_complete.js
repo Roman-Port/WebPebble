@@ -5,6 +5,9 @@ ycmd.open = false;
 ycmd.cursorPos = 0;
 ycmd.lastContent = "";
 
+ycmd.onEditCallback = null;
+ycmd.onEditTimeout = null;
+
 ycmd.subscribe = function () {
     //Subscribe to events from the editor.
     editor.on("change", ycmd.onEditorChange);
@@ -27,7 +30,15 @@ ycmd.subscribe = function () {
     keyboardJS.on('enter', function () {
         if (ycmd.open) {
             //Use the active one.
-            ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data);
+            //Since we're unsure if we'll be called before the edit, we'll add this to the "on edit" callback. We'll also run this in 50 ms if that doesn't happen.
+            var f = function () {
+                clearTimeout(ycmd.onEditTimeout);
+                ycmd.onEditCallback = null;
+
+                ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data);
+            };
+            ycmd.onEditCallback = f;
+            ycmd.onEditTimeout = window.setTimeout(f, 50);
         }
     });
     //Subscribe to clicks on the box.
@@ -35,6 +46,10 @@ ycmd.subscribe = function () {
 };
 
 ycmd.onEditorChange = function (conte) {
+    //If there is a pending callback, run it.
+    if (ycmd.onEditCallback != null) {
+        ycmd.onEditCallback();
+    }
     //Get the position of the cursor.
     var pos = editor.getCursorPosition();
     pos.column += 1;
@@ -204,7 +219,7 @@ ycmd.chooseOption = function (data) {
         o += lines[i] + "\n";
     }
     filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.setValue(o, 0);
-    ycmd.cursorPos = editor.setCursorPos(x,y);
+    ycmd.cursorPos = editor.moveCursorTo(x,y);
     //Hide the box
     ycmd.hideBox();
 }
