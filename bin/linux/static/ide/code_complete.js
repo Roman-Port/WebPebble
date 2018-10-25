@@ -192,7 +192,7 @@ ycmd.onHijackType = function (text) {
     if (ycmd.checkIfKeypressIsTarget()) {
         if (text == ";") {
             //Do correction, then return a newline.
-            ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data, ";");
+            ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data, ";", 0, 1);
             return "\n";
         }
     }
@@ -207,7 +207,7 @@ ycmd.onKeyDirPress = function (boxDir) {
 };
 
 //This is pretty ugly and janky.
-ycmd.chooseOption = function (data, insertAfter) {
+ycmd.chooseOption = function (data, insertAfter, offsetX, offsetY) {
     //Get the current line.
     var lines = filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.getValue().toString().split('\n');
     var cursorPos = editor.getCursorPosition();
@@ -241,6 +241,12 @@ ycmd.chooseOption = function (data, insertAfter) {
     //Apply
     filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.setValue(o, 0);
     cursorPos.column += data.insertion_text.length;
+    if (offsetX !== null) {
+        cursorPos.column += offsetX;
+    }
+    if (offsetY !== null) {
+        cursorPos.row += offsetY;
+    }
     window.setTimeout(function () {
         editor.moveCursorTo(cursorPos.row, cursorPos.column);
     }, 5);
