@@ -226,7 +226,7 @@ ycmd.chooseOption = function (data) {
         o += lines[i] + "\n";
     }
     filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.setValue(o, 0);
-    ycmd.cursorPos = editor.moveCursorTo(x,y);
+    filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.moveCursorTo(x,y);
     //Hide the box
     ycmd.hideBox();
 }
