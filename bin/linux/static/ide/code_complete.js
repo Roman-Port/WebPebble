@@ -28,6 +28,7 @@ ycmd.onEditorChange = function (conte) {
     var pos = editor.getCursorPosition();
     pos.column += 1;
     pos.row += 1;
+    var content = filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.getValue();
     
     //Make a request to YCMD.
     var data = {
