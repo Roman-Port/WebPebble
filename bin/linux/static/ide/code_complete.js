@@ -174,6 +174,11 @@ ycmd.onHijackKeypress = function (e) {
     }
 
     return true;
+};
+
+ycmd.onHijackNewline = function () {
+    //If the YCMD box is open, we're confirming the selection. Stop this newline.
+    return ycmd.checkIfKeypressIsTarget();
 }
 
 ycmd.onKeyDirPress = function (boxDir) {
@@ -206,7 +211,7 @@ ycmd.chooseOption = function (data) {
         l = l.slice(0, i) + l.slice(i + 1);
     }
     //Now, at the new position, insert this.
-    l = l.slice(0, i) + data.insertion_text + l.slice(i + 1);
+    l = l.slice(0, i) + data.insertion_text + " "+ l.slice(i + 1);
     //Set this back to a string.
     lines[y] = l;
     i = 0;
