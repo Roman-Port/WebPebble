@@ -603,7 +603,7 @@ body {
 #watch_emulator_area .emu_frame {
     position: relative;
     padding: 20px;
-    margin: auto;
+    display:inline-block;
     margin-bottom: 10px;
 }
 
