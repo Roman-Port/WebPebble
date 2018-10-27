@@ -612,6 +612,15 @@ body {
     height:168px;
 }
 
+#watch_emulator_area .emu_frame .emu_window iframe {
+    background-color:black;
+    width:144px;
+    height:168px;
+    border:none;
+    margin:0;
+    padding:0;
+}
+
 #watch_emulator_area .emu_options {
     padding: 8px;
     height: 20px;
