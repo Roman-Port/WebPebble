@@ -81,7 +81,7 @@ edit_resource.onSelectExisting = function (context) {
 
     } else {
         //This is some sort of bitmap image.
-        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<img src="' + resrc_url+"image_png/"+'">'));
+        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<div style="min-width: 144px; min-height: 168px; display: inline-block; background-color: #c1c1c1; border-radius: 5px;"><table style="width: 100%; height:100%;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="' + resrc_url + "image_png/" +'"> </td> </tr> </table></div>'));
     }
 };
 

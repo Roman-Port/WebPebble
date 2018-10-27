@@ -459,6 +459,7 @@ body {
     font-size:15px;
     color:white;
     display:inline-block;
+    float:left;
 }
 
 .control_item .help {
@@ -466,7 +467,7 @@ body {
     color:black;
     margin-left:160px;
     padding:5px;
-    margin-top:15px;
+    margin-top:0px;
     font-size:14px;
     
 }
@@ -474,12 +475,22 @@ body {
 .control_item .control {
     background-color:white;
     width:calc(100% - 200px);
-    margin-right:40px;
     border-radius:5px;
     color:black;
-    float: right;
+    display:inline-block;
     height: 40px;
     overflow:hidden;
+    margin-left:15px;
+}
+
+.control_item .control_normal {
+    width: calc(100% - 200px);
+    border-radius: 5px;
+    color: black;
+    display: inline-block;
+    height: auto;
+    overflow: hidden;
+    margin-left: 15px;
 }
 
 .control_item .control * {
