@@ -598,3 +598,30 @@ body {
     transition:background-color 50ms;
 
 }
+
+/* Emulator */
+#watch_emulator_area .emu_frame {
+    position: relative;
+    padding: 20px;
+    margin: auto;
+    margin-bottom: 10px;
+}
+
+#watch_emulator_area .emu_frame .emu_window {
+    background-color:black;
+    width:144px;
+    height:168px;
+}
+
+#watch_emulator_area .emu_options {
+    padding:8px;
+    height:20px;
+    position:relative;
+    overflow:hidden;
+}
+
+#watch_emulator_area .emu_options .emu_scroller {
+    top:0;
+    height:50px;
+    transition:top 100ms;
+}

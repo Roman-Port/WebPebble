@@ -97,8 +97,20 @@
             <div class="big_button" onclick="project.buildPbwBtn();"><img src="https://romanport.com/static/icons/white/baseline-message.svg" /> <span class="tooltip open_sans">View Logs</span></div>
         </div>
         <div id="watch_control_warning">
-            <div class="big_button" style="float:left;" onclick="alert('todo');"><img src="https://romanport.com/static/icons/white/baseline-help.svg"></div>
-            <div style="padding:8px;height:24px;line-height:24px;font-size:15px;color: gray;display: inline-block;" class="open_sans">No Pebble Connected</div>
+            <div class="big_button" style="margin:auto; display:block; margin-bottom:5px;" onclick="alert('todo');">Launch Emulator</div>
+            <div class="big_button" style="margin:auto; display:block;" onclick="alert('todo');">Connect Real Pebble</div>
+        </div>
+
+        <div id="watch_emulator_area" style="display:none;">
+            <div class="emu_frame">
+                <div class="emu_window"></div>
+            </div>
+            <div class="emu_options">
+                <div style="position:absolute;" id="emu_options">
+                    <div class="emu_scroller" id="emu_loader"></div>
+                    <div class="emu_scroller" id="emu_btns" style="margin-top:10px;"></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -410,5 +422,6 @@
 <script src="/static/ide/phoneconn.js"></script>
 <script src="/static/ide/external/keyboard.min.js"></script>
 <script src="/static/ide/code_complete.js"></script>
+<script src="/static/ide/emulator.js"></script>
 
 <script src="/static/ide/boot.js"></script>

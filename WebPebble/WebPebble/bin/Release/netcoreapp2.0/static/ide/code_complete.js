@@ -36,7 +36,9 @@ ycmd.onEditorChange = function (conte) {
         }
     });
     //Finally, move the existing box.
-    ycmd.setBoxPos(ycmd.frame);
+    if (ycmd.open) {
+        ycmd.setBoxPos(ycmd.frame);
+    }
 };
 
 ycmd.onGotYcmdComp = function (data) {
@@ -168,20 +170,44 @@ ycmd.onHijackKeypress = function (e) {
     }
     if (e.keyCode == 13) {
         //Enter.
-        ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data);
+        //This has been moved to the taken new line character.
     }
 
     return true;
+};
+
+ycmd.onHijackNewline = function () {
+    //If the YCMD box is open, we're confirming the selection. Stop this newline.
+    if (ycmd.checkIfKeypressIsTarget()) {
+        //Do correction now
+        ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data, " ");
+        return true;
+    }
+    return false;
+};
+
+ycmd.onHijackType = function (text) {
+    //In this function, returning null will cancel the operation. Returning something other than null will set the text to that.
+    //If the user typed a ; while the box is open, autocomplete.
+    if (ycmd.checkIfKeypressIsTarget()) {
+        if (text == ";") {
+            //Do correction, then return a newline.
+            ycmd.chooseOption(ycmd.frame.firstChild.x_complete[ycmd.boxPos].x_complete_data, ";", 0, 1);
+            return "\n";
+        }
+    }
+    //Return default action.
+    return text;
 }
 
 ycmd.onKeyDirPress = function (boxDir) {
     //Box dir is the direction to scroll in the box.
     //Scroll in the box.
     ycmd.setCursorPosInWindow(ycmd.boxPos + boxDir);
-}
+};
 
 //This is pretty ugly and janky.
-ycmd.chooseOption = function (data) {
+ycmd.chooseOption = function (data, insertAfter, offsetX, offsetY) {
     //Get the current line.
     var lines = filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.getValue().toString().split('\n');
     var cursorPos = editor.getCursorPosition();
@@ -204,7 +230,7 @@ ycmd.chooseOption = function (data) {
         l = l.slice(0, i) + l.slice(i + 1);
     }
     //Now, at the new position, insert this.
-    l = l.slice(0, i) + data.insertion_text + l.slice(i + 1);
+    l = l.slice(0, i) + data.insertion_text + insertAfter + l.slice(i + 1);
     //Set this back to a string.
     lines[y] = l;
     i = 0;
@@ -215,6 +241,12 @@ ycmd.chooseOption = function (data) {
     //Apply
     filemanager.loadedFiles[sidebarmanager.activeItem.internalId].session.setValue(o, 0);
     cursorPos.column += data.insertion_text.length;
+    if (offsetX !== null) {
+        cursorPos.column += offsetX;
+    }
+    if (offsetY !== null) {
+        cursorPos.row += offsetY;
+    }
     window.setTimeout(function () {
         editor.moveCursorTo(cursorPos.row, cursorPos.column);
     }, 5);
