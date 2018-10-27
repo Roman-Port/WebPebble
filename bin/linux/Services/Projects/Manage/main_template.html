@@ -336,7 +336,7 @@
                     <div class="control_item">
                         <div class="label">Font Size</div>
                         <div class="control">
-                            <input type="number" id="addresrc_entry_font_size" min="1" max="255" value="12" oninput="edit_resource.onFontSizeChange(this.value);"/>
+                            <input type="number" id="addresrc_entry_font_size" min="1" max="255" value="12" oninput="edit_resource.onFontSizeChange(this.value);" />
                         </div>
                         <div class="help">
                             <b style="color: #ff8c8c;">Important!</b> This will be appened to the end of the identifier below. You should use "<span id="typeselect_font_id"></span>" as your C identifier.
@@ -389,12 +389,16 @@
                         </div>
                     </div>
                 </div>
+                <!-- Preview -->
+                <div class="container open_sans container_control" id="resource_preview" style="display:none;">
+                    
+                </div>
                 <!-- Uploader -->
                 <div class="container open_sans container_control">
                     <div class="control_item">
                         <div class="label">Upload File</div>
                         <div class="control" style="background-color:transparent;">
-                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" id="add_resrc_uploader_file"/></form>
+                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" id="add_resrc_uploader_file" /></form>
                         </div>
                     </div>
                 </div>

@@ -1,4 +1,4 @@
-﻿var ycmd = {};
+﻿/*var ycmd = {};
 ycmd.latestRequest = -1;
 ycmd.frame = document.getElementById('completion_frame');
 ycmd.open = false;
@@ -148,7 +148,6 @@ ycmd.offsetCursor = function (x, y) {
     editor.moveCursorTo(pos.row, pos.column);
 }
 
-/* On key presses */
 ycmd.checkIfKeypressIsTarget = function () {
     //Check if a keypress was actually directed at us.
     return editor.isFocused() && ycmd.open;
@@ -253,4 +252,23 @@ ycmd.chooseOption = function (data, insertAfter, offsetX, offsetY) {
     editor.moveCursorTo(cursorPos.row, cursorPos.column);
     //Hide the box
     ycmd.hideBox();
+}
+
+*/
+
+//This is disabled.....for now. Make some functions just to fill their place
+var ycmd = {};
+ycmd.subscribe = function () {
+};
+
+ycmd.onHijackKeypress = function (e) {
+    return false;
+};
+
+ycmd.onHijackNewline = function () {
+    return false;
+};
+
+ycmd.onHijackType = function (text) {
+    return text;
 }
