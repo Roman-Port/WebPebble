@@ -81,7 +81,7 @@ edit_resource.onSelectExisting = function (context) {
 
     } else {
         //This is some sort of bitmap image.
-        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<div style="min-width: 144px; min-height: 168px; display: inline-block; background-color: #c1c1c1; border-radius: 5px;"><table style="width: 100%; height:100%;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="' + resrc_url + "image_png/" +'"> </td> </tr> </table></div>'));
+        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<div style="min-width: 144px; min-height: 168px; display: inline-block; background-color: #c1c1c1; border-radius: 5px; display:table-cell; vertical-align:middle; text-align:center;"><img src="' + resrc_url + "image_png/" +'"></div>'));
     }
 };
 
@@ -94,8 +94,7 @@ edit_resource.createControlItemNode = function (left, right) {
     bm.appendChild(label_node);
 
     var right_node = document.createElement('div');
-    right_node.className = "control";
-    right_node.style.backgroundColor = "transparent";
+    right_node.className = "control_normal";
     right_node.innerHTML = right;
     bm.appendChild(right_node);
 
