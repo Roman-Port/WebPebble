@@ -39,6 +39,9 @@
     <None Update="static\ide\edit_resource.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="static\ide\emulator.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="static\ide\external\keyboard.min.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
