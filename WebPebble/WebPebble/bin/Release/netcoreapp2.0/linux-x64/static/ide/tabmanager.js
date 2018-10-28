@@ -175,6 +175,8 @@ sidebarmanager.private_click = function () {
                 },
                 function () {
                     //Just close.
+                    sidebarmanager.unmarkUnsaved();
+
                     final_callback(id);
                 }
             ]);
