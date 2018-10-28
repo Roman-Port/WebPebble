@@ -78,7 +78,13 @@ edit_resource.onSelectExisting = function (context) {
 
     } else if (pebble_data.type == "font") {
         //Preview the font.
-
+        //Create the CSS.
+        var e = document.createElement('style');
+        e.innerHTML = '@font-face { font-family: "temporary_resrc_font"; src: url("' + resrc_url + 'font_ttf") format("truetype");}';
+        preview_window.appendChild(e);
+        //Append an actual preview of the font. Display the standard ones.
+        var inner = '<input style="line-height:21px; font-size:17px; background-color:white; font-family: &quot;temporary_resrc_font&quot;, serif; width:100%;" type="text" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopwxyz 123456789">';
+        preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", inner));
     } else {
         //This is some sort of bitmap image.
         preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="' + resrc_url + "image_png/" +'"> </td> </tr> </table>'));
