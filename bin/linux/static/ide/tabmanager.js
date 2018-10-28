@@ -153,31 +153,37 @@ sidebarmanager.private_click = function () {
     }
     //Check if this is unsaved.
     var id = this.x_id;
-    var unsaved = sidebarmanager.checkIfCurrentFileIsUnsaved(true, sidebarmanager.activeItem.internalId);
-    if (unsaved != null) {
-        //Warn the user about this.
-        project.showDialog("Unsaved Work", "If you continue, your unsaved work will be lost. Would you like to save?", ["Cancel", "Save", "Don't Save"], [
-            function () {
-                //Cancel. Do nothing.
-                return;
-            },
-            function () {
-                //Save first, then close.
-                unsaved.saveCallback(function () {
-                    sidebarmanager.unmarkUnsaved();
-
-                    final_callback(id);
-                });
-            },
-            function () {
-                //Just close.
-                final_callback(id);
-            }
-        ]);
-    } else {
-        //Go now.
+    if (sidebarmanager.activeItem == null) {
+        //This is the first item opened. Don't check and go ahead.
         final_callback(id);
+    } else {
+        var unsaved = sidebarmanager.checkIfCurrentFileIsUnsaved(true, sidebarmanager.activeItem.internalId);
+        if (unsaved != null) {
+            //Warn the user about this.
+            project.showDialog("Unsaved Work", "If you continue, your unsaved work will be lost. Would you like to save?", ["Cancel", "Save", "Don't Save"], [
+                function () {
+                    //Cancel. Do nothing.
+                    return;
+                },
+                function () {
+                    //Save first, then close.
+                    unsaved.saveCallback(function () {
+                        sidebarmanager.unmarkUnsaved();
+
+                        final_callback(id);
+                    });
+                },
+                function () {
+                    //Just close.
+                    final_callback(id);
+                }
+            ]);
+        } else {
+            //Go now.
+            final_callback(id);
+        }
     }
+    
     
 }
 
