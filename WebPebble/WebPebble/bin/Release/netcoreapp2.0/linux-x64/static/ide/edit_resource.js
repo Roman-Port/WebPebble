@@ -81,12 +81,16 @@ edit_resource.onSelectExisting = function (context) {
         //Get the font size.
         var name_split2 = pebble_data.name.split('_');
         var font_size2 = name_split[name_split2.length - 1];
+        font_size2 = parseInt(font_size2);
+        if (font_size2 > 25) {
+            font_size2 = 25;
+        }
         //Create the CSS.
         var e = document.createElement('style');
         e.innerHTML = '@font-face { font-family: "temporary_resrc_font"; src: url("' + resrc_url + 'font_ttf") format("truetype");}';
         preview_window.appendChild(e);
         //Append an actual preview of the font. Display the standard ones.
-        var inner = '<input style="line-height:' + (font_size2 + 6).toString() + 'px; font-size:' + font_size2.toString() + 'px; background-color:white; font-family: &quot;temporary_resrc_font&quot;, serif; width:100%;" type="text" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopwxyz 123456789">';
+        var inner = '<textarea style="line-height:' + (font_size2 + 6).toString() + 'px; font-size:' + font_size2.toString() + 'px; background-color:white; font-family: &quot;temporary_resrc_font&quot;, serif; width:100%;" type="text" rows="4">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopwxyz 123456789</textarea>';
         preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", inner));
     } else {
         //This is some sort of bitmap image.
