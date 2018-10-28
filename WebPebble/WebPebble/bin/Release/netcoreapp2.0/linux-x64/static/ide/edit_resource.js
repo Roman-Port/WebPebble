@@ -100,6 +100,16 @@ edit_resource.onSelectExisting = function (context) {
     }
 };
 
+edit_resource.onChange = function () {
+    //We need to set a flag so we don't leave the page without saving.
+    sidebarmanager.markUnsaved(edit_resource.openFile.media_data.nickname, true, function (callback) {
+        //Save quietly.
+        edit_resource.saveNow(function () {
+            callback();
+        });
+    });
+}
+
 edit_resource.onDownloadRawBtnClicked = function (context) {
     var e = context.parentNode.parentNode.parentNode;
     filemanager.DownloadUrl(e.x_download_url);
@@ -187,7 +197,13 @@ edit_resource.getUpdatedPebbleMedia = function (fileData) {
     return o;
 }
 
-edit_resource.saveNow = function (callback) {
+edit_resource.saveNow = function (final_callback) {
+    var callback = function () {
+        //Unmark this file as unsaved.
+        sidebarmanager.unmarkUnsaved();
+        //Run the final callback.
+        final_callback();
+    }
     //Check if we need to create a new file, or if we just save this one.
     if (edit_resource.openFile == null) {
         //Create
