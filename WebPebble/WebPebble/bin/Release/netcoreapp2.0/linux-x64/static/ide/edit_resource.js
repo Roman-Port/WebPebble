@@ -75,15 +75,17 @@ edit_resource.onSelectExisting = function (context) {
     var resrc_url = "/project/" + project.id + "/media/" + media_data.id + "/get/";
     if (pebble_data.type == "raw") {
         //Show the button to download this resource again.
-
+        preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", '<div class="med_button" onclick="edit_resource.onDownloadRawBtnClicked(this);">Download Raw Resource</div>'));
+        //Set URL.
+        preview_window.x_download_url = resrc_url + "application_octet-stream/" + pebble_data.name;
     } else if (pebble_data.type == "font") {
         //Preview the font.
         //Get the font size.
         var name_split2 = pebble_data.name.split('_');
         var font_size2 = name_split[name_split2.length - 1];
         font_size2 = parseInt(font_size2);
-        if (font_size2 > 25) {
-            font_size2 = 25;
+        if (font_size2 > 40) {
+            font_size2 = 40;
         }
         //Create the CSS.
         var e = document.createElement('style');
@@ -97,6 +99,11 @@ edit_resource.onSelectExisting = function (context) {
         preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="' + resrc_url + "image_png/" +'"> </td> </tr> </table>'));
     }
 };
+
+edit_resource.onDownloadRawBtnClicked = function (context) {
+    var e = context.parentNode.parentNode.parentNode;
+    filemanager.DownloadUrl(e.x_download_url);
+}
 
 edit_resource.createControlItemNode = function (left, right) {
     var bm = document.createElement('div');

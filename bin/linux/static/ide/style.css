@@ -117,6 +117,8 @@ body {
     width: 285px;
     position: fixed;
     width:300px;
+    overflow-y:auto;
+
 }
 
 .assets_options_window {
