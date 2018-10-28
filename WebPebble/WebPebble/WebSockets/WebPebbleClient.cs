@@ -120,8 +120,6 @@ namespace WebPebble.WebSockets
                 //Add myself to the list of clients.
                 if (WebPebble.WebSockets.WebSocketServer.connectedClients.ContainsKey(user_uuid))
                 {
-                    //Replace old WebPebble user, if any.
-                    WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid].web = this;
                     pair = WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid];
                     //If the phone is connected, tell it we have connected.
                     try
@@ -142,6 +140,9 @@ namespace WebPebble.WebSockets
                     {
 
                     }
+                    //Replace old WebPebble user, if any.
+                    WebPebble.WebSockets.WebSocketServer.connectedClients[user_uuid].web = this;
+                    //Set our connection status.
                     SetStatus(pair.connected);
                 }
                 else

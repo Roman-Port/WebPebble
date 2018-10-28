@@ -147,10 +147,9 @@ phoneconn.onNewWebPebbleClient = function (data) {
     project.showDialog("Disconnected", "You connected to WebPebble from somewhere else. Please close this tab or disconnect the other session.", ["Reconnect"], [
     function () {
         project.showDialog("Reconnecting...", "<div class=\"inf_loader\"></div>", [], []);
-        phoneconn.init(function () {
-            phoneconn.authorized = true;
-            project.hideDialog();
-        });
+        //If we just disconnect, we'll reconnect somewhere else in the code.
+        phoneconn.retries = 0;
+        phoneconn.ws.close();
     }]);
 }
 
