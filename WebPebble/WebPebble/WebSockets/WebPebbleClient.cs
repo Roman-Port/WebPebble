@@ -134,6 +134,14 @@ namespace WebPebble.WebSockets
                         //Remain in "disconnected" state.
                         pair.connected = false;
                     }
+                    //If another WebPebble session is connected, boot them.
+                    try
+                    {
+                        pair.web.QuickReply(-1, WebPebbleRequestType.CloseOldClient, new Dictionary<string, object>() {  });
+                    } catch
+                    {
+
+                    }
                     SetStatus(pair.connected);
                 }
                 else
@@ -199,7 +207,8 @@ namespace WebPebble.WebSockets
             ConnectionStatus = 3,
             PebbleProtocolMsg = 4,
             InstallApp = 5,
-            YcmdComplete = 6
+            YcmdComplete = 6,
+            CloseOldClient = 7 //Sent to a WebPebble session when another WebSession client connects.
         }
     }
 }

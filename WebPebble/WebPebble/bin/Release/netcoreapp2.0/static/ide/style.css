@@ -459,6 +459,7 @@ body {
     font-size:15px;
     color:white;
     display:inline-block;
+    float:left;
 }
 
 .control_item .help {
@@ -466,7 +467,7 @@ body {
     color:black;
     margin-left:160px;
     padding:5px;
-    margin-top:15px;
+    margin-top:0px;
     font-size:14px;
     
 }
@@ -474,12 +475,22 @@ body {
 .control_item .control {
     background-color:white;
     width:calc(100% - 200px);
-    margin-right:40px;
     border-radius:5px;
     color:black;
-    float: right;
+    display:inline-block;
     height: 40px;
     overflow:hidden;
+    margin-left:15px;
+}
+
+.control_item .control_normal {
+    width: calc(100% - 200px);
+    border-radius: 5px;
+    color: black;
+    display: inline-block;
+    height: auto;
+    overflow: hidden;
+    margin-left: 15px;
 }
 
 .control_item .control * {
@@ -603,8 +614,7 @@ body {
 #watch_emulator_area .emu_frame {
     position: relative;
     padding: 20px;
-    margin: auto;
-    margin-bottom: 10px;
+    display:inline-block;
 }
 
 #watch_emulator_area .emu_frame .emu_window {
@@ -613,15 +623,31 @@ body {
     height:168px;
 }
 
+#watch_emulator_area .emu_frame .emu_window iframe {
+    background-color:black;
+    width:144px;
+    height:168px;
+    border:none;
+    margin:0;
+    padding:0;
+}
+
 #watch_emulator_area .emu_options {
-    padding:8px;
-    height:20px;
-    position:relative;
-    overflow:hidden;
+    padding: 8px;
+    height: 20px;
+    position: relative;
+    overflow: hidden;
+    padding-left: 20px;
 }
 
 #watch_emulator_area .emu_options .emu_scroller {
     top:0;
-    height:50px;
     transition:top 100ms;
+    height:50px;
+    position:absolute;
+}
+
+#watch_emulator_area .emu_options .emu_scroller div {
+    height:20px;
+    margin-bottom:10px;
 }

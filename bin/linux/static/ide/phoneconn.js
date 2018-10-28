@@ -5,6 +5,8 @@ phoneconn.ws = null;
 phoneconn.currentId = 1;
 phoneconn.callbacks = {};
 
+phoneconn.retries = 0;
+
 phoneconn.authorized = false;
 phoneconn.deviceConnected = false;
 
@@ -39,15 +41,28 @@ phoneconn.init = function (callback) {
 
 phoneconn.onClose = function (event) {
     phoneconn.authorized = false;
-    project.showDialog("WebPebble Connection Lost", 'Connection to CloudPebble was lost. You might\'ve signed in at another location, or lost connection to the internet.', ["Reconnect"], [function () {
-        project.showDialog("Reconnecting to WebPebble...", '<div class="inf_loader"></div>', [], [], null, false);
+    //Check if this has failed 2 times in a row.
+    console.log("Lost connection to WebPebble; retrying...");
+    var connectFuc = function () {
         phoneconn.init(function () {
             phoneconn.authorized = true;
+            console.log("Reconnected, resetting try count.");
+            phoneconn.retries = 0;
             project.hideDialog();
         });
-    }], null, false);
-    
-}
+    };
+    if (phoneconn.retries >= 2) {
+        //Out of retries. Show dialog.
+        project.showDialog("WebPebble Connection Lost", 'Connection to CloudPebble was lost. Please check your internet connection and reconnect.', ["Reconnect"], [function () {
+            project.showDialog("Reconnecting to WebPebble...", '<div class="inf_loader"></div>', [], [], null, false);
+            connectFuc();
+        }], null, false);
+    } else {
+        phoneconn.retries += 1;
+        //Try to reconnect without prompting the dialog.
+        connectFuc();
+    }
+};
 
 phoneconn.onMessage = function (event) {
     var data = JSON.parse(event.data);
@@ -125,9 +140,22 @@ phoneconn.onPhoneStatusMsg = function (data) {
 phoneconn.onPebbleProtocolMsg = function (data) {
     //Add this to the message buffer.
     phoneconn.pebbleProtocolMsgBuffer.push(data);
+};
+
+phoneconn.onNewWebPebbleClient = function (data) {
+    //Another WebClient client connected and we've been disconnected from the gateway.
+    project.showDialog("Disconnected", "You connected to WebPebble from somewhere else. Please close this tab or disconnect the other session.", ["Reconnect"], [
+    function () {
+        project.showDialog("Reconnecting...", "<div class=\"inf_loader\"></div>", [], []);
+        phoneconn.init(function () {
+            phoneconn.authorized = true;
+            project.hideDialog();
+        });
+    }]);
 }
 
 phoneconn.eventList = {
     3: phoneconn.onPhoneStatusMsg,
-    4: phoneconn.onPebbleProtocolMsg
+    4: phoneconn.onPebbleProtocolMsg,
+    7: phoneconn.onNewWebPebbleClient
 };

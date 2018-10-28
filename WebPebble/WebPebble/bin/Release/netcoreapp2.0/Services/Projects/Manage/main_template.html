@@ -91,12 +91,12 @@
     </div>
 
     <!-- Watch control bar -->
-    <div class="watch_control_window">
+    <div class="watch_control_window open_sans" style="color:white;">
         <div style="display:none;" id="watch_control_main">
             <div class="big_button" onclick="phoneconn.getScreenshot();"><img src="https://romanport.com/static/icons/white/baseline-mobile_screen_share.svg" /> <span class="tooltip open_sans">Take Screenshot</span></div>
             <div class="big_button" onclick="project.buildPbwBtn();"><img src="https://romanport.com/static/icons/white/baseline-message.svg" /> <span class="tooltip open_sans">View Logs</span></div>
         </div>
-        <div id="watch_control_warning open_sans">
+        <div id="watch_control_warning">
             <div class="big_button" style="margin-bottom:5px; color:white;" onclick="alert('todo');">Launch Emulator</div><br />
             <div class="big_button" style="color:white;" onclick="alert('todo');">Connect Real Pebble</div>
         </div>
@@ -106,7 +106,7 @@
                 <div class="emu_window"></div>
             </div>
             <div class="emu_options">
-                <div style="position:absolute;" id="emu_options">
+                <div class="emu_scroller" id="emu_options">
                     <div class="emu_scroller" id="emu_loader"></div>
                     <div class="emu_scroller" id="emu_btns" style="margin-top:10px;"></div>
                 </div>
@@ -336,7 +336,7 @@
                     <div class="control_item">
                         <div class="label">Font Size</div>
                         <div class="control">
-                            <input type="number" id="addresrc_entry_font_size" min="1" max="255" value="12" oninput="edit_resource.onFontSizeChange(this.value);"/>
+                            <input type="number" id="addresrc_entry_font_size" min="1" max="255" value="12" oninput="edit_resource.onFontSizeChange(this.value);" />
                         </div>
                         <div class="help">
                             <b style="color: #ff8c8c;">Important!</b> This will be appened to the end of the identifier below. You should use "<span id="typeselect_font_id"></span>" as your C identifier.
@@ -389,12 +389,16 @@
                         </div>
                     </div>
                 </div>
+                <!-- Preview -->
+                <div class="container open_sans container_control" id="resource_preview" style="display:none;">
+                    
+                </div>
                 <!-- Uploader -->
                 <div class="container open_sans container_control">
                     <div class="control_item">
                         <div class="label">Upload File</div>
                         <div class="control" style="background-color:transparent;">
-                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" id="add_resrc_uploader_file"/></form>
+                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" id="add_resrc_uploader_file" /></form>
                         </div>
                     </div>
                 </div>

@@ -69,6 +69,36 @@ edit_resource.onSelectExisting = function (context) {
     }
     edit_resource.onFontSizeChange();
     document.getElementById('add_resrc_delete').style.display = "inline-block";
+    //Show the preview. 
+    var preview_window = document.getElementById('resource_preview');
+    preview_window.style.display = "block";
+    var resrc_url = "/project/" + project.id + "/media/" + media_data.id + "/get/";
+    if (pebble_data.type == "raw") {
+        //Show the button to download this resource again.
+
+    } else if (pebble_data.type == "font") {
+        //Preview the font.
+
+    } else {
+        //This is some sort of bitmap image.
+        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="' + resrc_url + "image_png/" +'"> </td> </tr> </table>'));
+    }
+};
+
+edit_resource.createControlItemNode = function (left, right) {
+    var bm = document.createElement('div');
+    bm.className = "control_item";
+    var label_node = document.createElement('div');
+    label_node.className = "label";
+    label_node.innerText = left;
+    bm.appendChild(label_node);
+
+    var right_node = document.createElement('div');
+    right_node.className = "control_normal";
+    right_node.innerHTML = right;
+    bm.appendChild(right_node);
+
+    return bm;
 }
 
 edit_resource.onTypeChange = function (type) {

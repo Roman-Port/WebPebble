@@ -37,11 +37,11 @@
 }
 
 .assets_type_container .btn:hover {
-    background-color: unset;
+    background-color: #353535;
 }
 
 .assets_type_container .btn_active {
-    background-color: unset;
+    background-color: #353535;
 }
 
 .assets_type_container .btn_fill_active {
