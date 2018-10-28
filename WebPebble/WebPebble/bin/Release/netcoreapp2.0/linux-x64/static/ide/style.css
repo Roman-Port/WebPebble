@@ -190,8 +190,7 @@ body {
 
 .assets_type_container .btn_fill_active {
     display: block;
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
+    margin-right:10px;
 }
 
 .assets_type_container .btn_fill_active .action_window {
