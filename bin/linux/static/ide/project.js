@@ -80,6 +80,10 @@ project.serverRequest = function (url, run_callback, fail_callback, isJson, type
     xmlhttp.send(body);
 };
 
+project.showLoader = function (title) {
+    project.showDialog(title, '<div class="inf_loader"></div>', [], [], null, false);
+};
+
 project.showDialog = function (title, text, buttonTextArray, buttonCallbackArray, data, treatAsDom) {
     //Data can be whatever you want to pass into the callbacks.
     //Set text first.

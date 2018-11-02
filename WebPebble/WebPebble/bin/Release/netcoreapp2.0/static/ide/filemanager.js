@@ -56,7 +56,41 @@ filemanager.PromptDeleteFile = function (file) {
 
         }
     ]);
-}
+};
+
+filemanager.PromptDeleteResourceFile = function () {
+    var file = edit_resource.openFile;
+    project.showDialog("Delete file \"" + file.media_data.nickname + "\"?", "This cannot be undone, and will happen immediately.", ["Confirm", "Cancel"], [
+        function () {
+            project.showLoader("Removing File...");
+            //Remove it from the app data.
+            //Find it first.
+            for (var i = 0; i < project.appInfo.pebble.resources.media.length; i += 1) {
+                var dd = project.appInfo.pebble.resources.media[i];
+                if (dd.x_webpebble_media_id == file.id) {
+                    //Remove at position and break.
+                    project.appInfo.pebble.resources.media.splice(dd, 1);
+                    break;
+                }
+            }
+            //Save the app info.
+            project.saveAppInfo(function () {
+                //Delete the actual media.
+                project.serverRequest("media/" + file.id + "/delete/?challenge=chal123", function () {
+                    //Switch away from tab.
+                    sidebarmanager.hide_content(sidebarmanager.activeItem);
+                    //Update the tab info.
+                    sidebarmanager.activeItem.tab_ele.parentNode.removeChild(sidebarmanager.activeItem.tab_ele);
+                    //Hide the loader.
+                    project.hideDialog();
+                }, null, false, "POST", "chal123");
+            });
+            
+        }, function () {
+
+        }
+    ]);
+};
 
 filemanager.DownloadUrl = function (url) {
     //Open an iframe to download this file.

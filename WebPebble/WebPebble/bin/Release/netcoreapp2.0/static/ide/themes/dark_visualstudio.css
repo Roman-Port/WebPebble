@@ -66,6 +66,7 @@
 
 .fillEditor {
     background-color: #1B2432;
+    background-color: #2d2d2d;
 }
 
 .template_inner p {
@@ -74,16 +75,21 @@
 
 .template_inner .container {
     background-color: #2b3745;
+    background-color: #353535;
 }
 
 .template_inner .med_button {
     background-color: #1b2432;
     border: 1px solid #111721;
+    background-color: #4c4c4c;
+    border: 1px solid #272727;
 }
 
 .template_inner .big_button {
     background-color: #1b2432;
     border: 1px solid #111721;
+    background-color: #4c4c4c;
+    border: 1px solid #272727;
 }
 
 .red_btn {

@@ -75,21 +75,45 @@ edit_resource.onSelectExisting = function (context) {
     var resrc_url = "/project/" + project.id + "/media/" + media_data.id + "/get/";
     if (pebble_data.type == "raw") {
         //Show the button to download this resource again.
-
+        preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", '<div class="med_button" onclick="edit_resource.onDownloadRawBtnClicked(this);">Download Raw Resource</div>'));
+        //Set URL.
+        preview_window.x_download_url = resrc_url + "application_octet-stream/" + pebble_data.name;
     } else if (pebble_data.type == "font") {
         //Preview the font.
+        //Get the font size.
+        var name_split2 = pebble_data.name.split('_');
+        var font_size2 = name_split[name_split2.length - 1];
+        font_size2 = parseInt(font_size2);
+        if (font_size2 > 40) {
+            font_size2 = 40;
+        }
         //Create the CSS.
         var e = document.createElement('style');
         e.innerHTML = '@font-face { font-family: "temporary_resrc_font"; src: url("' + resrc_url + 'font_ttf") format("truetype");}';
         preview_window.appendChild(e);
         //Append an actual preview of the font. Display the standard ones.
-        var inner = '<input style="line-height:21px; font-size:17px; background-color:white; font-family: &quot;temporary_resrc_font&quot;, serif; width:100%;" type="text" value="ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopwxyz 123456789">';
+        var inner = '<textarea style="line-height:' + (font_size2 + 6).toString() + 'px; font-size:' + font_size2.toString() + 'px; background-color:white; font-family: &quot;temporary_resrc_font&quot;, serif; width:100%;" type="text" rows="4">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopwxyz 123456789</textarea>';
         preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", inner));
     } else {
         //This is some sort of bitmap image.
         preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="' + resrc_url + "image_png/" +'"> </td> </tr> </table>'));
     }
 };
+
+edit_resource.onChange = function () {
+    //We need to set a flag so we don't leave the page without saving.
+    sidebarmanager.markUnsaved(edit_resource.openFile.media_data.nickname, true, function (callback) {
+        //Save quietly.
+        edit_resource.saveNow(function () {
+            callback();
+        });
+    });
+}
+
+edit_resource.onDownloadRawBtnClicked = function (context) {
+    var e = context.parentNode.parentNode.parentNode;
+    filemanager.DownloadUrl(e.x_download_url);
+}
 
 edit_resource.createControlItemNode = function (left, right) {
     var bm = document.createElement('div');
@@ -173,7 +197,13 @@ edit_resource.getUpdatedPebbleMedia = function (fileData) {
     return o;
 }
 
-edit_resource.saveNow = function (callback) {
+edit_resource.saveNow = function (final_callback) {
+    var callback = function () {
+        //Unmark this file as unsaved.
+        sidebarmanager.unmarkUnsaved();
+        //Run the final callback.
+        final_callback();
+    }
     //Check if we need to create a new file, or if we just save this one.
     if (edit_resource.openFile == null) {
         //Create

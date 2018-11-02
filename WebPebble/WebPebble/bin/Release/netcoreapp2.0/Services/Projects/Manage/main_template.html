@@ -73,25 +73,28 @@
 
     <!-- Assets sidebar -->
     <div class="assets_window open_sans">
-        <div class="assets_type_container" style="margin-top:0; height:auto;" id="sidebar_sec_0">
-            <div style="height:auto;"><div class="btn btn_active blur" style="font-size:18px; height:auto; transition:filter 200ms;" id="project_name">Project Name</div></div>
-        </div>
-        <div class="line"></div>
-        <div class="assets_type_container" id="sidebar_sec_1">
+        <div>
+            <div class="assets_type_container" style="margin-top:0; height:auto;" id="sidebar_sec_0">
+                <div style="height:auto;"><div class="btn btn_active blur" style="font-size:18px; height:auto; transition:filter 200ms;" id="project_name">Project Name</div></div>
+            </div>
+            <div class="line"></div>
+            <div class="assets_type_container" id="sidebar_sec_1">
 
-        </div>
-        <div class="line"></div>
-        <div class="assets_type_container" id="sidebar_sec_2">
+            </div>
+            <div class="line"></div>
+            <div class="assets_type_container" id="sidebar_sec_2">
 
-        </div>
-        <div class="line" id="sidebar_sec_3_line" style="display:none;"></div>
-        <div class="assets_type_container" id="sidebar_sec_3">
+            </div>
+            <div class="line" id="sidebar_sec_3_line" style="display:none;"></div>
+            <div class="assets_type_container" id="sidebar_sec_3">
 
+            </div>
         </div>
     </div>
 
     <!-- Watch control bar -->
-    <div class="watch_control_window open_sans" style="color:white;">
+    <!-- Disabled for now -->
+    <div class="watch_control_window open_sans" style="color:white; display:none;">
         <div style="display:none;" id="watch_control_main">
             <div class="big_button" onclick="phoneconn.getScreenshot();"><img src="https://romanport.com/static/icons/white/baseline-mobile_screen_share.svg" /> <span class="tooltip open_sans">Take Screenshot</span></div>
             <div class="big_button" onclick="project.buildPbwBtn();"><img src="https://romanport.com/static/icons/white/baseline-message.svg" /> <span class="tooltip open_sans">View Logs</span></div>
@@ -270,7 +273,7 @@
                     <div class="control_item">
                         <div class="label">Resource Type</div>
                         <div class="control">
-                            <select id="addresrc_entry_type" onchange="edit_resource.onTypeChange(this.value);">
+                            <select id="addresrc_entry_type" onchange="edit_resource.onTypeChange(this.value); edit_resource.onChange();">
                                 <option value="bitmap">Bitmap image</option>
                                 <option value="font">TrueType font</option>
                                 <option value="raw">Raw binary blob</option>
@@ -284,7 +287,7 @@
                     <div class="control_item">
                         <div class="label">Name</div>
                         <div class="control">
-                            <input type="text" id="addresrc_entry_filename" />
+                            <input type="text" id="addresrc_entry_filename" onchange="edit_resource.onChange();" />
                         </div>
                     </div>
                 </div>
@@ -295,7 +298,7 @@
                     <div class="control_item">
                         <div class="label">Memory Format</div>
                         <div class="control">
-                            <select id="addresrc_entry_bitmap_memformat">
+                            <select id="addresrc_entry_bitmap_memformat" onchange="edit_resource.onChange();">
                                 <option value="default">Best</option>
                                 <option value="Smallest">Smallest</option>
                                 <option value="SmallestPalette">Smallest Palette</option>
@@ -311,7 +314,7 @@
                     <div class="control_item">
                         <div class="label">Storage Format</div>
                         <div class="control">
-                            <select id="addresrc_entry_bitmap_storeformat">
+                            <select id="addresrc_entry_bitmap_storeformat" onchange="edit_resource.onChange();">
                                 <option value="default">Best</option>
                                 <option value="pbi">PBI</option>
                                 <option value="png">PNG</option>
@@ -322,7 +325,7 @@
                     <div class="control_item">
                         <div class="label">Optimization</div>
                         <div class="control">
-                            <select id="addresrc_entry_bitmap_opti">
+                            <select id="addresrc_entry_bitmap_opti" onchange="edit_resource.onChange();">
                                 <option value="default">Best</option>
                                 <option value="storage">Storage</option>
                                 <option value="memory">Memory</option>
@@ -336,7 +339,7 @@
                     <div class="control_item">
                         <div class="label">Font Size</div>
                         <div class="control">
-                            <input type="number" id="addresrc_entry_font_size" min="1" max="255" value="12" oninput="edit_resource.onFontSizeChange(this.value);" />
+                            <input type="number" id="addresrc_entry_font_size" min="1" max="255" value="12" oninput="edit_resource.onFontSizeChange(this.value); edit_resource.onChange();" />
                         </div>
                         <div class="help">
                             <b style="color: #ff8c8c;">Important!</b> This will be appened to the end of the identifier below. You should use "<span id="typeselect_font_id"></span>" as your C identifier.
@@ -346,7 +349,7 @@
                     <div class="control_item">
                         <div class="label">Characters</div>
                         <div class="control">
-                            <input type="text" id="addresrc_entry_font_characters" placeholder="[0-9]" />
+                            <input type="text" id="addresrc_entry_font_characters" placeholder="[0-9]" onchange="edit_resource.onChange();" />
                         </div>
                         <div class="help">
                             Use a valid Python regex to select characters to include. You may only use these characters. You can use <a style="color: #87b4f9;" href="https://regexr.com/" target="_blank">regexr.com</a> to help you.
@@ -356,7 +359,7 @@
                     <div class="control_item">
                         <div class="label">Tracking Adjust</div>
                         <div class="control">
-                            <input type="number" id="addresrc_entry_font_tracking" value="0" placeholder="0" />
+                            <input type="number" id="addresrc_entry_font_tracking" value="0" placeholder="0" onchange="edit_resource.onChange();" />
                         </div>
                         <div class="help">
                             Number of additional pixels by which to shift each character.
@@ -366,7 +369,7 @@
                     <div class="control_item">
                         <div class="label">Compatability</div>
                         <div class="control">
-                            <select id="addresrc_entry_font_compat">
+                            <select id="addresrc_entry_font_compat" onchange="edit_resource.onChange();">
                                 <option value="latest">Latest</option>
                                 <option value="27">=< 2.7</option>
                             </select>
@@ -382,7 +385,7 @@
                     <div class="control_item">
                         <div class="label">Identifier</div>
                         <div class="control">
-                            <input type="text" id="addresrc_entry_id" placeholder="EXAMPLE_C_IDENTIFIER" oninput="edit_resource.onFontSizeChange(document.getElementById('addresrc_entry_font_size').value);" />
+                            <input type="text" id="addresrc_entry_id" placeholder="EXAMPLE_C_IDENTIFIER" oninput="edit_resource.onChange(); edit_resource.onFontSizeChange(document.getElementById('addresrc_entry_font_size').value);" />
                         </div>
                         <div class="help">
                             This is used in your code and must be a valid C identifier.
@@ -398,14 +401,14 @@
                     <div class="control_item">
                         <div class="label">Upload File</div>
                         <div class="control" style="background-color:transparent;">
-                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" id="add_resrc_uploader_file" /></form>
+                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" id="add_resrc_uploader_file" onchange="edit_resource.onChange();" /></form>
                         </div>
                     </div>
                 </div>
                 <!-- Save buttons -->
                 <div class="container open_sans container_control">
                     <div class="med_button" onclick="edit_resource.saveNow();">Save</div>
-                    <div class="med_button" style="display:none;" id="add_resrc_delete">Delete</div>
+                    <div class="med_button" style="display:none;" id="add_resrc_delete" onclick="filemanager.PromptDeleteResourceFile();">Delete</div>
                 </div>
             </div>
         </div>

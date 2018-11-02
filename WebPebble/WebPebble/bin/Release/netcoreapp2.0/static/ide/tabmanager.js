@@ -3,6 +3,8 @@
 sidebarmanager.activeItem = null;
 sidebarmanager.items = [];
 
+sidebarmanager.unsaved = {}; //Unsaved data.
+
 sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction, closeAction, htmlDom, internalId, showNow, actionsHtml, clickActionAfter) {
     //Name: Name dislpayed
     //sectionIndex: The index of the section to insert this into.
@@ -62,6 +64,59 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     sidebarmanager.updateSuffixOfTab(sidebarmanager.items[internalId].tab_ele);
 
     return sidebarmanager.items[internalId];
+};
+
+sidebarmanager.markUnsaved = function (name, warnOnTabSwitch, saveCallback) {
+    //Called by other files to mark a file as unsaved. If there are unsaved files, we won't reload the page. You can also mark a file and a warning will appear if you switch away tabs.
+    //Save callback should have a callback as the first arg.
+
+    //Stop if this is already pending.
+    if (sidebarmanager.unsaved[sidebarmanager.activeItem.internalId] != null) {
+        return false;
+    }
+
+    //Create entity.
+    var e = {};
+    e.displayName = name;
+    e.warnOnTabSwitch = warnOnTabSwitch;
+    e.saveCallback = saveCallback;
+    //Yucky code to derefrence.
+    var d = [sidebarmanager.activeItem.internalId];
+    e.tab = JSON.parse(JSON.stringify(d))[0];
+    //Add to list.
+    console.log("Adding unsaved file:");
+    console.log(e);
+    sidebarmanager.unsaved[e.tab] = e;
+    return true;
+};
+
+sidebarmanager.unmarkUnsaved = function () {
+    //Unmark the current tab as unsaved.
+    if (sidebarmanager.unsaved[sidebarmanager.activeItem.internalId] != null) {
+        delete sidebarmanager.unsaved[sidebarmanager.activeItem.internalId];
+    }
+};
+
+sidebarmanager.checkIfCurrentFileIsUnsaved = function (onlyTabSwitch, id) {
+    //onlyTabSwitch is true if this is just a tab, false if exiting the entire tab.
+    //Returns null if nothing, else returns data.
+    //If ID is null, set it to the current tab.
+    if (id == null) {
+        id = sidebarmanager.activeItem.internalId;
+    }
+    //Check if this exists.
+    if (sidebarmanager.unsaved[id] != null) {
+        var d = sidebarmanager.unsaved[id];
+        if (onlyTabSwitch) {
+            if (!d.warnOnTabSwitch) {
+                //Return null, this is just a tab switch.
+                return null;
+            }
+        }
+        return d;
+    } else {
+        return null;
+    }
 }
 
 sidebarmanager.updateSuffixOfTab = function (tab, suffix) {
@@ -79,20 +134,59 @@ sidebarmanager.updateSuffixOfTab = function (tab, suffix) {
 sidebarmanager.private_click = function () {
     //Get the data for this.
     var d = sidebarmanager.items[this.x_id];
-    //Run the callback for this first in case it needs to prepare.
-    var reply = d.clickAction(this.x_id);
-    //Stop if reply is not null and is false.
-    if (reply != null) {
-        if (reply == false) {
-            return;
+    //Store this in a function.
+    var final_callback = function (id) {
+        //Run the callback for this first in case it needs to prepare.
+        var reply = d.clickAction(id);
+        //Stop if reply is not null and is false.
+        if (reply != null) {
+            if (reply == false) {
+                return;
+            }
+        }
+        //Now, switch views. Hide the last item if needed.
+        if (sidebarmanager.activeItem != null) {
+            sidebarmanager.hide_content(sidebarmanager.activeItem);
+        }
+        //Show the current view.
+        sidebarmanager.show_content(d);
+    }
+    //Check if this is unsaved.
+    var id = this.x_id;
+    if (sidebarmanager.activeItem == null) {
+        //This is the first item opened. Don't check and go ahead.
+        final_callback(id);
+    } else {
+        var unsaved = sidebarmanager.checkIfCurrentFileIsUnsaved(true, sidebarmanager.activeItem.internalId);
+        if (unsaved != null) {
+            //Warn the user about this.
+            project.showDialog("Unsaved Work", "If you continue, your unsaved work will be lost. Would you like to save?", ["Cancel", "Save", "Don't Save"], [
+                function () {
+                    //Cancel. Do nothing.
+                    return;
+                },
+                function () {
+                    //Save first, then close.
+                    unsaved.saveCallback(function () {
+                        sidebarmanager.unmarkUnsaved();
+
+                        final_callback(id);
+                    });
+                },
+                function () {
+                    //Just close.
+                    sidebarmanager.unmarkUnsaved();
+
+                    final_callback(id);
+                }
+            ]);
+        } else {
+            //Go now.
+            final_callback(id);
         }
     }
-    //Now, switch views. Hide the last item if needed.
-    if (sidebarmanager.activeItem != null) {
-        sidebarmanager.hide_content(sidebarmanager.activeItem);
-    }
-    //Show the current view.
-    sidebarmanager.show_content(d);
+    
+    
 }
 
 sidebarmanager.hide_content = function (tab) {
