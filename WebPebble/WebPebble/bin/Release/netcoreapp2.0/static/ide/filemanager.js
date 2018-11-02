@@ -77,10 +77,7 @@ filemanager.PromptDeleteResourceFile = function () {
             project.saveAppInfo(function () {
                 //Delete the actual media.
                 project.serverRequest("media/" + file.id + "/delete/?challenge=chal123", function () {
-                    //Switch away from tab.
-                    sidebarmanager.hide_content(sidebarmanager.activeItem);
-                    //Update the tab info.
-                    sidebarmanager.activeItem.tab_ele.parentNode.removeChild(sidebarmanager.activeItem.tab_ele);
+                    sidebarmanager.close_active_tab();
                     //Hide the loader.
                     project.hideDialog();
                 }, null, false, "POST", "chal123");

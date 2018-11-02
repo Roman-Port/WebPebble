@@ -125,6 +125,14 @@ namespace WebPebble.Services.Projects
                 byte[] data = new byte[(int)e.Request.ContentLength];
                 e.Request.Body.Read(data, 0, data.Length);
                 pp.package = JsonConvert.DeserializeObject<PackageJson>(Encoding.UTF8.GetString(data));
+                //Modify the file to prevent file injection attacks.
+                for(int i = 0; i<pp.package.pebble.resources.media.Count; i++)
+                {
+                    var d = pp.package.pebble.resources.media[i];
+                    //Get the media.
+                    var a = proj.assets.Find(x => x.id == d.x_webpebble_media_id);
+                    pp.package.pebble.resources.media[i].file = a.filename.Substring(a.type.ToString().Length + 1);
+                }
                 pp.SavePackage();
                 Program.QuickWriteToDoc(e, "OK", "text/plain");
             }

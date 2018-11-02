@@ -153,7 +153,6 @@ edit_resource.getUpdatedPebbleMedia = function (fileData) {
     //Get the package.json/pebble/resources/media data for this.
     //fileData is the WebPebble media data.
     var o = {};
-    o.file = fileData.filename.substring(10); //Trim off the /resources.
     o.name = document.getElementById('addresrc_entry_id').value; //C ID
     o.type = document.getElementById('addresrc_entry_type').value; //The type
     o.targetPlatforms = null; //This'll be set to a list of platforms if it is checked later.
@@ -202,7 +201,7 @@ edit_resource.saveNow = function (final_callback) {
         //Unmark this file as unsaved.
         sidebarmanager.unmarkUnsaved();
         //Run the final callback.
-        final_callback();
+        final_callback(function () { });
     }
     //Check if we need to create a new file, or if we just save this one.
     if (edit_resource.openFile == null) {
@@ -225,6 +224,7 @@ edit_resource.createDataNow = function (callback) {
     edit_resource.uploadFile("resources", type, document.getElementById('addresrc_entry_filename').value, function (uploaded_file) {
         //Generate the Pebble resource file.
         var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
+
         //Push it to the resources for the Pebble.
         project.appInfo.pebble.resources.media.push(pbl_data);
         //Save that file.
