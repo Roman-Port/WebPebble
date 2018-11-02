@@ -185,9 +185,20 @@ sidebarmanager.private_click = function () {
             final_callback(id);
         }
     }
-    
-    
-}
+
+
+};
+
+sidebarmanager.close_active_tab = function () {
+    //Unmark as unsaved
+    sidebarmanager.unmarkUnsaved();
+    //Switch away from tab.
+    sidebarmanager.hide_content(sidebarmanager.activeItem);
+    //Update the tab info.
+    sidebarmanager.activeItem.tab_ele.parentNode.removeChild(sidebarmanager.activeItem.tab_ele);
+    //Clear active tab.
+    sidebarmanager.activeItem = null;
+};
 
 sidebarmanager.hide_content = function (tab) {
     //If this has a dom element associated, hide it.
