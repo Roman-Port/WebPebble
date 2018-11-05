@@ -408,13 +408,6 @@ project.copyToSettingsView = function () {
     document.getElementById('settings_entry_uuid').value = appInfo.pebble.uuid;
 }
 
-project.saveAppInfo = function (callback) {
-    //Save appinfo.json.
-    project.serverRequest("appinfo.json", function (app) {
-        callback();
-    }, null, false, "PUT", JSON.stringify(project.appInfo));
-}
-
 project.mediaResourcesFiles = {};
 
 project.addResourceToSidebar = function (data) {

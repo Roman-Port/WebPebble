@@ -121,21 +121,60 @@ namespace WebPebble.Services.Projects
             }
             if(e.Request.Method.ToLower() == "put")
             {
-                //Update.
-                byte[] data = new byte[(int)e.Request.ContentLength];
-                e.Request.Body.Read(data, 0, data.Length);
-                pp.package = JsonConvert.DeserializeObject<PackageJson>(Encoding.UTF8.GetString(data));
-                //Modify the file to prevent file injection attacks.
-                for(int i = 0; i<pp.package.pebble.resources.media.Count; i++)
-                {
-                    var d = pp.package.pebble.resources.media[i];
-                    //Get the media.
-                    var a = proj.assets.Find(x => x.id == d.x_webpebble_media_id);
-                    pp.package.pebble.resources.media[i].file = a.filename.Substring(a.type.ToString().Length + 1);
-                }
-                pp.SavePackage();
-                Program.QuickWriteToDoc(e, "OK", "text/plain");
+                Program.QuickWriteToDoc(e, "The put endpoint has been disabled due to a security hole.", "text/plain", 404);
             }
+        }
+
+        public static void AppInfoJson_DeleteResource(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            PebbleProject pp = new PebbleProject(proj.projectId);
+            //Find the resource.
+            if(!e.Request.Query.ContainsKey("id"))
+            {
+                Program.QuickWriteToDoc(e, "No resource ID specified.", "text/html", 404);
+                return;
+            }
+            string resourceId = e.Request.Query["id"];
+            var item = pp.package.pebble.resources.media.Find(x => x.x_webpebble_media_id == resourceId);
+            if (item == null)
+            {
+                Program.QuickWriteToDoc(e, "That item didn't exist.", "text/html", 404);
+                return;
+            }
+            //Remove and save.
+            pp.package.pebble.resources.media.Remove(item);
+            pp.SavePackage();
+            Program.QuickWriteToDoc(e, "OK");
+        }
+
+        public static void AppInfoJson_AddResource(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            PebbleProject pp = new PebbleProject(proj.projectId);
+            //Open the body.
+            byte[] data = new byte[(int)e.Request.ContentLength];
+            e.Request.Body.Read(data, 0, data.Length);
+            Medium medium = JsonConvert.DeserializeObject<Medium>(Encoding.UTF8.GetString(data));
+            //Get the asset that is specified.
+            WebPebbleProjectAsset asset = proj.assets.Find(x => x.id == medium.x_webpebble_media_id);
+            //Check to see if the asset is valid.
+            if(asset == null)
+            {
+                Program.QuickWriteToDoc(e, "Invalid x_webpebble_media_id.", "text/html", 404);
+                return;
+            }
+            //Set the filename in a secure matter.
+            medium.file = asset.filename;
+            //Check to see if the package already has this data.
+            if(pp.package.pebble.resources.media.Find( x => x.x_webpebble_media_id == medium.x_webpebble_media_id) != null)
+            {
+                //Remove this from the package.
+                pp.package.pebble.resources.media.Remove(pp.package.pebble.resources.media.Find(x => x.x_webpebble_media_id == medium.x_webpebble_media_id));
+            }
+            //Write this to the package and save it.
+            pp.package.pebble.resources.media.Add(medium);
+            pp.SavePackage();
+            //Respond with OK.
+            Program.QuickWriteToDoc(e, "OK");
         }
 
         public static void OnProjSettingsRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)

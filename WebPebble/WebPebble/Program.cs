@@ -57,6 +57,8 @@ namespace WebPebble
             AddService(true, Services.Projects.FileManager.UploadFile, "/upload_media/", true);
             AddService(true, Services.Projects.FileManager.CreateFileRequest, "/create_empty_media/", true);
             AddService(true, Services.Projects.FileManager.AppInfoJson, "/appinfo.json", true);
+            AddService(true, Services.Projects.FileManager.AppInfoJson_DeleteResource, "/appinfo.json/delete_resource", true);
+            AddService(true, Services.Projects.FileManager.AppInfoJson_AddResource, "/appinfo.json/add_resource", true);
             AddService(true, Services.Projects.FileManager.OnProjSettingsRequest, "/settings/", true);
             AddService(true, Services.Projects.FileList.ListFiles, "/media_list/", true);
             AddService(true, Services.Projects.Compile.DoCompile, "/build/", true);
