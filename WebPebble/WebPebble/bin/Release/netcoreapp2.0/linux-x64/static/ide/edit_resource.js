@@ -2,13 +2,22 @@
 edit_resource.openFile = null;
 
 edit_resource.onSelect = function () {
+    //Remove any old warnings.
+    edit_resource.removeOldWarnings();
     //Selected to start.
     edit_resource.openFile = null;
     //Make sure we can see the selected type.
     edit_resource.onTypeChange('bitmap');
+};
+
+edit_resource.removeOldWarnings = function () {
+    edit_resource.removeWarning('add_resrc_id_frame');
+    edit_resource.removeWarning('add_resrc_uploader_frame');
 }
 
 edit_resource.onSelectExisting = function (context) {
+    //Remove any old warnings.
+    edit_resource.removeOldWarnings();
     //Context contains our ID. Get the data for it.
     var pebble_data = project.appInfo.pebble.resources.media;
     //Find this one.
@@ -338,6 +347,19 @@ edit_resource.checkIfFileIsPending = function () {
 edit_resource.check_identifier_latestid = 0;
 
 edit_resource.check_identifier = function (id) {
+    //Check to see if we need to append the font size.
+    if (document.getElementById('addresrc_entry_type').value == "font") {
+        id += '_' + document.getElementById('addresrc_entry_font_size').value.toString();
+    }
+    //Check if this is the current name.
+    if (edit_resource.openFile != null) {
+        if (edit_resource.openFile.pebble_data.name == id) {
+            //This is the current name. Remove the warning just in case it is displayed and then don't bother to check.
+            edit_resource.removeWarning('add_resrc_id_frame');
+            return;
+        }
+    }
+    
     //Create a request ID because some of these might finish before others.
     var req_id = (edit_resource.check_identifier_latestid + 1).toString();
     edit_resource.check_identifier_latestid++;
