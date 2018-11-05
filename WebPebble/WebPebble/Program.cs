@@ -212,7 +212,7 @@ namespace WebPebble
                 } catch (Exception ex)
                 {
                     //Error.
-                    QuickWriteToDoc(e, "error "+ex.Message+" @ "+ex.StackTrace);
+                    QuickWriteToDoc(e, "error "+ex.Message+" @ "+ex.StackTrace, "text/plain", 500);
                 }
             } else
             {
