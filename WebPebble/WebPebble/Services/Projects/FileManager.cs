@@ -162,10 +162,10 @@ namespace WebPebble.Services.Projects
                 Program.QuickWriteToDoc(e, "Invalid x_webpebble_media_id.", "text/html", 404);
                 return;
             }
-            //Set the filename in a secure matter.
-            medium.file = asset.filename;
+            //Set the filename in a secure matter. Remove the "resources/" at the beginning.
+            medium.file = asset.filename.Substring("resources/".Length);
             //Check to see if the package already has this data.
-            if(pp.package.pebble.resources.media.Find( x => x.x_webpebble_media_id == medium.x_webpebble_media_id) != null)
+            if (pp.package.pebble.resources.media.Find( x => x.x_webpebble_media_id == medium.x_webpebble_media_id) != null)
             {
                 //Remove this from the package.
                 pp.package.pebble.resources.media.Remove(pp.package.pebble.resources.media.Find(x => x.x_webpebble_media_id == medium.x_webpebble_media_id));
@@ -235,6 +235,31 @@ namespace WebPebble.Services.Projects
             //Create a response.
             Program.QuickWriteJsonToDoc(e, asset);
         }
+
+        /*public static void DeleteUploadedFile(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            //Take in the ID to the media and see if exists.
+            if (!e.Request.Query.ContainsKey("id"))
+            {
+                Program.QuickWriteToDoc(e, "Invalid ID.", "text/html", 404);
+                return;
+            }
+            var asset = proj.assets.Find(x => x.id == e.Request.Query["id"]);
+            if (asset == null)
+            {
+                Program.QuickWriteToDoc(e, "Invalid ID.", "text/html", 404);
+                return;
+            }
+            //Delete the file for this media.
+            string absolutePath = proj.GetAbsolutePathname() + asset.filename;
+            File.Delete(absolutePath);
+            //Remove the asset from the database.
+            proj.assets.Remove(asset);
+            proj.SaveProject();
+            //Respond with the OK.
+            Program.QuickWriteToDoc(e, "OK");
+        }*/
+        //I made the above and then realized that it already exisited.
 
         private class FileReply
         {

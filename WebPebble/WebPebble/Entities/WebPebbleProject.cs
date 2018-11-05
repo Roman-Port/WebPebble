@@ -48,6 +48,11 @@ namespace WebPebble.Entities
             Program.database.GetCollection<WebPebbleProject>("projects").Update(this);
         }
 
+        public string GetAbsolutePathname()
+        {
+            return Program.config.user_project_dir + projectId + "/";
+        }
+
         //Assets
         
         public WebPebbleProjectAsset AddAsset(string filename, AssetType type, InnerAssetType inner, string nickname = null)

@@ -329,6 +329,7 @@ edit_resource.updateDataNow = function (callback) {
         project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/delete/?challenge=delete", function () {
             //Now, reupload the new media.
             edit_resource.uploadFile("resources", type, document.getElementById('addresrc_entry_filename').value, function (uploaded) {
+                //Delete old media.
                 edit_resource.openFile.media_data = uploaded;
                 //Call the main code now.
                 afterFileUpdate();

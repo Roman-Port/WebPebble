@@ -482,10 +482,10 @@ body {
     margin-top: 0px;
     font-size: 14px;
     color: #ffa6a6;
-    animation-name: example;
+    animation-name: control_item_warning;
     animation-duration: 0.65s;
-    animation-iteration-count:1;
-    animation-timing-function:ease-in-out;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in-out;
 }
 
 @keyframes control_item_warning {
