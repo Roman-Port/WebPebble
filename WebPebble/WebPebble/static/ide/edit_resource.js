@@ -101,13 +101,17 @@ edit_resource.onSelectExisting = function (context) {
 };
 
 edit_resource.onChange = function () {
-    //We need to set a flag so we don't leave the page without saving.
-    sidebarmanager.markUnsaved(edit_resource.openFile.media_data.nickname, true, function (callback) {
-        //Save quietly.
-        edit_resource.saveNow(function () {
-            callback();
+    //Check if this is a file that already exists.
+    if (edit_resource.openFile != null) {
+        //We need to set a flag so we don't leave the page without saving.
+        sidebarmanager.markUnsaved(edit_resource.openFile.media_data.nickname, true, function (callback) {
+            //Save quietly.
+            edit_resource.saveNow(function () {
+                callback();
+            });
         });
-    });
+    }
+    
 }
 
 edit_resource.onDownloadRawBtnClicked = function (context) {
@@ -201,7 +205,9 @@ edit_resource.saveNow = function (final_callback) {
         //Unmark this file as unsaved.
         sidebarmanager.unmarkUnsaved();
         //Run the final callback.
-        final_callback(function () { });
+        if (final_callback != null) {
+            final_callback();
+        }
     }
     //Check if we need to create a new file, or if we just save this one.
     if (edit_resource.openFile == null) {
@@ -233,6 +239,8 @@ edit_resource.createDataNow = function (callback) {
             project.addResourceToSidebar(uploaded_file);
             //Hide the loader.
             project.hideDialog();
+            //Switch to this. This pretty much just allows us to save to it.
+            edit_resource.onSelectExisting(pbl_data.x_webpebble_media_id);
             //Call the callback, if there is one.
             if (callback != null) {
                 callback(uploaded_file, pbl_data);
