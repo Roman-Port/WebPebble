@@ -135,7 +135,7 @@ namespace WebPebble.Services.Projects
                 return;
             }
             string resourceId = e.Request.Query["id"];
-            var item = pp.package.pebble.resources.media.Find(x => x.x_webpebble_media_id == resourceId);
+            var item = pp.package.pebble.resources.media.Find(x => x.x_webpebble_pebble_media_id == resourceId);
             if (item == null)
             {
                 Program.QuickWriteToDoc(e, "That item didn't exist.", "text/html", 404);
@@ -164,8 +164,15 @@ namespace WebPebble.Services.Projects
             }
             //Set the filename in a secure matter. Remove the "resources/" at the beginning.
             medium.file = asset.filename.Substring("resources/".Length);
+            //Check if the Pebble media id was sent. If not, generate it. If it was, we use that and replace.
+            if(medium.x_webpebble_pebble_media_id == null)
+            {
+                medium.x_webpebble_pebble_media_id = LibRpws.LibRpwsCore.GenerateRandomString(8);
+                while (pp.package.pebble.resources.media.Find(x => x.x_webpebble_pebble_media_id == medium.x_webpebble_pebble_media_id) != null)
+                    medium.x_webpebble_pebble_media_id = LibRpws.LibRpwsCore.GenerateRandomString(8);
+            }
             //Check to see if the package already has this data.
-            if (pp.package.pebble.resources.media.Find( x => x.x_webpebble_media_id == medium.x_webpebble_media_id) != null)
+            if (pp.package.pebble.resources.media.Find( x => x.x_webpebble_pebble_media_id == medium.x_webpebble_pebble_media_id) != null)
             {
                 //Remove this from the package.
                 pp.package.pebble.resources.media.Remove(pp.package.pebble.resources.media.Find(x => x.x_webpebble_media_id == medium.x_webpebble_media_id));
