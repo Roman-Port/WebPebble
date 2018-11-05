@@ -261,22 +261,22 @@ edit_resource.createDataNow = function (callback) {
         //Generate the Pebble resource file.
         var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
         edit_resource.removeWarning('add_resrc_uploader_frame');
-        //Push it to the resources for the Pebble. This is just so we have it.
-        project.appInfo.pebble.resources.media.push(pbl_data);
         //Save that file.
         project.serverRequest("appinfo.json/add_resource", function (updated_data) {
             //Update the local data.
-            pbl_data = updated_data;
-            //Add this file to the sidebar.
-            project.addResourceToSidebar(uploaded_file);
-            //Hide the loader.
-            project.hideDialog();
-            //Switch to this. This pretty much just allows us to save to it.
-            edit_resource.onSelectExisting(pbl_data.x_webpebble_media_id);
-            //Call the callback, if there is one.
-            if (callback != null) {
-                callback(uploaded_file, pbl_data);
-            }
+            project.refreshAppInfo(function () {
+                pbl_data = updated_data;
+                //Add this file to the sidebar.
+                project.addResourceToSidebar(uploaded_file);
+                //Hide the loader.
+                project.hideDialog();
+                //Switch to this. This pretty much just allows us to save to it.
+                edit_resource.onSelectExisting(pbl_data.x_webpebble_media_id);
+                //Call the callback, if there is one.
+                if (callback != null) {
+                    callback(uploaded_file, pbl_data);
+                }
+            });
         }, null, true, "POST", JSON.stringify(pbl_data));
 
     }, function () {
@@ -300,31 +300,35 @@ edit_resource.updateDataNow = function (callback) {
         var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
         //Find the old copy version of this resource and replace it with ourself.
         var old_pebble_data = project.appInfo.pebble.resources.media;
+        //Set the x_webpebble_pebble_id
+        pbl_data.x_webpebble_pebble_media_id = old_pebble_data.x_webpebble_pebble_media_id;
         //Find this one.
         for (var i = 0; i < old_pebble_data.length; i += 1) {
-            if (old_pebble_data[i].x_webpebble_media_id == edit_resource.openFile.id) {
+            if (old_pebble_data[i].x_webpebble_pebble_media_id == edit_resource.openFile.pbl_data.x_webpebble_pebble_media_id) {
                 //Remove this.
                 project.appInfo.pebble.resources.media.splice(i, 1);
                 break;
             }
         }
-        //Push it to the resources for the Pebble.
-        project.appInfo.pebble.resources.media.push(pbl_data);
         //Save that file.
         project.serverRequest("appinfo.json/add_resource", function (updated_data) {
-            //We have updated data. Write it.
-            edit_resource.openFile.pbl_data = updated_data;
-            pbl_data = updated_data;
-            project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/rename/?name=" + encodeURIComponent(uploaded_file.nickname), function () {
-                //Rename object on sidebar. Something fishy going on here....
-                sidebarmanager.items[edit_resource.openFile.id].tab_ele.firstChild.innerText = document.getElementById('addresrc_entry_filename').value;
-                //Hide the loader.
-                project.hideDialog();
-                //Call the callback, if there is one.
-                if (callback != null) {
-                    callback(uploaded_file, pbl_data);
-                }
-            }, null, false);
+            //Refresh local data.
+            project.refreshAppInfo(function () {
+                //We have updated data. Write it.
+                edit_resource.openFile.pbl_data = updated_data;
+                pbl_data = updated_data;
+                project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/rename/?name=" + encodeURIComponent(uploaded_file.nickname), function () {
+                    //Rename object on sidebar. Something fishy going on here....
+                    sidebarmanager.items[edit_resource.openFile.id].tab_ele.firstChild.innerText = document.getElementById('addresrc_entry_filename').value;
+                    //Hide the loader.
+                    project.hideDialog();
+                    //Call the callback, if there is one.
+                    if (callback != null) {
+                        callback(uploaded_file, pbl_data);
+                    }
+                }, null, false);
+            });
+            
         }, null, true, "POST", JSON.stringify(pbl_data));
     };
      
