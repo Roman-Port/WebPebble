@@ -177,6 +177,25 @@ namespace WebPebble.Services.Projects
             Program.QuickWriteToDoc(e, "OK");
         }
 
+        public static void CheckIfIdentifierExists(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            //Get the project file and check if the identifier exists.
+            PebbleProject pp = new PebbleProject(proj.projectId);
+            bool exists = pp.package.pebble.resources.media.Find(x => x.name == e.Request.Query["resrc_id"]) != null;
+            CheckIfIdentifierExistsReply reply = new CheckIfIdentifierExistsReply
+            {
+                exists = exists,
+                request_id = e.Request.Query["request_id"]
+            };
+            Program.QuickWriteJsonToDoc(e, reply);
+        }
+
+        class CheckIfIdentifierExistsReply
+        {
+            public bool exists;
+            public string request_id;
+        }
+
         public static void OnProjSettingsRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Hide bandwidth-intensive bits.

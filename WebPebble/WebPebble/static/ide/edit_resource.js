@@ -268,11 +268,12 @@ edit_resource.createDataNow = function (callback) {
             }
         }, null, false, "POST", JSON.stringify(pbl_data));
 
-    }, function (reply) {
+    }, function () {
         //File upload failed.
-        edit_resource.addWarning('add_resrc_uploader_frame', reply);
+        edit_resource.addWarning('add_resrc_uploader_frame', "Please attach a file.");
+        project.hideDialog();
     });
-}
+};
 
 edit_resource.updateDataNow = function (callback) {
     project.showDialog("Updating Resource...", '<div class="inf_loader"></div>', [], [], null, false);
@@ -334,6 +335,23 @@ edit_resource.checkIfFileIsPending = function () {
     return document.getElementById("add_resrc_uploader_file").files.length != 0;
 }
 
+edit_resource.check_identifier_latestid = 0;
+
+edit_resource.check_identifier = function (id) {
+    //Create a request ID because some of these might finish before others.
+    var req_id = (edit_resource.check_identifier_latestid + 1).toString();
+    edit_resource.check_identifier_latestid++;
+    project.serverRequest("check_identifier?resrc_id=" + encodeURIComponent(id) + "&request_id=" + req_id, function (d) {
+        if (d.request_id == edit_resource.check_identifier_latestid.toString()) {
+            if (d.exists) {
+                edit_resource.addWarning('add_resrc_id_frame', 'That resource ID already exists.');
+            } else {
+                edit_resource.removeWarning('add_resrc_id_frame');
+            }
+        }
+    }, null, true);
+}
+
 edit_resource.uploadFile = function (type, sub_type, name, callback, failedCallback) {
     //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
     var form_ele = document.getElementById('add_resrc_uploader');
@@ -352,7 +370,7 @@ edit_resource.uploadFile = function (type, sub_type, name, callback, failedCallb
             }
         },
         error: function () {
-            failedCallback(response);
+            failedCallback();
         }
     });
 }

@@ -382,10 +382,10 @@
                 <!-- Identifier and target platforms -->
                 <div class="container open_sans container_control">
                     <!-- Identifier -->
-                    <div class="control_item">
+                    <div class="control_item" id="add_resrc_id_frame">
                         <div class="label">Identifier</div>
                         <div class="control">
-                            <input type="text" id="addresrc_entry_id" placeholder="EXAMPLE_C_IDENTIFIER" oninput="edit_resource.onChange(); edit_resource.onFontSizeChange(document.getElementById('addresrc_entry_font_size').value);" />
+                            <input type="text" id="addresrc_entry_id" placeholder="EXAMPLE_C_IDENTIFIER" oninput="edit_resource.check_identifier(this.value); edit_resource.onChange(); edit_resource.onFontSizeChange(document.getElementById('addresrc_entry_font_size').value);" />
                         </div>
                         <div class="help">
                             This is used in your code and must be a valid C identifier.
