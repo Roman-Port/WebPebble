@@ -101,13 +101,17 @@ edit_resource.onSelectExisting = function (context) {
 };
 
 edit_resource.onChange = function () {
-    //We need to set a flag so we don't leave the page without saving.
-    sidebarmanager.markUnsaved(edit_resource.openFile.media_data.nickname, true, function (callback) {
-        //Save quietly.
-        edit_resource.saveNow(function () {
-            callback();
+    //Check if this is a file that already exists.
+    if (edit_resource.openFile != null) {
+        //We need to set a flag so we don't leave the page without saving.
+        sidebarmanager.markUnsaved(edit_resource.openFile.media_data.nickname, true, function (callback) {
+            //Save quietly.
+            edit_resource.saveNow(function () {
+                callback();
+            });
         });
-    });
+    }
+    
 }
 
 edit_resource.onDownloadRawBtnClicked = function (context) {
@@ -201,7 +205,9 @@ edit_resource.saveNow = function (final_callback) {
         //Unmark this file as unsaved.
         sidebarmanager.unmarkUnsaved();
         //Run the final callback.
-        final_callback(function () { });
+        if (final_callback != null) {
+            final_callback();
+        }
     }
     //Check if we need to create a new file, or if we just save this one.
     if (edit_resource.openFile == null) {
@@ -210,6 +216,27 @@ edit_resource.saveNow = function (final_callback) {
     } else {
         //Edit
         edit_resource.updateDataNow(callback);
+    }
+};
+
+edit_resource.addWarning = function (elementId, text) {
+    //Check if a warning already exists.
+    if (document.getElementById(elementId + '_warning') != null) {
+        return;
+    }
+    //Create element.
+    var e = document.createElement('div');
+    e.id = elementId + "_warning";
+    e.className = "warning";
+    e.innerText = text;
+    document.getElementById(elementId).appendChild(e);
+};
+
+edit_resource.removeWarning = function (elementId) {
+    //Remove a warning if it exists.
+    var node = document.getElementById(elementId + '_warning');
+    if (node != null) {
+        node.parentNode.removeChild(node);
     }
 }
 
@@ -224,7 +251,7 @@ edit_resource.createDataNow = function (callback) {
     edit_resource.uploadFile("resources", type, document.getElementById('addresrc_entry_filename').value, function (uploaded_file) {
         //Generate the Pebble resource file.
         var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
-
+        edit_resource.removeWarning('add_resrc_uploader_frame');
         //Push it to the resources for the Pebble. This is just so we have it.
         project.appInfo.pebble.resources.media.push(pbl_data);
         //Save that file.
@@ -233,12 +260,17 @@ edit_resource.createDataNow = function (callback) {
             project.addResourceToSidebar(uploaded_file);
             //Hide the loader.
             project.hideDialog();
+            //Switch to this. This pretty much just allows us to save to it.
+            edit_resource.onSelectExisting(pbl_data.x_webpebble_media_id);
             //Call the callback, if there is one.
             if (callback != null) {
                 callback(uploaded_file, pbl_data);
             }
         }, null, false, "POST", JSON.stringify(pbl_data));
 
+    }, function (reply) {
+        //File upload failed.
+        edit_resource.addWarning('add_resrc_uploader_frame', reply);
     });
 }
 
@@ -280,7 +312,7 @@ edit_resource.updateDataNow = function (callback) {
             }, null, false);
         }, null, false, "POST", JSON.stringify(pbl_data));
     };
-
+     
     if (edit_resource.checkIfFileIsPending()) {
         //Upload a new file.
         //Delete the old media.
@@ -302,7 +334,7 @@ edit_resource.checkIfFileIsPending = function () {
     return document.getElementById("add_resrc_uploader_file").files.length != 0;
 }
 
-edit_resource.uploadFile = function (type, sub_type, name, callback) {
+edit_resource.uploadFile = function (type, sub_type, name, callback, failedCallback) {
     //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
     var form_ele = document.getElementById('add_resrc_uploader');
     var form = jQuery(form_ele);
@@ -320,7 +352,7 @@ edit_resource.uploadFile = function (type, sub_type, name, callback) {
             }
         },
         error: function () {
-            alert("server error while uploading file");
+            failedCallback(response);
         }
     });
 }

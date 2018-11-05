@@ -217,6 +217,27 @@ edit_resource.saveNow = function (final_callback) {
         //Edit
         edit_resource.updateDataNow(callback);
     }
+};
+
+edit_resource.addWarning = function (elementId, text) {
+    //Check if a warning already exists.
+    if (document.getElementById(elementId + '_warning') != null) {
+        return;
+    }
+    //Create element.
+    var e = document.createElement('div');
+    e.id = elementId + "_warning";
+    e.className = "warning";
+    e.innerText = text;
+    document.getElementById(elementId).appendChild(e);
+};
+
+edit_resource.removeWarning = function (elementId) {
+    //Remove a warning if it exists.
+    var node = document.getElementById(elementId + '_warning');
+    if (node != null) {
+        node.parentNode.removeChild(node);
+    }
 }
 
 edit_resource.createDataNow = function (callback) {
@@ -230,7 +251,7 @@ edit_resource.createDataNow = function (callback) {
     edit_resource.uploadFile("resources", type, document.getElementById('addresrc_entry_filename').value, function (uploaded_file) {
         //Generate the Pebble resource file.
         var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
-
+        edit_resource.removeWarning('add_resrc_uploader_frame');
         //Push it to the resources for the Pebble. This is just so we have it.
         project.appInfo.pebble.resources.media.push(pbl_data);
         //Save that file.
@@ -247,6 +268,9 @@ edit_resource.createDataNow = function (callback) {
             }
         }, null, false, "POST", JSON.stringify(pbl_data));
 
+    }, function (reply) {
+        //File upload failed.
+        edit_resource.addWarning('add_resrc_uploader_frame', reply);
     });
 }
 
@@ -310,7 +334,7 @@ edit_resource.checkIfFileIsPending = function () {
     return document.getElementById("add_resrc_uploader_file").files.length != 0;
 }
 
-edit_resource.uploadFile = function (type, sub_type, name, callback) {
+edit_resource.uploadFile = function (type, sub_type, name, callback, failedCallback) {
     //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
     var form_ele = document.getElementById('add_resrc_uploader');
     var form = jQuery(form_ele);
@@ -328,7 +352,7 @@ edit_resource.uploadFile = function (type, sub_type, name, callback) {
             }
         },
         error: function () {
-            alert("server error while uploading file");
+            failedCallback(response);
         }
     });
 }

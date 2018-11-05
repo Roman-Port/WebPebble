@@ -189,6 +189,13 @@ namespace WebPebble.Services.Projects
         {
             //Get the file uploaded.
             var f = e.Request.Form.Files["data"];
+            //Check if the file is valid.
+            if(f.Length == 0)
+            {
+                //No file uploaded.
+                Program.QuickWriteToDoc(e, "No file was uploaded.", "text/plain", 400);
+                return;
+            }
             //Get the asset params
             AssetType type = Enum.Parse<AssetType>(e.Request.Query["type"]);
             InnerAssetType innerType = Enum.Parse<InnerAssetType>(e.Request.Query["sub_type"]);

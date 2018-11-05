@@ -473,6 +473,41 @@ body {
     
 }
 
+.control_item .warning {
+    /* Much like help but meaner */
+    width: calc(100% - 210px);
+    color: black;
+    margin-left: 160px;
+    padding: 5px;
+    margin-top: 0px;
+    font-size: 14px;
+    color: #ffa6a6;
+    animation-name: example;
+    animation-duration: 0.65s;
+    animation-iteration-count:1;
+    animation-timing-function:ease-in-out;
+}
+
+@keyframes control_item_warning {
+    0% {
+        padding-left: 5px;
+        padding-right: 5px;
+        color: #ffa6a6;
+    }
+
+    50% {
+        padding-left: 10px;
+        padding-right: 0px;
+        color: #ffa6a6;
+    }
+
+    100% {
+        padding-left: 5px;
+        padding-right: 5px;
+        color: #ffa6a6;
+    }
+}
+
 .control_item .control {
     background-color:white;
     width:calc(100% - 200px);
