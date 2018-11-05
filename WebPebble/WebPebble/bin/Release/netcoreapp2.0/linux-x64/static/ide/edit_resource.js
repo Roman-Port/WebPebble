@@ -311,8 +311,8 @@ edit_resource.updateDataNow = function (callback) {
         //Save that file.
         project.serverRequest("appinfo.json/add_resource", function (app) {
             project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/rename/?name=" + encodeURIComponent(uploaded_file.nickname), function () {
-                //Rename object on sidebar.
-                sidebarmanager.items[uploaded_file.id].tab_ele.firstChild.innerText = uploaded_file.nickname;
+                //Rename object on sidebar. Something fishy going on here....
+                sidebarmanager.items[edit_resource.openFile.id].tab_ele.firstChild.innerText = document.getElementById('addresrc_entry_filename').value;
                 //Hide the loader.
                 project.hideDialog();
                 //Call the callback, if there is one.
