@@ -264,7 +264,9 @@ edit_resource.createDataNow = function (callback) {
         //Push it to the resources for the Pebble. This is just so we have it.
         project.appInfo.pebble.resources.media.push(pbl_data);
         //Save that file.
-        project.serverRequest("appinfo.json/add_resource", function (app) {
+        project.serverRequest("appinfo.json/add_resource", function (updated_data) {
+            //Update the local data.
+            pbl_data = updated_data;
             //Add this file to the sidebar.
             project.addResourceToSidebar(uploaded_file);
             //Hide the loader.
@@ -275,7 +277,7 @@ edit_resource.createDataNow = function (callback) {
             if (callback != null) {
                 callback(uploaded_file, pbl_data);
             }
-        }, null, false, "POST", JSON.stringify(pbl_data));
+        }, null, true, "POST", JSON.stringify(pbl_data));
 
     }, function () {
         //File upload failed.
@@ -309,7 +311,10 @@ edit_resource.updateDataNow = function (callback) {
         //Push it to the resources for the Pebble.
         project.appInfo.pebble.resources.media.push(pbl_data);
         //Save that file.
-        project.serverRequest("appinfo.json/add_resource", function (app) {
+        project.serverRequest("appinfo.json/add_resource", function (updated_data) {
+            //We have updated data. Write it.
+            edit_resource.openFile.pbl_data = updated_data;
+            pbl_data = updated_data;
             project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/rename/?name=" + encodeURIComponent(uploaded_file.nickname), function () {
                 //Rename object on sidebar. Something fishy going on here....
                 sidebarmanager.items[edit_resource.openFile.id].tab_ele.firstChild.innerText = document.getElementById('addresrc_entry_filename').value;
@@ -320,7 +325,7 @@ edit_resource.updateDataNow = function (callback) {
                     callback(uploaded_file, pbl_data);
                 }
             }, null, false);
-        }, null, false, "POST", JSON.stringify(pbl_data));
+        }, null, true, "POST", JSON.stringify(pbl_data));
     };
      
     if (edit_resource.checkIfFileIsPending()) {

@@ -181,7 +181,7 @@ namespace WebPebble.Services.Projects
             pp.package.pebble.resources.media.Add(medium);
             pp.SavePackage();
             //Respond with OK.
-            Program.QuickWriteToDoc(e, "OK");
+            Program.QuickWriteJsonToDoc(e,medium);
         }
 
         public static void CheckIfIdentifierExists(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
