@@ -225,10 +225,10 @@ edit_resource.createDataNow = function (callback) {
         //Generate the Pebble resource file.
         var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
 
-        //Push it to the resources for the Pebble.
+        //Push it to the resources for the Pebble. This is just so we have it.
         project.appInfo.pebble.resources.media.push(pbl_data);
         //Save that file.
-        project.saveAppInfo(function () {
+        project.serverRequest("appinfo.json/add_resource", function (app) {
             //Add this file to the sidebar.
             project.addResourceToSidebar(uploaded_file);
             //Hide the loader.
@@ -237,7 +237,8 @@ edit_resource.createDataNow = function (callback) {
             if (callback != null) {
                 callback(uploaded_file, pbl_data);
             }
-        });
+        }, null, false, "POST", JSON.stringify(pbl_data));
+
     });
 }
 
@@ -266,7 +267,7 @@ edit_resource.updateDataNow = function (callback) {
         //Push it to the resources for the Pebble.
         project.appInfo.pebble.resources.media.push(pbl_data);
         //Save that file.
-        project.saveAppInfo(function () {
+        project.serverRequest("appinfo.json/add_resource", function (app) {
             project.serverRequest("media/" + edit_resource.openFile.media_data.id + "/rename/?name=" + encodeURIComponent(uploaded_file.nickname), function () {
                 //Rename object on sidebar.
                 sidebarmanager.items[uploaded_file.id].tab_ele.firstChild.innerText = uploaded_file.nickname;
@@ -277,8 +278,9 @@ edit_resource.updateDataNow = function (callback) {
                     callback(uploaded_file, pbl_data);
                 }
             }, null, false);
-        });
-    }
+        }, null, false, "POST", JSON.stringify(pbl_data));
+    };
+
     if (edit_resource.checkIfFileIsPending()) {
         //Upload a new file.
         //Delete the old media.

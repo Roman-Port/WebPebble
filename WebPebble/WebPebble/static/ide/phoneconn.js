@@ -10,9 +10,12 @@ phoneconn.retries = 0;
 phoneconn.authorized = false;
 phoneconn.deviceConnected = false;
 
+phoneconn.connectCallback = null;
+
 phoneconn.pebbleProtocolMsgBuffer = []; //This could get quite large.
 
 phoneconn.init = function (callback) {
+    phoneconn.connectCallback = callback;
     //Create a WebSocket connection.
     console.log("Connecting to " + phoneconn.url);
     phoneconn.ws = new WebSocket(phoneconn.url);
@@ -30,7 +33,8 @@ phoneconn.init = function (callback) {
             if (data.data["ok"] == "true") {
                 //Logged in OK
                 phoneconn.authorized = true;
-                callback();
+                phoneconn.connectCallback();
+                phoneconn.connectCallback = null;
             } else {
                 //Failed. Tell the user.
                 project.showDialog("Failed to Authenticate", 'Failed to authenticate with the WebSocket connection. Try reloading, or log in again.', [], [], null, false);
@@ -49,6 +53,11 @@ phoneconn.onClose = function (event) {
             console.log("Reconnected, resetting try count.");
             phoneconn.retries = 0;
             project.hideDialog();
+            //Call callback.
+            if (phoneconn.connectCallback != null) {
+                phoneconn.connectCallback();
+            }
+            phoneconn.connectCallback = null;
         });
     };
     if (phoneconn.retries >= 2) {

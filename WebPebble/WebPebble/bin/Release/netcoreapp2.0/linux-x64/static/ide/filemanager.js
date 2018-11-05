@@ -74,14 +74,14 @@ filemanager.PromptDeleteResourceFile = function () {
                 }
             }
             //Save the app info.
-            project.saveAppInfo(function () {
+            project.serverRequest("appinfo.json/delete_resource?id="+file.id, function (app) {
                 //Delete the actual media.
                 project.serverRequest("media/" + file.id + "/delete/?challenge=chal123", function () {
                     sidebarmanager.close_active_tab();
                     //Hide the loader.
                     project.hideDialog();
                 }, null, false, "POST", "chal123");
-            });
+            }, null, false);
             
         }, function () {
 
