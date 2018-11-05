@@ -280,7 +280,7 @@ edit_resource.updateDataNow = function (callback) {
             }, null, false);
         }, null, false, "POST", JSON.stringify(pbl_data));
     };
-
+     
     if (edit_resource.checkIfFileIsPending()) {
         //Upload a new file.
         //Delete the old media.
