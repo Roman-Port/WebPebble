@@ -304,7 +304,7 @@ edit_resource.updateDataNow = function (callback) {
         pbl_data.x_webpebble_pebble_media_id = old_pebble_data.x_webpebble_pebble_media_id;
         //Find this one.
         for (var i = 0; i < old_pebble_data.length; i += 1) {
-            if (old_pebble_data[i].x_webpebble_pebble_media_id == edit_resource.openFile.pbl_data.x_webpebble_pebble_media_id) {
+            if (old_pebble_data[i].x_webpebble_pebble_media_id == edit_resource.openFile.pebble_data.x_webpebble_pebble_media_id) {
                 //Remove this.
                 project.appInfo.pebble.resources.media.splice(i, 1);
                 break;

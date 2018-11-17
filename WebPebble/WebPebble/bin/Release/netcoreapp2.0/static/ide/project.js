@@ -147,22 +147,28 @@ project.init = function () {
             n.innerText = sett.name;
             n.className = "btn btn_active";
             //Fetch appinfo.json
-            project.serverRequest("appinfo.json", function (app) {
+            project.refreshAppInfo(function () {
                 //Log into the websocket.
                 phoneconn.init(function () {
-                    project.appInfo = app;
                     project.started = false;
                     //Allow the user to use this.
                     ycmd.subscribe();
                     project.hideDialog();
                 });
-                
-            }, null, true);
-            
+            });
+
         }, null, true);
-        
+
     }, null, true);
-}
+};
+
+project.refreshAppInfo = function (callback) {
+    project.serverRequest("appinfo.json", function (app) {
+        project.appInfo = app;
+        callback(app);
+
+    }, null, true);
+};
 
 project.addExistingFileToSidebar = function (d) {
     if (d.type == 0) {
