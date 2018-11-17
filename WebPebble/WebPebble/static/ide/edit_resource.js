@@ -301,7 +301,7 @@ edit_resource.updateDataNow = function (callback) {
         //Find the old copy version of this resource and replace it with ourself.
         var old_pebble_data = project.appInfo.pebble.resources.media;
         //Set the x_webpebble_pebble_id
-        pbl_data.x_webpebble_pebble_media_id = old_pebble_data.x_webpebble_pebble_media_id;
+        pbl_data.x_webpebble_pebble_media_id = edit_resource.openFile.pebble_data.x_webpebble_pebble_media_id;
         //Find this one.
         for (var i = 0; i < old_pebble_data.length; i += 1) {
             if (old_pebble_data[i].x_webpebble_pebble_media_id == edit_resource.openFile.pebble_data.x_webpebble_pebble_media_id) {
