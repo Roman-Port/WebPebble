@@ -74,7 +74,7 @@ filemanager.PromptDeleteResourceFile = function () {
                 }
             }
             //Save the app info.
-            project.serverRequest("appinfo.json/delete_resource?id="+file.pbl_data.x_webpebble_pebble_media_id, function (app) {
+            project.serverRequest("appinfo.json/delete_resource?id="+file.pebble_data.x_webpebble_pebble_media_id, function (app) {
                 //Delete the actual media.
                 project.serverRequest("media/" + file.id + "/delete/?challenge=chal123", function () {
                     sidebarmanager.close_active_tab();
