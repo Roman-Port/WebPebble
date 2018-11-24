@@ -7,7 +7,7 @@ project.id = window.location.pathname.split('/')[2];
 
 
 project.serverRequest = function (url, run_callback, fail_callback, isJson, type, body, timeout) {
-    url = "http://10.0.1.52/project/" + project.id + "/" + url;
+    url = "https://api.webpebble.get-rpws.com/project/" + project.id + "/" + url;
     //This is the main server request function. Please change all other ones to use this.
     if (isJson == null) { isJson = true; }
 
@@ -17,7 +17,7 @@ project.serverRequest = function (url, run_callback, fail_callback, isJson, type
 
     if (fail_callback == null) {
         fail_callback = function () {
-            project.showDialog("Error", "You aren't online, or the server had an issue. Try again later.", ["Close"], [function () { }]);
+            project.showDialog("Error", "Server error. Please try again later.", ["Close"], [function () { }]);
         }
     }
     var xmlhttp = new XMLHttpRequest();

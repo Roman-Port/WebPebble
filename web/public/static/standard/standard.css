@@ -1,0 +1,8 @@
+﻿.standardContent {
+    margin:auto;
+    width:calc(95% - 14px);
+    padding-left:7px;
+    padding-right:7px;
+    max-width:600px;
+    padding-top:10px;
+}

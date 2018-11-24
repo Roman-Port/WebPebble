@@ -19,5 +19,10 @@ namespace WebPebble
             }
             return template;
         }
+
+        public static string GetStandardTemplate(string name, string content)
+        {
+            return GetTemplate("Templates/StandardPage.html", new string[] { "%title%", "%content%" }, new string[] { name, content });
+        }
     }
 }

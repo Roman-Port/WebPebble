@@ -47,12 +47,10 @@ namespace WebPebble
             //Get database
             database = new LiteDatabase(config.database_file);
             //Add services that are out of the project.
-            AddService(false, Services.Landing.Landing.OnRequest, "/", false);
             AddService(false, Services.CreateProject.CreateProject.OnRequest, "/create", true);
             AddService(false, Services.QuickLogin.Serve, "/token/", false);
             AddService(false, Services.ProjectList.Serve, "/myprojects", true);
             //Add services that are in the project.
-            AddService(true, Services.Projects.Manage.ManageProject.HandleRequest, "/manage", true);
             AddService(true, Services.Projects.FileManager.OnRequest, "/media/", true);
             AddService(true, Services.Projects.FileManager.UploadFile, "/upload_media/", true);
             AddService(true, Services.Projects.FileManager.CreateFileRequest, "/create_empty_media/", true);
@@ -174,7 +172,7 @@ namespace WebPebble
                 //Check if you must be logged in to do this.
                 if (service.requiresAuth && user == null)
                 {
-                    Program.QuickWriteToDoc(e, "you must be logged in to do that.");
+                    WriteErrorText(e, "You are not logged in.", ErrorHttpCode.NotLoggedIn, 400);
                     return null;
                 }
                 //Get the project if there is one.
@@ -204,7 +202,7 @@ namespace WebPebble
                     if(service.inProject == (proj==null))
                     {
                         //Requires a project, but none was found.
-                        QuickWriteToDoc(e, "you don't own that project or it didn't exist");
+                        WriteErrorText(e, "You don't have access to this project, or it didn't exist.", ErrorHttpCode.BadOwnership, 400);
                         return null;
                     }
                     service.code(e, user, proj);
@@ -212,11 +210,11 @@ namespace WebPebble
                 } catch (Exception ex)
                 {
                     //Error.
-                    QuickWriteToDoc(e, "error "+ex.Message+" @ "+ex.StackTrace, "text/plain", 500);
+                    WriteErrorText(e, "error "+ex.Message+" @ "+ex.StackTrace, ErrorHttpCode.Unknown, 500);
                 }
             } else
             {
-                QuickWriteToDoc(e, "no service was found there");
+                WriteErrorText(e, "Service not found.", ErrorHttpCode.ServiceNotFound, 404);
             }
 
             return null;
@@ -230,6 +228,32 @@ namespace WebPebble
             ser.requiresAuth = requiresAuth;
             ser.inProject = project;
             services.Add(ser);
+        }
+
+        public static void WriteErrorText(Microsoft.AspNetCore.Http.HttpContext e,string message, ErrorHttpCode code, int httpCode = 400)
+        {
+            HttpJsonError d = new HttpJsonError
+            {
+                message = message,
+                code = code,
+                code_text = code.ToString()
+            };
+            QuickWriteJsonToDoc(e, d, httpCode);
+        }
+
+        public enum ErrorHttpCode
+        {
+            NotLoggedIn,
+            BadOwnership,
+            ServiceNotFound,
+            Unknown
+        }
+
+        class HttpJsonError
+        {
+            public string message;
+            public ErrorHttpCode code;
+            public string code_text;
         }
 
         public void Configure(IApplicationBuilder app, IApplicationLifetime applicationLifetime)
@@ -301,10 +325,10 @@ namespace WebPebble
                 {
                     IPAddress addr = IPAddress.Any;
                     options.Listen(addr, 80);
-                    /*options.Listen(addr, 443, listenOptions =>
+                    options.Listen(addr, 443, listenOptions =>
                     {
-                        listenOptions.UseHttps(LibRpwsCore.config.ssl_cert_path, "");
-                    });*/
+                        listenOptions.UseHttps(config.ssl_cert, "");
+                    });
 
                 })
                 .UseStartup<Program>()

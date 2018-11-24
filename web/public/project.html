@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+
+    <!-- Imports -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link href="/static/ide/style.css" rel="stylesheet" />
+    <link href="/static/ide/themes/dark_visualstudio.css" rel="stylesheet" />
+
+    <title>WebPebble IDE</title>
+</head>
+<body>
+    <!-- Completer -->
+    <div class="completion_frame" id="completion_frame">
+
+    </div>
+
+    <!-- Popup window for important messages -->
+    <div class="popup_background hide" id="popup_window_bg"></div>
+    <div class="popup_window_container hide" id="popup_window">
+        <table style="width: 100%; height:100%;">
+            <tr>
+                <td style="text-align: center; vertical-align: middle;">
+                    <div class="popup_window open_sans">
+                        <div class="popup_window_top" id="popup_title">Save Changes?</div>
+                        <div class="popup_window_content" id="popup_text">Your changes to this file will be lost if they aren't saved.</div>
+                        <div class="popup_window_buttons">
+                            <div class="popup_window_buttons_content" id="popup_btns">
+                                <div>Save</div>
+                                <div>Don't Save</div>
+                                <div>Cancel</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="header open_sans">
+        <!-- Header content -->
+        <div class="title">WebPebble</div>
+        <!-- Compiler buttons -->
+        <div class="big_button" onclick="project.buildPbwBtn();"><img src="https://romanport.com/static/icons/white/baseline-play_arrow.svg" /></div>
+        <div class="big_button" onclick="filemanager.SaveAll();"><img src="https://romanport.com/static/icons/white/baseline-save.svg" /></div>
+        <!--<div class="big_button"><img src="https://romanport.com/static/icons/white/baseline-delete.svg" /></div>-->
+        <div class="line"></div>
+        <div class="big_button">Log Out</div>
+        <div class="big_button">Projects</div>
+        <div class="big_button">Settings</div>
+        <div class="big_button">Documentation</div>
+    </div>
+
+    <!-- Ide tabs -->
+    <div class="ide_window_tabs open_sans" id="tabs">
+        <!--<div class="tab tab_active">main.c <img src="https://romanport.com/static/icons/baseline-close.svg" /></div>
+        <div class="tab">helper.c <img src="https://romanport.com/static/icons/baseline-close.svg" /></div>-->
+    </div>
+
+    <!-- Ide view, where text entry happens. -->
+    <div class="ide_window hide" id="editor">
+        <div id="editor_inner" style="display:none;"></div>
+    </div>
+
+    <!-- Sidebar options button -->
+    <div class="assets_options_window open_sans">
+        <!--<div>Settings</div>-->
+    </div>
+
+    <!-- Assets sidebar -->
+    <div class="assets_window open_sans">
+        <div>
+            <div class="assets_type_container" style="margin-top:0; height:auto;" id="sidebar_sec_0">
+                <div style="height:auto;"><div class="btn btn_active blur" style="font-size:18px; height:auto; transition:filter 200ms;" id="project_name">Project Name</div></div>
+            </div>
+            <div class="line"></div>
+            <div class="assets_type_container" id="sidebar_sec_1">
+
+            </div>
+            <div class="line"></div>
+            <div class="assets_type_container" id="sidebar_sec_2">
+
+            </div>
+            <div class="line" id="sidebar_sec_3_line" style="display:none;"></div>
+            <div class="assets_type_container" id="sidebar_sec_3">
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Watch control bar -->
+    <!-- Disabled for now -->
+    <div class="watch_control_window open_sans" style="color:white; display:none;">
+        <div style="display:none;" id="watch_control_main">
+            <div class="big_button" onclick="phoneconn.getScreenshot();"><img src="https://romanport.com/static/icons/white/baseline-mobile_screen_share.svg" /> <span class="tooltip open_sans">Take Screenshot</span></div>
+            <div class="big_button" onclick="project.buildPbwBtn();"><img src="https://romanport.com/static/icons/white/baseline-message.svg" /> <span class="tooltip open_sans">View Logs</span></div>
+        </div>
+        <div id="watch_control_warning">
+            <div class="big_button" style="margin-bottom:5px; color:white;" onclick="alert('todo');">Launch Emulator</div><br />
+            <div class="big_button" style="color:white;" onclick="alert('todo');">Connect Real Pebble</div>
+        </div>
+
+        <div id="watch_emulator_area" style="display:none;">
+            <div class="emu_frame">
+                <div class="emu_window"></div>
+            </div>
+            <div class="emu_options">
+                <div class="emu_scroller" id="emu_options">
+                    <div class="emu_scroller" id="emu_loader"></div>
+                    <div class="emu_scroller" id="emu_btns" style="margin-top:10px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden templates. -->
+    <div style="display:none;">
+        <textarea id="template_bigtext"></textarea>
+        <!-- Options menu -->
+
+        <div id="template_options">
+            <div class="template_inner">
+
+                <!-- Name section -->
+
+                <div class="container open_sans container_control">
+                    <div class="control_item">
+                        <div class="label">Project Name</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_project_name" />
+                        </div>
+                        <div class="help">
+                            This name is only changed in WebPebble, and does not reflect on the actual Pebble app.
+                        </div>
+                    </div>
+
+                    <div class="control_item">
+                        <div class="label">SDK Version</div>
+                        <div class="control">
+                            <select id="settings_entry_sdk_version"><option value="3">SDK 3 (Pebble Time and newer)</option><option value="2">SDK 2 (Pebble Classic, Pebble Steel)</option></select>
+                        </div>
+                        <div class="help">
+                            Targetting an older SDK version might remove features. Your browser will reload if you change this value.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main project section -->
+                <div class="container open_sans container_control">
+                    <!-- Kind -->
+                    <div class="control_item">
+                        <div class="label">App Kind</div>
+                        <div class="control">
+                            <select id="settings_entry_kind"><option value="watchapp">Watchapp</option><option value="watchface">Watchface</option></select>
+                        </div>
+                    </div>
+                    <!-- Visibility -->
+                    <div class="control_item">
+                        <div class="label">App Visibility (PENDING)</div>
+                        <div class="control">
+                            <select id="settings_entry_visib"><option value="visable">Always visable</option><option value="hidden">Always hidden</option><option value="companion">Only when companion app is running</option></select>
+                        </div>
+                        <div class="help">
+                            Visibility of your app in the Pebble launcher menu.
+                        </div>
+                    </div>
+                    <!-- Short App Name -->
+                    <div class="control_item">
+                        <div class="label">Short App Name</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_short_name" />
+                        </div>
+                        <div class="help">
+                            App's short name. This will appear on the watch.
+                        </div>
+                    </div>
+                    <!-- Long App Name -->
+                    <div class="control_item">
+                        <div class="label">Long App Name</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_long_name" />
+                        </div>
+                        <div class="help">
+                            App's long name. This will appear in the app list on the phone.
+                        </div>
+                    </div>
+                    <!-- Visibility -->
+                    <div class="control_item">
+                        <div class="label">Menu Icon (PENDING)</div>
+                        <div class="control">
+                            <select id="settings_entry_icon"><option value="null">None</option></select>
+                        </div>
+                        <div class="help">
+                            Displayed on the Pebble's launcher menu. Must be a 28x28 file in PNG format.
+                        </div>
+                    </div>
+                    <!-- Company Name -->
+                    <div class="control_item">
+                        <div class="label">Developer Name</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_dev_name" />
+                        </div>
+                        <div class="help">
+                            The name of the developer, you!
+                        </div>
+                    </div>
+                    <!-- Version Name -->
+                    <div class="control_item">
+                        <div class="label">Version ID</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_version" />
+                        </div>
+                        <div class="help">
+                            App version. Takes the format major[.minor], where major and minor are between 0 and 255.
+                        </div>
+                    </div>
+                    <!-- UUID -->
+                    <div class="control_item">
+                        <div class="label">App UUID</div>
+                        <div class="control">
+                            <input type="text" id="settings_entry_uuid" />
+                        </div>
+                        <div class="help">
+                            A unique identifier for the app. Takes the format xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx, where x is any hexadecimal digit and y is one of 8, 9, A, or B
+                        </div>
+                    </div>
+                    <!-- JS Handling -->
+                    <div class="control_item">
+                        <div class="label">JS Handling (PENDING)</div>
+                        <div class="control">
+                            <select id="settings_entry_js_handle"><option value="commom">CommonJS-Style</option><option value="concatenation">Concatenation</option></select>
+                        </div>
+                        <div class="help">
+                            CommonJS-style enables you to require() other files; concatenation makes them into a single JS file.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Compilation menu -->
+        <div id="template_compile">
+            <div class="template_inner">
+                <div class="container">
+                    <h1>Builds</h1>
+                    <p>You can see your past builds here. Click on the button below to create a new one.</p>
+                    <div class="med_button" onclick="project.buildPbwBtn();">Run Build</div>
+                </div>
+                <div class="container build_history_area blur">
+                    <table style="width:100%; text-align:left;" class="build_history">
+                        <tr style="text-align:left;">
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add resource menu -->
+        <div id="template_add_resource">
+            <div class="template_inner">
+                <!-- Main -->
+                <div class="container open_sans container_control">
+                    <!-- Type -->
+                    <div class="control_item">
+                        <div class="label">Resource Type</div>
+                        <div class="control">
+                            <select id="addresrc_entry_type" onchange="edit_resource.onTypeChange(this.value); edit_resource.onChange();">
+                                <option value="bitmap">Bitmap image</option>
+                                <option value="font">TrueType font</option>
+                                <option value="raw">Raw binary blob</option>
+                                <option value="png">PNG image (PENDING)</option>
+                                <option value="png-trans">PNG image with transparency (PENDING)</option>
+                                <option value="pbi">1-bit Pebble Image</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- WebPebble name for this resource -->
+                    <div class="control_item">
+                        <div class="label">Name</div>
+                        <div class="control">
+                            <input type="text" id="addresrc_entry_filename" onchange="edit_resource.onChange();" />
+                        </div>
+                    </div>
+                </div>
+                <!-- Below are special to their type. Each type will have a section here, and they will be toggled depending on the type of file chosen. -->
+                <!-- Bitmap image -->
+                <div class="container open_sans container_control typeselect_hidden" style="display:none;" id="typeselect_template_bitmap">
+                    <!-- Memory format -->
+                    <div class="control_item">
+                        <div class="label">Memory Format</div>
+                        <div class="control">
+                            <select id="addresrc_entry_bitmap_memformat" onchange="edit_resource.onChange();">
+                                <option value="default">Best</option>
+                                <option value="Smallest">Smallest</option>
+                                <option value="SmallestPalette">Smallest Palette</option>
+                                <option value="1Bit">1-bit</option>
+                                <option value="8Bit">8-bit</option>
+                                <option value="1BitPalette">1-bit Palette</option>
+                                <option value="2BitPalette">2-bit Palette</option>
+                                <option value="4BitPalette">4-bit Palette</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Storage format -->
+                    <div class="control_item">
+                        <div class="label">Storage Format</div>
+                        <div class="control">
+                            <select id="addresrc_entry_bitmap_storeformat" onchange="edit_resource.onChange();">
+                                <option value="default">Best</option>
+                                <option value="pbi">PBI</option>
+                                <option value="png">PNG</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Space format -->
+                    <div class="control_item">
+                        <div class="label">Optimization</div>
+                        <div class="control">
+                            <select id="addresrc_entry_bitmap_opti" onchange="edit_resource.onChange();">
+                                <option value="default">Best</option>
+                                <option value="storage">Storage</option>
+                                <option value="memory">Memory</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <!-- TrueType Font -->
+                <div class="container open_sans container_control typeselect_hidden" style="display:none;" id="typeselect_template_font">
+                    <!-- Font Size -->
+                    <div class="control_item">
+                        <div class="label">Font Size</div>
+                        <div class="control">
+                            <input type="number" id="addresrc_entry_font_size" min="1" max="255" value="12" oninput="edit_resource.onFontSizeChange(this.value); edit_resource.onChange();" />
+                        </div>
+                        <div class="help">
+                            <b style="color: #ff8c8c;">Important!</b> This will be appened to the end of the identifier below. You should use "<span id="typeselect_font_id"></span>" as your C identifier.
+                        </div>
+                    </div>
+                    <!-- Characters -->
+                    <div class="control_item">
+                        <div class="label">Characters</div>
+                        <div class="control">
+                            <input type="text" id="addresrc_entry_font_characters" placeholder="[0-9]" onchange="edit_resource.onChange();" />
+                        </div>
+                        <div class="help">
+                            Use a valid Python regex to select characters to include. You may only use these characters. You can use <a style="color: #87b4f9;" href="https://regexr.com/" target="_blank">regexr.com</a> to help you.
+                        </div>
+                    </div>
+                    <!-- Tracking Adjust -->
+                    <div class="control_item">
+                        <div class="label">Tracking Adjust</div>
+                        <div class="control">
+                            <input type="number" id="addresrc_entry_font_tracking" value="0" placeholder="0" onchange="edit_resource.onChange();" />
+                        </div>
+                        <div class="help">
+                            Number of additional pixels by which to shift each character.
+                        </div>
+                    </div>
+                    <!-- Compat -->
+                    <div class="control_item">
+                        <div class="label">Compatability</div>
+                        <div class="control">
+                            <select id="addresrc_entry_font_compat" onchange="edit_resource.onChange();">
+                                <option value="latest">Latest</option>
+                                <option value="27">=< 2.7</option>
+                            </select>
+                        </div>
+                        <div class="help">
+                            Determines the font rendering algorithm to use. The latest looks better, but can produce slightly larger characters.
+                        </div>
+                    </div>
+                </div>
+                <!-- Identifier and target platforms -->
+                <div class="container open_sans container_control">
+                    <!-- Identifier -->
+                    <div class="control_item" id="add_resrc_id_frame">
+                        <div class="label">Identifier</div>
+                        <div class="control">
+                            <input type="text" id="addresrc_entry_id" placeholder="EXAMPLE_C_IDENTIFIER" oninput="edit_resource.check_identifier(this.value); edit_resource.onChange(); edit_resource.onFontSizeChange(document.getElementById('addresrc_entry_font_size').value);" />
+                        </div>
+                        <div class="help">
+                            This is used in your code and must be a valid C identifier.
+                        </div>
+                    </div>
+                </div>
+                <!-- Preview -->
+                <div class="container open_sans container_control" id="resource_preview" style="display:none;">
+                    
+                </div>
+                <!-- Uploader -->
+                <div class="container open_sans container_control">
+                    <div class="control_item" id="add_resrc_uploader_frame">
+                        <div class="label">Upload File</div>
+                        <div class="control" style="background-color:transparent;">
+                            <form method="post" id="add_resrc_uploader"><input type="file" name="data" style="color:white;" id="add_resrc_uploader_file" onchange="edit_resource.onChange();" /></form>
+                        </div>
+                    </div>
+                </div>
+                <!-- Save buttons -->
+                <div class="container open_sans container_control">
+                    <div class="med_button" onclick="edit_resource.saveNow();">Save</div>
+                    <div class="med_button" style="display:none;" id="add_resrc_delete" onclick="filemanager.PromptDeleteResourceFile();">Delete</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://romanport.com/static/webpebble/external/ace/src/ace.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+
+<script src="/static/ide/tabmanager.js"></script>
+<script src="/static/ide/filemanager.js"></script>
+<script src="/static/ide/project.js"></script>
+<script src="/static/ide/edit_resource.js"></script>
+<script src="/static/ide/phoneconn.js"></script>
+<script src="/static/ide/external/keyboard.min.js"></script>
+<script src="/static/ide/code_complete.js"></script>
+<script src="/static/ide/emulator.js"></script>
+
+<script src="/static/ide/boot.js"></script>
