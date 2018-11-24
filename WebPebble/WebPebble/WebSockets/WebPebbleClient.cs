@@ -20,6 +20,7 @@ namespace WebPebble.WebSockets
 
         public override void OnMessage(string content)
         {
+            Console.WriteLine("end got " + content);
             //Read the JSON.
             WebPebbleRequest request = JsonConvert.DeserializeObject<WebPebbleRequest>(content);
             //If this isn't an auth request, ignore.

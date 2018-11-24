@@ -38,6 +38,7 @@ namespace WebPebble.WebSockets
                 {
                     //Read this in as a string and let our code handle it.
                     string msg = Encoding.UTF8.GetString(buf, 0, result.Count);
+                    Console.WriteLine("got " + msg);
                     //Let our code handle this.
                     OnMessage(msg);
                 }
@@ -54,6 +55,7 @@ namespace WebPebble.WebSockets
         /// <param name="content"></param>
         public void Send(string content)
         {
+            Console.WriteLine("sending " + content);
             byte[] outBuf = Encoding.UTF8.GetBytes(content);
             ws.SendAsync(new ArraySegment<byte>(outBuf), WebSocketMessageType.Text, false, System.Threading.CancellationToken.None);
         }
@@ -73,7 +75,7 @@ namespace WebPebble.WebSockets
         /// </summary>
         public virtual void OnMessage(string content)
         {
-
+            Console.WriteLine("Unhandled text data.");
         }
 
         /// <summary>
@@ -82,7 +84,7 @@ namespace WebPebble.WebSockets
         /// <param name="content"></param>
         public virtual void OnBinaryMessage(byte[] content)
         {
-
+            Console.WriteLine("Unhandled binary content."); 
         }
 
         /// <summary>
