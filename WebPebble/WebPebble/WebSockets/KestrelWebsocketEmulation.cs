@@ -12,9 +12,27 @@ namespace WebPebble.WebSockets
     /// </summary>
     public class KestrelWebsocketEmulation
     {
-        public static async Task StartSession(HttpContext context, WebSocket webSocket)
+        public WebSocket ws;
+        private byte[] buf = new byte[4096];
+
+        public static async Task<KestrelWebsocketEmulation> StartSession(HttpContext context, WebSocket ws)
         {
-            return;
+            //Generate our class and start listening.
+            KestrelWebsocketEmulation emu = new KestrelWebsocketEmulation();
+            emu.ws = ws;
+
+            await emu.WaitForMessage();
+
+            return emu;
+        }
+
+        public async Task WaitForMessage()
+        {
+            while (ws.State == WebSocketState.Open)
+            {
+                WebSocketReceiveResult result = await ws.ReceiveAsync(new ArraySegment<byte>(buf), new System.Threading.CancellationToken());
+                Console.WriteLine("Got message " + Encoding.UTF8.GetString(buf));
+            }
         }
     }
 }

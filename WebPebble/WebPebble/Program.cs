@@ -92,6 +92,7 @@ namespace WebPebble
             if (e.WebSockets.IsWebSocketRequest)
             {
                 WebSocket webSocket = await e.WebSockets.AcceptWebSocketAsync();
+                KestrelWebsocketEmulation kwe = await KestrelWebsocketEmulation.StartSession(e, webSocket);
             }
 
             //Manage CORS by responding with the preflight header request.
