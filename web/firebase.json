@@ -11,6 +11,13 @@
         "source": "project/**",
         "destination": "/project.html"
       }
+    ],
+    "redirects" : [
+      {
+        "source":"/login",
+        "destination":"https://api.webpebble.get-rpws.com/login",
+        "type":301
+      }
     ]
   }
 }
