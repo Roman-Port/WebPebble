@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using WebPebble.Entities;
 using WebPebble.Entities.PebbleProject;
 using WebPebble.Oauth;
@@ -11,7 +12,7 @@ namespace WebPebble.Services.Projects
 {
     public static class FileManager
     {
-        public static void OnRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        public static async Task OnRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             string[] split = e.Request.Path.ToString().Split('/');
             string fileId = split[4];
@@ -22,7 +23,7 @@ namespace WebPebble.Services.Projects
             var asset = proj.assets.Find(x => x.id == fileId);
             if(asset == null)
             {
-                Program.QuickWriteToDoc(e, "Not Found", "text/plain", 500);
+                await Program.QuickWriteToDoc(e, "Not Found", "text/plain", 500);
                 return;
             }
             string fileName = asset.filename;
@@ -45,12 +46,12 @@ namespace WebPebble.Services.Projects
                     reply.content = content;
                     reply.id = fileId;
                     //Respond with JSON string.
-                    Program.QuickWriteJsonToDoc(e, reply);
+                    await Program.QuickWriteJsonToDoc(e, reply);
                 } else
                 {
                     //Write the contents of the file only.
                     byte[] content = pp.ReadFileBytes(fileName);
-                    Program.QuickWriteBytesToDoc(e, content, mimeType);
+                    await Program.QuickWriteBytesToDoc(e, content, mimeType);
                 }
 
             } else if(action == "put")
@@ -60,14 +61,14 @@ namespace WebPebble.Services.Projects
                 e.Request.Body.Read(data, 0, data.Length);
                 //Save
                 pp.WriteFile(fileName, data);
-                Program.QuickWriteToDoc(e, "OK");
+                await Program.QuickWriteToDoc(e, "OK");
             }
             else if (action == "rename")
             {
                 //We are just renaming an existing one.
                 asset.nickname = e.Request.Query["name"];
                 proj.SaveProject();
-                Program.QuickWriteToDoc(e, "OK");
+                await Program.QuickWriteToDoc(e, "OK");
             }
             else if (action == "delete")
             {
@@ -82,7 +83,7 @@ namespace WebPebble.Services.Projects
                     //Nuke in the assets of the project.
                     proj.assets.Remove(asset);
                     proj.SaveProject();
-                    Program.QuickWriteToDoc(e, "OK");
+                    await Program.QuickWriteToDoc(e, "OK");
                 } else
                 {
                     //Verification failed.
@@ -92,12 +93,12 @@ namespace WebPebble.Services.Projects
             }
             else
             {
-                Program.QuickWriteToDoc(e, "Invalid action get/put.", "text/html", 500);
+                await Program.QuickWriteToDoc(e, "Invalid action get/put.", "text/html", 500);
                 
             }
         }
 
-        public static void CreateFileRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        public static async Task CreateFileRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Determine where to place these files.
             string filename = e.Request.Query["filename"];
@@ -106,46 +107,46 @@ namespace WebPebble.Services.Projects
             //Create
             var file = proj.CreateSafeAsset(filename, type, inner, new byte[] { });
             //Respond with JSON string.
-            Program.QuickWriteJsonToDoc(e, file);
+            await Program.QuickWriteJsonToDoc(e, file);
         }
 
-        public static void AppInfoJson(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        public static async Task AppInfoJson(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Edit or serve appinfo.json.
             PebbleProject pp = new PebbleProject(proj.projectId);
             if(e.Request.Method.ToLower() == "get")
             {
-                Program.QuickWriteJsonToDoc(e, pp.package);
+                await Program.QuickWriteJsonToDoc(e, pp.package);
             }
             if(e.Request.Method.ToLower() == "put")
             {
-                Program.QuickWriteToDoc(e, "The put endpoint has been disabled due to a security hole.", "text/plain", 404);
+                await Program.QuickWriteToDoc(e, "The put endpoint has been disabled due to a security hole.", "text/plain", 404);
             }
         }
 
-        public static void AppInfoJson_DeleteResource(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        public static async Task AppInfoJson_DeleteResource(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             PebbleProject pp = new PebbleProject(proj.projectId);
             //Find the resource.
             if(!e.Request.Query.ContainsKey("id"))
             {
-                Program.QuickWriteToDoc(e, "No resource ID specified.", "text/html", 404);
+                await Program.QuickWriteToDoc(e, "No resource ID specified.", "text/html", 404);
                 return;
             }
             string resourceId = e.Request.Query["id"];
             var item = pp.package.pebble.resources.media.Find(x => x.x_webpebble_pebble_media_id == resourceId);
             if (item == null)
             {
-                Program.QuickWriteToDoc(e, "That item didn't exist.", "text/html", 404);
+                await Program.QuickWriteToDoc(e, "That item didn't exist.", "text/html", 404);
                 return;
             }
             //Remove and save.
             pp.package.pebble.resources.media.Remove(item);
             pp.SavePackage();
-            Program.QuickWriteToDoc(e, "OK");
+            await Program.QuickWriteToDoc(e, "OK");
         }
 
-        public static void AppInfoJson_AddResource(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        public static async Task AppInfoJson_AddResource(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             PebbleProject pp = new PebbleProject(proj.projectId);
             //Open the body.
@@ -157,7 +158,7 @@ namespace WebPebble.Services.Projects
             //Check to see if the asset is valid.
             if(asset == null)
             {
-                Program.QuickWriteToDoc(e, "Invalid x_webpebble_media_id.", "text/html", 404);
+                await Program.QuickWriteToDoc(e, "Invalid x_webpebble_media_id.", "text/html", 404);
                 return;
             }
             //Set the filename in a secure matter. Remove the "resources/" at the beginning.
@@ -179,10 +180,10 @@ namespace WebPebble.Services.Projects
             pp.package.pebble.resources.media.Add(medium);
             pp.SavePackage();
             //Respond with OK.
-            Program.QuickWriteJsonToDoc(e,medium);
+            await Program.QuickWriteJsonToDoc(e,medium);
         }
 
-        public static void CheckIfIdentifierExists(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        public static async Task CheckIfIdentifierExists(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Get the project file and check if the identifier exists.
             PebbleProject pp = new PebbleProject(proj.projectId);
@@ -192,7 +193,7 @@ namespace WebPebble.Services.Projects
                 exists = exists,
                 request_id = e.Request.Query["request_id"]
             };
-            Program.QuickWriteJsonToDoc(e, reply);
+            await Program.QuickWriteJsonToDoc(e, reply);
         }
 
         class CheckIfIdentifierExistsReply
@@ -201,15 +202,15 @@ namespace WebPebble.Services.Projects
             public string request_id;
         }
 
-        public static void OnProjSettingsRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        public static async Task OnProjSettingsRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Hide bandwidth-intensive bits.
             proj.builds = null;
             //Serve the project's data.
-            Program.QuickWriteJsonToDoc(e, proj);
+            await Program.QuickWriteJsonToDoc(e, proj);
         }
 
-        public static void UploadFile(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        public static async Task UploadFile(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Get the file uploaded.
             var f = e.Request.Form.Files["data"];
@@ -217,7 +218,7 @@ namespace WebPebble.Services.Projects
             if(f.Length == 0 || f.OpenReadStream() == null)
             {
                 //No file uploaded.
-                Program.QuickWriteToDoc(e, "No file was uploaded.", "text/plain", 400);
+                await Program.QuickWriteToDoc(e, "No file was uploaded.", "text/plain", 400);
                 return;
             }
             //Get the asset params
@@ -238,7 +239,7 @@ namespace WebPebble.Services.Projects
             using (FileStream fs = new FileStream(Program.config.user_project_dir + proj.projectId + "/" + filename, FileMode.CreateNew))
                 f.OpenReadStream().CopyTo(fs);
             //Create a response.
-            Program.QuickWriteJsonToDoc(e, asset);
+            await Program.QuickWriteJsonToDoc(e, asset);
         }
 
         /*public static void DeleteUploadedFile(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)

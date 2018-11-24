@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace WebPebble.Services.Me
 {
     public static class MeService
     {
-        public static void PollUserData(Microsoft.AspNetCore.Http.HttpContext e, Oauth.E_RPWS_User user, Entities.WebPebbleProject non_proj)
+        public static async Task PollUserData(Microsoft.AspNetCore.Http.HttpContext e, Oauth.E_RPWS_User user, Entities.WebPebbleProject non_proj)
         {
             //Write out user settings and projects
             OutputData output = new OutputData();
@@ -36,7 +37,7 @@ namespace WebPebble.Services.Me
             };
 
             //Write this
-            Program.QuickWriteJsonToDoc(e, output);
+            await Program.QuickWriteJsonToDoc(e, output);
         }
 
         class OutputData

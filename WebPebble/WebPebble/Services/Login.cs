@@ -4,12 +4,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace WebPebble.Services
 {
     public static class LoginService
     {
-        public static void BeginLogin(Microsoft.AspNetCore.Http.HttpContext e, Oauth.E_RPWS_User user, Entities.WebPebbleProject non_proj)
+        public static async Task BeginLogin(Microsoft.AspNetCore.Http.HttpContext e, Oauth.E_RPWS_User user, Entities.WebPebbleProject non_proj)
         {
             //Redirect the user to the RPWS oauth screen.
             string returnUri = "https://api.webpebble.get-rpws.com/complete_login";
@@ -20,10 +21,10 @@ namespace WebPebble.Services
 
             string redir = $"https://blue.api.get-rpws.com/v1/oauth2/?returnuri={System.Web.HttpUtility.UrlEncode(returnUri)}";
             e.Response.Headers.Add("Location", redir);
-            Program.QuickWriteToDoc(e, $"You should've been redirected to {redir}.", "text/html", 302);
+            await Program.QuickWriteToDoc(e, $"You should've been redirected to {redir}.", "text/html", 302);
         }
 
-        public static void FinishLogin(Microsoft.AspNetCore.Http.HttpContext e, Oauth.E_RPWS_User user, Entities.WebPebbleProject non_proj)
+        public static async Task FinishLogin(Microsoft.AspNetCore.Http.HttpContext e, Oauth.E_RPWS_User user, Entities.WebPebbleProject non_proj)
         {
             //Called when the user finishes the RPWS oauth. Get the token from the endpoint.
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(e.Request.Query["endpoint"]);
@@ -57,7 +58,7 @@ namespace WebPebble.Services
             //Redirect to the redirect path.
             string redir = e.Request.Query["return"];
             e.Response.Headers.Add("Location", redir);
-            Program.QuickWriteToDoc(e, $"You should've been redirected to {redir}.", "text/html", 302);
+            await Program.QuickWriteToDoc(e, $"You should've been redirected to {redir}.", "text/html", 302);
         }
 
         class RpwsPayload

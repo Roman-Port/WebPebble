@@ -6,12 +6,13 @@ using WebPebble.Entities.PebbleProject;
 using WebPebble.Oauth;
 using System.Linq;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace WebPebble.Services.Projects
 {
     public static class Compile
     {
-        public static void DoCompile(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        public static async Task DoCompile(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Compile this Pebble project.
             PebbleProject pp = new PebbleProject(proj.projectId);
@@ -45,7 +46,7 @@ namespace WebPebble.Services.Projects
                 //Huh. Weird.
             }
             //Create a reply.
-            Program.QuickWriteJsonToDoc(e, b);
+            await Program.QuickWriteJsonToDoc(e, b);
         }
     }
 }

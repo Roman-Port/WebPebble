@@ -4,12 +4,13 @@ using System.Text;
 using WebPebble.Entities;
 using WebPebble.Oauth;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace WebPebble.Services.Projects
 {
     class History
     {
-        public static void OnRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        public static async Task OnRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Check if we're listing all, or one build.
             string[] split = e.Request.Path.ToString().Split('/');
@@ -41,7 +42,7 @@ namespace WebPebble.Services.Projects
                     builds[i] = ob;
                 }
                 Array.Reverse(builds);
-                Program.QuickWriteJsonToDoc(e, builds);
+                await Program.QuickWriteJsonToDoc(e, builds);
             } else
             {
                 //Show just one item. Check if it exists.
@@ -50,11 +51,11 @@ namespace WebPebble.Services.Projects
                 if(build == null)
                 {
                     //Not found.
-                    Program.QuickWriteToDoc(e, "Not Found", "text/plain",404);
+                    await Program.QuickWriteToDoc(e, "Not Found", "text/plain",404);
                 } else
                 {
                     //Write this one file.
-                    Program.QuickWriteJsonToDoc(e, build);
+                    await Program.QuickWriteJsonToDoc(e, build);
                 }
             }
             

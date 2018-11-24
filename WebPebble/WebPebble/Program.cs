@@ -13,10 +13,11 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 using WebPebble.WebSockets;
+using System.Net.WebSockets;
 
 namespace WebPebble
 {
-    public delegate void HttpServiceDelegate(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject project);
+    public delegate Task HttpServiceDelegate(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject project);
 
     public struct HttpService
     {
@@ -73,7 +74,7 @@ namespace WebPebble
             MainAsync().GetAwaiter().GetResult();
         }
 
-        public static Task OnHttpRequest(Microsoft.AspNetCore.Http.HttpContext e)
+        public static async Task OnHttpRequest(Microsoft.AspNetCore.Http.HttpContext e)
         {
             /* Main code happens here! */
             e.Response.Headers.Add("Access-Control-Allow-Origin", "https://webpebble.get-rpws.com");
@@ -87,44 +88,19 @@ namespace WebPebble
                 }
             }
 
+            //If this is a websocket, switch to that.
+            if (e.WebSockets.IsWebSocketRequest)
+            {
+                WebSocket webSocket = await e.WebSockets.AcceptWebSocketAsync();
+            }
+
             //Manage CORS by responding with the preflight header request.
             if (e.Request.Method.ToLower() == "options")
             {
                 e.Response.Headers.Add("Access-Control-Allow-Headers", "*");
                 e.Response.Headers.Add("Access-Control-Allow-Methods", "GET, PUT, POST");
-                QuickWriteToDoc(e, "Preflight OK");
-                return null;
-            }
-
-            //Check to see if this is a request for static files.
-            if(e.Request.Path.ToString().StartsWith("/static/"))
-            {
-                //Serve from the "static" directory.
-                string name = config.static_files_dir;
-                //Now, add the requested path.
-                name += e.Request.Path.ToString().Substring("/static/".Length);
-                //***I already know the secruity implications of this, I'll fix it before production***
-                if (File.Exists(name))
-                {
-                    string mime = "text/plain";
-                    string ext = name.Split('.')[name.Split('.').Length - 1];
-                    switch(ext)
-                    {
-                        case "css":
-                            mime = "text/css";
-                            break;
-                        case "js":
-                            mime = "application/javascript";
-                            break;
-                        case "png":
-                            mime = "image/png";
-                            break;
-                    }
-                    QuickWriteToDoc(e, File.ReadAllText(name), mime);
-                }
-                else
-                    QuickWriteToDoc(e, "Not Found", "text/plain", 404);
-                return null;
+                await QuickWriteToDoc(e, "Preflight OK");
+                return;
             }
 
             //Try to find a service to handle the request. Ew.
@@ -202,8 +178,8 @@ namespace WebPebble
                 //Check if you must be logged in to do this.
                 if (service.requiresAuth && user == null)
                 {
-                    WriteErrorText(e, "You are not logged in.", ErrorHttpCode.NotLoggedIn, 400);
-                    return null;
+                    await WriteErrorText(e, "You are not logged in.", ErrorHttpCode.NotLoggedIn, 400);
+                    return;
                 }
                 //Get the project if there is one.
                 WebPebbleProject proj = null;
@@ -222,7 +198,7 @@ namespace WebPebble
                     } else
                     {
                         //Malformed URL path.
-                        QuickWriteToDoc(e, "Malformed URL path.");
+                        await QuickWriteToDoc(e, "Malformed URL path.");
                     }
                     
                 }
@@ -232,22 +208,24 @@ namespace WebPebble
                     if(service.inProject == (proj==null))
                     {
                         //Requires a project, but none was found.
-                        WriteErrorText(e, "You don't have access to this project, or it didn't exist.", ErrorHttpCode.BadOwnership, 400);
-                        return null;
+                        await WriteErrorText(e, "You don't have access to this project, or it didn't exist.", ErrorHttpCode.BadOwnership, 400);
+                        return;
                     }
-                    service.code(e, user, proj);
+                    await service.code(e, user, proj);
                     
                 } catch (Exception ex)
                 {
                     //Error.
-                    WriteErrorText(e, "error "+ex.Message+" @ "+ex.StackTrace, ErrorHttpCode.Unknown, 500);
+                    await WriteErrorText(e, "error "+ex.Message+" @ "+ex.StackTrace, ErrorHttpCode.Unknown, 500);
+                    return;
                 }
             } else
             {
-                WriteErrorText(e, "Service not found.", ErrorHttpCode.ServiceNotFound, 404);
+                await WriteErrorText(e, "Service not found.", ErrorHttpCode.ServiceNotFound, 404);
+                return;
             }
 
-            return null;
+            return;
         }
 
         public static void AddService(bool project, HttpServiceDelegate del, string pathname, bool requiresAuth = true)
@@ -260,7 +238,7 @@ namespace WebPebble
             services.Add(ser);
         }
 
-        public static void WriteErrorText(Microsoft.AspNetCore.Http.HttpContext e,string message, ErrorHttpCode code, int httpCode = 400)
+        public static async Task WriteErrorText(Microsoft.AspNetCore.Http.HttpContext e,string message, ErrorHttpCode code, int httpCode = 400)
         {
             HttpJsonError d = new HttpJsonError
             {
@@ -268,7 +246,7 @@ namespace WebPebble
                 code = code,
                 code_text = code.ToString()
             };
-            QuickWriteJsonToDoc(e, d, httpCode);
+            await QuickWriteJsonToDoc(e, d, httpCode);
         }
 
         public enum ErrorHttpCode
@@ -302,7 +280,7 @@ namespace WebPebble
             WebPebble.WebSockets.ycmd.YcmdProcess.KillAll();
         }
 
-        public static void QuickWriteToDoc(Microsoft.AspNetCore.Http.HttpContext context, string content, string type = "text/html", int code = 200)
+        public static async Task QuickWriteToDoc(Microsoft.AspNetCore.Http.HttpContext context, string content, string type = "text/html", int code = 200)
         {
             try
             {
@@ -314,7 +292,7 @@ namespace WebPebble
                 string html = content;
                 var data = Encoding.UTF8.GetBytes(html);
                 response.ContentLength = data.Length;
-                response.Body.Write(data, 0, data.Length);
+                await response.Body.WriteAsync(data, 0, data.Length);
                 //Console.WriteLine(html);
             } catch
             {
@@ -322,7 +300,7 @@ namespace WebPebble
             }
         }
 
-        public static void QuickWriteBytesToDoc(Microsoft.AspNetCore.Http.HttpContext context, byte[] content, string type = "text/html", int code = 200)
+        public static async Task QuickWriteBytesToDoc(Microsoft.AspNetCore.Http.HttpContext context, byte[] content, string type = "text/html", int code = 200)
         {
             try
             {
@@ -333,7 +311,7 @@ namespace WebPebble
                 //Load the template.
                 var data = content;
                 response.ContentLength = data.Length;
-                response.Body.Write(data, 0, data.Length);
+                await response.Body.WriteAsync(data, 0, data.Length);
                 //Console.WriteLine(html);
             }
             catch
@@ -342,9 +320,9 @@ namespace WebPebble
             }
         }
 
-        public static void QuickWriteJsonToDoc<T>(Microsoft.AspNetCore.Http.HttpContext context, T data, int code = 200)
+        public static async Task QuickWriteJsonToDoc<T>(Microsoft.AspNetCore.Http.HttpContext context, T data, int code = 200)
         {
-            Program.QuickWriteToDoc(context, JsonConvert.SerializeObject(data), "application/json", code);
+            await Program.QuickWriteToDoc(context, JsonConvert.SerializeObject(data), "application/json", code);
         }
 
         public static Task MainAsync()
