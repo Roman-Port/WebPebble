@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace WebPebble.WebSockets
 {
-    public partial class WebPebbleClient : WebSocketBehavior
+    public partial class WebPebbleClient : KestrelWebsocketEmulation
     {
         private void OnYcmdRequest(WebPebbleRequest data)
         {

@@ -91,8 +91,25 @@ namespace WebPebble
             //If this is a websocket, switch to that.
             if (e.WebSockets.IsWebSocketRequest)
             {
-                WebSocket webSocket = await e.WebSockets.AcceptWebSocketAsync();
-                KestrelWebsocketEmulation kwe = await KestrelWebsocketEmulation.StartSession(e, webSocket);
+                //Determine the service this is accessing.
+
+                string pathname = e.Request.Path.ToString().ToLower();
+                switch(pathname)
+                {
+                    case "/device":
+                        WebSocket deviceWs = await e.WebSockets.AcceptWebSocketAsync();
+                        CloudPebbleDevice device = new CloudPebbleDevice();
+                        await device.StartSession(e, deviceWs);
+                        return;
+                    case "/webpebble":
+                        WebSocket webpebbleWs = await e.WebSockets.AcceptWebSocketAsync();
+                        WebPebbleClient wc = new WebPebbleClient();
+                        await wc.StartSession(e, webpebbleWs);
+                        return;
+                    default:
+                        //Unknown. Abort.
+                        break;
+                }
             }
 
             //Manage CORS by responding with the preflight header request.

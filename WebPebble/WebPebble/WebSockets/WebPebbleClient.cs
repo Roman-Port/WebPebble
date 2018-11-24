@@ -10,7 +10,7 @@ using WebSocketSharp.Server;
 
 namespace WebPebble.WebSockets
 {
-    public partial class WebPebbleClient : WebSocketBehavior
+    public partial class WebPebbleClient : KestrelWebsocketEmulation
     {
         //This is the connection from WebPebble. It pretty much just calls 
         public bool authenticated = false;
@@ -18,10 +18,10 @@ namespace WebPebble.WebSockets
 
         public WebSocketPair pair;
 
-        protected override void OnMessage(MessageEventArgs e)
+        public override void OnMessage(string content)
         {
             //Read the JSON.
-            WebPebbleRequest request = JsonConvert.DeserializeObject<WebPebbleRequest>(e.Data);
+            WebPebbleRequest request = JsonConvert.DeserializeObject<WebPebbleRequest>(content);
             //If this isn't an auth request, ignore.
             if (!authenticated && request.type != WebPebbleRequestType.Auth)
                 return;
@@ -43,17 +43,7 @@ namespace WebPebble.WebSockets
             }
         }
 
-        protected override void OnError(WebSocketSharp.ErrorEventArgs e)
-        {
-            base.OnError(e);
-        }
-
-        protected override void OnOpen()
-        {
-            base.OnOpen();
-        }
-
-        protected override void OnClose(CloseEventArgs e)
+        public override void OnClose()
         {
             //Send disconnect signal to each client.
             try

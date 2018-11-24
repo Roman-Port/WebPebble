@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace WebPebble.WebSockets
 {
-    public partial class CloudPebbleDevice : WebSocketBehavior
+    public partial class CloudPebbleDevice : KestrelWebsocketEmulation
     {
         public bool authenticated = false;
         public string user_uuid = "";
@@ -16,9 +16,9 @@ namespace WebPebble.WebSockets
 
         public WebSocketPair pair;
 
-        protected override void OnMessage(MessageEventArgs e)
+        public override void OnBinaryMessage(byte[] content)
         {
-            MemoryStream ms = new MemoryStream(e.RawData);
+            MemoryStream ms = new MemoryStream(content);
             CloudPebbleCode code = GetCode(ms);
             //Reject all but signin if not authorized.
             if (code != CloudPebbleCode.AUTH_TOKEN && !authenticated)
@@ -28,7 +28,7 @@ namespace WebPebble.WebSockets
             foreach(var inter in inter_list)
             {
                 //Call the callback.
-                AfterInterruptAction state = inter.callback(e.RawData, inter.d);
+                AfterInterruptAction state = inter.callback(content, inter.d);
                 if (state == AfterInterruptAction.PreventDefault_EndInterrupt || state == AfterInterruptAction.NoPreventDefault_EndInterrupt)
                 {
                     //Remove this from the interrupts list.
@@ -39,7 +39,7 @@ namespace WebPebble.WebSockets
                     return;
             }
             //Decide what to do based on this code.
-            Console.WriteLine("Got message of type " + code.ToString() + " with length " + e.RawData.Length.ToString() + ".");
+            Console.WriteLine("Got message of type " + code.ToString() + " with length " + content.Length.ToString() + ".");
             switch (code)
             {
                 case CloudPebbleCode.AUTH_TOKEN:
@@ -61,17 +61,7 @@ namespace WebPebble.WebSockets
             }
         }
 
-        protected override void OnError(WebSocketSharp.ErrorEventArgs e)
-        {
-            base.OnError(e);
-        }
-
-        protected override void OnOpen()
-        {
-            base.OnOpen();
-        }
-
-        protected override void OnClose(CloseEventArgs e)
+        public override void OnClose()
         {
             //Send disconnect signal to each client.
             try

@@ -19,7 +19,7 @@ namespace WebPebble.WebSockets
 
         public static void StartServer()
         {
-            Console.WriteLine("Starting WebSocket server...");
+            /*Console.WriteLine("Starting WebSocket server...");
             wssv = new WebSocketSharp.Server.WebSocketServer(IPAddress.Any, 43187, true);
             wssv.ReuseAddress = true;
 
@@ -33,7 +33,7 @@ namespace WebPebble.WebSockets
             wssv.AddWebSocketService<CloudPebbleDevice>("/device");
             wssv.AddWebSocketService<WebPebbleClient>("/webpebble");
             wssv.Start();
-            Console.WriteLine("Started WebSocket server.");
+            Console.WriteLine("Started WebSocket server.");*/
         }
     }
 
