@@ -49,7 +49,7 @@ namespace WebPebble.Services
 
             e.Response.Cookies.Append("access-token", token, new Microsoft.AspNetCore.Http.CookieOptions
             {
-                Expires = new DateTimeOffset(DateTime.UtcNow, new TimeSpan(365 * 10, 0, 0, 0, 0)),
+                Expires = new DateTimeOffset(DateTime.UtcNow.AddYears(8), TimeSpan.Zero),
                 IsEssential = true,
                 Path = "/"
             });
