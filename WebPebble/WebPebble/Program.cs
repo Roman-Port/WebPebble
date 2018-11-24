@@ -268,8 +268,13 @@ namespace WebPebble
         public void Configure(IApplicationBuilder app, IApplicationLifetime applicationLifetime)
         {
             applicationLifetime.ApplicationStopping.Register(OnShutdown);
+            var webSocketOptions = new WebSocketOptions()
+            {
+                KeepAliveInterval = TimeSpan.FromSeconds(120),
+                ReceiveBufferSize = 4 * 1024
+            };
+            app.UseWebSockets(webSocketOptions);
             app.Run(OnHttpRequest);
-
         }
 
         private void OnShutdown()

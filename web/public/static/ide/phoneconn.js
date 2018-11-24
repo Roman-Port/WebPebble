@@ -1,6 +1,6 @@
 ﻿var phoneconn = {};
 
-phoneconn.url = "wss://api.webpebble.get-rpws.com:43187/webpebble";
+phoneconn.url = "wss://api.webpebble.get-rpws.com/webpebble";
 phoneconn.ws = null;
 phoneconn.currentId = 1;
 phoneconn.callbacks = {};
