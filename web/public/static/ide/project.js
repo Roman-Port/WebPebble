@@ -17,7 +17,7 @@ project.serverRequest = function (url, run_callback, fail_callback, isJson, type
 
     if (fail_callback == null) {
         fail_callback = function () {
-            project.showDialog("Error", "Server error. Please try again later.", ["Close"], [function () { }]);
+            project.showDialog("Error", "Failed to connect. Please check your internet and try again later.", ["Close"], [function () { }]);
         }
     }
     var xmlhttp = new XMLHttpRequest();
@@ -36,30 +36,25 @@ project.serverRequest = function (url, run_callback, fail_callback, isJson, type
                     fail_callback("JSON Parse Error", true);
                     return;
                 }
-                if (JSON_Data["maintenance"] != null) {
-                    if (JSON_Data["maintenance"] == true) {
-                        //Stop and show maintance mode message.
-                        DisplayApiMaintenanceMsg(JSON_Data["maintenance_msg"]);
-                    }
-
-                }
-                if (JSON_Data.error != null) {
-                    //Server-side error!
-                    fail_callback(JSON_Data.error + " - Check Console", true);
-                    console.log("A server error (" + JSON_Data.error + ") occurred and data could not be grabbed. Error: " + JSON_Data.raw_error);
-                    return;
-                } else {
-                    //Aye okay here. Call the callback.
-                    run_callback(JSON_Data);
-                    return;
-                }
             } else {
                 //Just return it
                 run_callback(this.responseText);
             }
         } else if (this.readyState == 4) {
-            //Got an invalid request.
-            fail_callback("HTTP Error " + this.status, true);
+            //Parse the response and display the error
+            var errorData = JSON.parse(this.responseText);
+            if(errorData.code == 0) {
+                //This user isn't logged in. Redirect to the login screen.
+                window.location = "/login";
+            }
+            else if(errorData.code == 1) {
+                //Not found or bad owner.
+                project.showDialog("Error", "This project couldn't be found, or you don't own it.", ["Quit"], [function () { window.location = "/"; }]);
+            }
+            else {
+                //Unknown error.
+                project.showDialog("Unknown Error", errorData.message, ["Reload"], [function () { window.reload; }]);
+            }
         }
     }
 

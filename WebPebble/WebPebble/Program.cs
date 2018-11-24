@@ -74,11 +74,12 @@ namespace WebPebble
         public static Task OnHttpRequest(Microsoft.AspNetCore.Http.HttpContext e)
         {
             /* Main code happens here! */
+            e.Response.Headers.Add("Access-Control-Allow-Origin", "https://webpebble.get-rpws.com");
 
             //Manage CORS by responding with the preflight header request.
-            if(e.Request.Method.ToLower() == "options")
+            if (e.Request.Method.ToLower() == "options")
             {
-                e.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+                e.Response.Headers.Add("Access-Control-Allow-Origin", "https://webpebble.get-rpws.com");
                 e.Response.Headers.Add("Access-Control-Allow-Headers", "*");
                 e.Response.Headers.Add("Access-Control-Allow-Methods", "GET, PUT, POST");
                 QuickWriteToDoc(e, "Preflight OK");
