@@ -48,8 +48,7 @@ namespace WebPebble
             database = new LiteDatabase(config.database_file);
             //Add services that are out of the project.
             AddService(false, Services.CreateProject.CreateProject.OnRequest, "/create", true);
-            AddService(false, Services.QuickLogin.Serve, "/token/", false);
-            AddService(false, Services.ProjectList.Serve, "/myprojects", true);
+            AddService(false, Services.Me.MeService.PollUserData, "/users/@me/", true);
 
             AddService(false, Services.LoginService.BeginLogin, "/login", false);
             AddService(false, Services.LoginService.FinishLogin, "/complete_login", false);
@@ -180,6 +179,25 @@ namespace WebPebble
                 if(e.Request.Headers.ContainsKey("Authorization") && user == null)
                 {
                     user = Oauth.RpwsAuth.AuthenticateUser(e.Request.Headers["Authorization"]);
+                }
+                //If the user was authorized, get the WebPebble data.
+                if(user != null)
+                {
+                    //Get the collection for user data
+                    var userDataCollection = database.GetCollection<WebPebbleUserData>("users");
+                    //Try to find this user
+                    WebPebbleUserData data = userDataCollection.FindOne(x => x.rpwsId == user.uuid);
+                    if (data == null)
+                    {
+                        //We'll need to create data.
+                        data = new WebPebbleUserData()
+                        {
+                            rpwsId = user.uuid,
+                            theme = "dark_visualstudio.css"
+                        };
+                        data._id = userDataCollection.Insert(data);
+                    }
+                    user.webpebble_data = data;
                 }
                 //Check if you must be logged in to do this.
                 if (service.requiresAuth && user == null)

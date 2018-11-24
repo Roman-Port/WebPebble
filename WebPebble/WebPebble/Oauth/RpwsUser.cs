@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using WebPebble.Entities;
 
 namespace WebPebble.Oauth
 {
@@ -17,5 +18,7 @@ namespace WebPebble.Oauth
         public bool isAppDev { get; set; }
         public string appDevName { get; set; }
         public string name { get; set; }
+
+        public WebPebbleUserData webpebble_data; 
     }
 }

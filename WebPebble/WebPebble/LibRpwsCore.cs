@@ -40,7 +40,6 @@ namespace LibRpws
                 {
                     reply = reader.ReadToEnd();
                 }
-                Console.WriteLine(reply);
                 throw new Exception("Remote server returned an error.");
             }
         }
