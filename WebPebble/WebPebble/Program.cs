@@ -50,6 +50,9 @@ namespace WebPebble
             AddService(false, Services.CreateProject.CreateProject.OnRequest, "/create", true);
             AddService(false, Services.QuickLogin.Serve, "/token/", false);
             AddService(false, Services.ProjectList.Serve, "/myprojects", true);
+
+            AddService(false, Services.LoginService.BeginLogin, "/login", true);
+            AddService(false, Services.LoginService.FinishLogin, "/complete_login", true);
             //Add services that are in the project.
             AddService(true, Services.Projects.FileManager.OnRequest, "/media/", true);
             AddService(true, Services.Projects.FileManager.UploadFile, "/upload_media/", true);
