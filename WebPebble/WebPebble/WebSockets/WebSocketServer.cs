@@ -20,7 +20,7 @@ namespace WebPebble.WebSockets
         public static void StartServer()
         {
             Console.WriteLine("Starting WebSocket server...");
-            wssv = new WebSocketSharp.Server.WebSocketServer(IPAddress.Any, 43187, false);
+            wssv = new WebSocketSharp.Server.WebSocketServer(IPAddress.Any, 43187, true);
             wssv.ReuseAddress = true;
 
             //SSL
