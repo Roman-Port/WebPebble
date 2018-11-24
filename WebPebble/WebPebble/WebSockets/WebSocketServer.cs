@@ -26,7 +26,8 @@ namespace WebPebble.WebSockets
             //SSL
             wssv.SslConfiguration.ServerCertificate = new System.Security.Cryptography.X509Certificates.X509Certificate2(Program.config.ssl_cert);
             wssv.SslConfiguration.ClientCertificateRequired = true;
-            wssv.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+            System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+            wssv.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls;
             //End SSL
 
             wssv.AddWebSocketService<CloudPebbleDevice>("/device");
