@@ -71,7 +71,7 @@ project.serverRequest = function (url, run_callback, fail_callback, isJson, type
     }
     //Todo: Add timeout error.
     xmlhttp.open(type, url, true);
-    xmlhttp.setRequestHeader("Authorization", Cookies.get('access-token'));
+    xmlhttp.withCredentials = true;
     xmlhttp.send(body);
 };
 

@@ -79,6 +79,15 @@ namespace WebPebble
             /* Main code happens here! */
             e.Response.Headers.Add("Access-Control-Allow-Origin", "https://webpebble.get-rpws.com");
 
+            if(e.Request.Headers.ContainsKey("origin"))
+            {
+                if(e.Request.Headers["origin"] == "https://webpebble.get-rpws.com")
+                {
+                    //Allow creds
+                    e.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+                }
+            }
+
             //Manage CORS by responding with the preflight header request.
             if (e.Request.Method.ToLower() == "options")
             {
