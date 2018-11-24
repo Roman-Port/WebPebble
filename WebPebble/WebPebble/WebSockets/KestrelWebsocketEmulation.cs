@@ -18,10 +18,9 @@ namespace WebPebble.WebSockets
         public async Task StartSession(HttpContext context, WebSocket ws)
         {
             //Generate our class and start listening.
-            KestrelWebsocketEmulation emu = new KestrelWebsocketEmulation();
-            emu.ws = ws;
+            this.ws = ws;
 
-            await emu.WaitForMessage();
+            await WaitForMessage();
         }
 
         public async Task WaitForMessage()
