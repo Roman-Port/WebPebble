@@ -36,6 +36,8 @@ project.serverRequest = function (url, run_callback, fail_callback, isJson, type
                     fail_callback("JSON Parse Error", true);
                     return;
                 }
+                //Return it
+                run_callback(JSON_Data);
             } else {
                 //Just return it
                 run_callback(this.responseText);

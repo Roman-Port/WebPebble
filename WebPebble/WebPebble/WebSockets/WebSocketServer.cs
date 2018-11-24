@@ -22,6 +22,13 @@ namespace WebPebble.WebSockets
             Console.WriteLine("Starting WebSocket server...");
             wssv = new WebSocketSharp.Server.WebSocketServer(IPAddress.Any, 43187, false);
             wssv.ReuseAddress = true;
+
+            //SSL
+            wssv.SslConfiguration.ServerCertificate = new System.Security.Cryptography.X509Certificates.X509Certificate2(Program.config.ssl_cert);
+            wssv.SslConfiguration.ClientCertificateRequired = true;
+            wssv.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+            //End SSL
+
             wssv.AddWebSocketService<CloudPebbleDevice>("/device");
             wssv.AddWebSocketService<WebPebbleClient>("/webpebble");
             wssv.Start();
