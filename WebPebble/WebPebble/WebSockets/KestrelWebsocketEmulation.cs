@@ -59,7 +59,7 @@ namespace WebPebble.WebSockets
         {
             Console.WriteLine("sending " + content);
             byte[] outBuf = Encoding.UTF8.GetBytes(content);
-            ws.SendAsync(new ArraySegment<byte>(outBuf), WebSocketMessageType.Text, false, System.Threading.CancellationToken.None);
+            ws.SendAsync(new ArraySegment<byte>(outBuf), WebSocketMessageType.Text, true, System.Threading.CancellationToken.None);
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace WebPebble.WebSockets
         /// <param name="content"></param>
         public void Send(byte[] content)
         {
-            ws.SendAsync(new ArraySegment<byte>(content), WebSocketMessageType.Binary, false, System.Threading.CancellationToken.None);
+            ws.SendAsync(new ArraySegment<byte>(content), WebSocketMessageType.Binary, true, System.Threading.CancellationToken.None);
         }
 
         //Virtual voids
