@@ -94,8 +94,8 @@ namespace WebPebble.WebSockets
         /* Api */
         private void DoAuth(WebPebbleRequest req)
         {
-            //Get the token that was offered.
-            string token = (string)req.data["token"];
+            //Get the token that was offered. We get this from the HTTP request.
+            string token = http.Request.Cookies["access-token"];
             //Check this against the RPWS server.
             E_RPWS_User user = Oauth.RpwsAuth.AuthenticateUser(token);
             if(user == null)

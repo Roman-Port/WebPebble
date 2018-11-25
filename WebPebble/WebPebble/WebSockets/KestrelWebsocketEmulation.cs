@@ -13,12 +13,14 @@ namespace WebPebble.WebSockets
     public class KestrelWebsocketEmulation
     {
         public WebSocket ws;
+        public HttpContext http;
         private byte[] buf = new byte[4096];
 
         public async Task StartSession(HttpContext context, WebSocket ws)
         {
             //Generate our class and start listening.
             this.ws = ws;
+            this.http = context;
 
             await WaitForMessage();
         }
