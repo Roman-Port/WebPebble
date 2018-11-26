@@ -127,8 +127,7 @@ namespace WebPebble.Services.Projects
                 {
                     //Loop through every file in the data.
                     string root = proj.GetAbsolutePathname();
-                    foreach (string dir in Directory.GetDirectories(root))
-                        ZipEntireDirectory(zip, dir, root.Length);
+                    ZipEntireDirectory(zip, root, root.Length);
                 }
                 //Copy this stream to create base64 data.
                 byte[] buf = new byte[ms.Length];
