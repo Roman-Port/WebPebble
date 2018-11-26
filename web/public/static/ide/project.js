@@ -176,6 +176,17 @@ project.refreshAppInfo = function (callback) {
     }, null, true);
 };
 
+project.promptDeleteProject = function() {
+    project.showDialog("Delete Project?", "Once you delete a project, there is no going back. Are you sure you would like to delete this project?", ["Delete", "Cancel"], [function() {
+        project.showLoader("Removing Project...");
+        project.serverRequest("delete_project/?c="+project.id, function() {
+            window.location = "/me/";
+        }, function() {
+            project.showDialog("Failed to delete.", [], []);
+        }, true);
+    }, function(){}]);
+};
+
 project.addExistingFileToSidebar = function (d) {
     if (d.type == 0) {
         var name = d.filename.split('/');
