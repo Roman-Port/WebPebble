@@ -20,6 +20,42 @@ function AddProject(img, name, url) {
     return e;
 }
 
+
+function CreateProjBtn() {
+    if (confirm("IMPORTANT! Your project may be wiped at any time, without warning, before the release of WebPebble in late 2018. YOU ARE USING ALPHA SOFTWARE. By creating a project now, you agree that RPWS or WebPebble has NO GUARANTEE OF STORAGE OR WARRAMTY.")) {
+        standard.displayForm("Create Project", [
+            {"title":"Name", "type":"text"},
+            {"title":"Type", "type":"select", "options":[
+                {"title":"Watchapp", "value":"false"},
+                {"title":"Watchface", "value":"true"}
+            ]}
+        ], function(data){
+            standard.showLoader();
+            standard.serverRequest("https://api.webpebble.get-rpws.com/create?title="+encodeURIComponent(data[0])+"&watchface="+encodeURIComponent(data[1]), function(data) {
+                if(data.ok) {
+                    //Redirect here.
+                    window.location = data.data;
+                } else {
+                    //Error.
+                    standard.showDialog("Failed to Create Project", data.data, ["Retry"], [CreateProjBtn])
+                }
+            }, null, true, "GET", null, 2000, function(errorData) {
+                //Known server error. Likely to be logged out.
+                if(errorData.code == 0) {
+                    //This user isn't logged in. 
+                    loggedOutCallback();
+                }
+                else {
+                    //Unknown error.
+                    project.showDialog("Unknown Server Error", errorData.message, ["Reload"], [function () { window.location.reload(); }]);
+                }
+            });
+
+
+        }, function(){});
+    }
+}
+
 accounts.init(function() {
     //Show projects
     for(var i = 0; i<accounts.userData.projects.length; i+=1) {

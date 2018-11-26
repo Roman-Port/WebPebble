@@ -241,13 +241,13 @@
                             CommonJS-style enables you to require() other files; concatenation makes them into a single JS file.
                         </div>
                     </div>
-                    <!-- Buttons -->
-                    <div class="container open_sans container_control">
-                        <div class="med_button" onclick="edit_resource.saveNow();">Download ZIP</div>
-                        <div class="med_button" style="display:none;" id="add_resrc_delete" onclick="filemanager.PromptDeleteResourceFile();">Delete Project</div>
-                    </div>
+                    
                 </div>
-
+                <!-- Buttons -->
+                <div class="container open_sans container_control">
+                    <div class="med_button" onclick="project.zipProject();">Download ZIP</div>
+                    <div class="med_button" onclick="project.promptDeleteProject();">Delete Project</div>
+                </div>
             </div>
         </div>
 

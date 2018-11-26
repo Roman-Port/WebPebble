@@ -187,6 +187,16 @@ project.promptDeleteProject = function() {
     }, function(){}]);
 };
 
+project.zipProject = function() {
+    project.showLoader("Creating ZIP Archive...");
+    project.serverRequest("zip.zip", function(zip) {
+        project.hideDialog();
+        filemanager.DownloadUrl("data:application/zip;base64,"+zip);
+    }, function() {
+        project.showDialog("Failed to create ZIP.", [], []);
+    }, false);
+}
+
 project.addExistingFileToSidebar = function (d) {
     if (d.type == 0) {
         var name = d.filename.split('/');
