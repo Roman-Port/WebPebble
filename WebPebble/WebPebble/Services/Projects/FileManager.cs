@@ -99,6 +99,25 @@ namespace WebPebble.Services.Projects
             }
         }
 
+        public static async Task DeleteProject(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            //Confirm the challenge
+            if (e.Request.Query["c"] != proj.projectId)
+                return;
+
+            //Delete the folder.
+            Directory.Delete(proj.GetAbsolutePathname(), true);
+
+            //Remove records 
+            Program.database.GetCollection<WebPebbleProject>("projects").Delete(proj._id);
+
+            //Respond
+            await Program.QuickWriteJsonToDoc(e, new Dictionary<string, bool>
+            {
+                {"ok", true }
+            });
+        }
+
         public static async Task ZipProjectDownload(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Zip all of the project content and send it to the client encoded in base 64.
@@ -111,13 +130,11 @@ namespace WebPebble.Services.Projects
                     foreach (string dir in Directory.GetDirectories(root))
                         ZipEntireDirectory(zip, dir, root.Length);
                 }
-                //Copy this stream to the network.
+                //Copy this stream to create base64 data.
+                byte[] buf = new byte[ms.Length];
                 ms.Position = 0;
-                var response = e.Response;
-                response.StatusCode = 200;
-                response.ContentType = "text/plain";
-                response.ContentLength = ms.Length;
-                await ms.CopyToAsync(response.Body);
+                ms.Read(buf, 0, buf.Length);
+                await Program.QuickWriteToDoc(e, Convert.ToBase64String(buf), "text/plain", 200);
             }
         }
 
