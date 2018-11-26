@@ -1,0 +1,33 @@
+.project {
+    width:calc((100% / 3) - 3px);
+    display:inline-block;
+    height:150px;
+    position: relative;
+}
+
+.project .p_top {
+    position: absolute;
+    top:5px;
+    left:5px;
+    right:5px;
+    bottom:45px;
+    border-radius: 5px;
+    background-color: #2D2D2D;
+
+    -webkit-box-shadow: 0px 3px 21px 0px rgba(0,0,0,0.38);
+    -moz-box-shadow: 0px 3px 21px 0px rgba(0,0,0,0.38);
+    box-shadow: 0px 3px 21px 0px rgba(0,0,0,0.38);  
+}
+
+.project .p_text {
+    bottom:5px;
+    height:25px;
+    line-height: 25px;
+    font-size:15px;
+    color:white;
+    overflow: hidden;
+    text-align: center;
+    right:0;
+    left:0;
+    position: absolute;
+}

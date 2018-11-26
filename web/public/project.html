@@ -9,7 +9,7 @@
 
     <!-- Main CSS -->
     <link href="/static/ide/style.css" rel="stylesheet" />
-    <link href="/static/ide/themes/dark_visualstudio.css" rel="stylesheet" />
+    <link href="/static/ide/themes/dark_visualstudio.css" rel="stylesheet" id="theme_style" />
 
     <title>WebPebble IDE</title>
 </head>
@@ -18,6 +18,9 @@
     <div class="completion_frame" id="completion_frame">
 
     </div>
+
+    <!-- Fullscreen loader to hide everything while the user's settings load. We need this because the user will choose the theme they use. -->
+    <div class="fullscreen_loader" id="fullscreen_loader"><div class="inf_loader"></div></div>
 
     <!-- Popup window for important messages -->
     <div class="popup_background hide" id="popup_window_bg"></div>
@@ -424,6 +427,7 @@
 
 <script src="/static/ide/tabmanager.js"></script>
 <script src="/static/ide/filemanager.js"></script>
+<script src="/static/ide/user.js"></script>
 <script src="/static/ide/project.js"></script>
 <script src="/static/ide/edit_resource.js"></script>
 <script src="/static/ide/phoneconn.js"></script>

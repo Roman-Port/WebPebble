@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+
+    <!-- Imports -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+
+    <!-- Main CSS -->
+    <link href="/static/ide/style.css" rel="stylesheet" />
+    <link href="/static/ide/themes/dark_visualstudio.css" rel="stylesheet" />
+    <link href="/static/standard/standard.css" rel="stylesheet" />
+
+    <title>WebPebble - Me</title>
+</head>
+<body>
+    <!-- Popup window for important messages -->
+    <div class="popup_background hide" id="popup_window_bg"></div>
+    <div class="popup_window_container hide" id="popup_window">
+        <table style="width: 100%; height:100%;">
+            <tr>
+                <td style="text-align: center; vertical-align: middle;">
+                    <div class="popup_window open_sans">
+                        <div class="popup_window_top" id="popup_title">Save Changes?</div>
+                        <div class="popup_window_content" id="popup_text">Your changes to this file will be lost if they aren't saved.</div>
+                        <div class="popup_window_buttons">
+                            <div class="popup_window_buttons_content" id="popup_btns">
+                                <div>Save</div>
+                                <div>Don't Save</div>
+                                <div>Cancel</div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="header open_sans">
+        <!-- Header content -->
+        <div class="title">WebPebble</div>
+        <!-- Main buttons -->
+        <div class="big_button" onclick="window.location = '/logout';">Log Out</div>
+        <div class="big_button" onclick="window.location = '/me/';">Projects</div>
+        <div class="big_button" onclick="window.location = '/me/settings/';">Settings</div>
+        <div class="big_button" onclick="window.location = '/docs';">Documentation</div>
+    </div>
+
+    <div class="standardContent open_sans">
+        %content%
+    </div>
+   
+</body>
+
+</html>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="/static/standard/standard_core.js"></script>
+<script src="/static/standard/standard_auth.js"></script>
+<script src="/static/me/me.js"></script>

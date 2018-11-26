@@ -66,6 +66,7 @@ namespace WebPebble
             AddService(true, Services.Projects.History.OnRequest, "/build_history/", true);
             AddService(true, Services.Projects.PbwMedia.OnRequest, "/pbw_media/", true);
             AddService(true, Services.Projects.FileManager.CheckIfIdentifierExists, "/check_identifier", true);
+            AddService(true, Services.Projects.FileManager.ZipProjectDownload, "/zip", true);
             //Start the WebSocket server.
             WebSocketServer.StartServer();
             //Start YCMDs.

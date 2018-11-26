@@ -687,3 +687,25 @@ body {
     height:20px;
     margin-bottom:10px;
 }
+
+.fullscreen_loader {
+    position: fixed;
+    background: rgb(45,45,45);
+    background: -moz-linear-gradient(353deg, rgba(45,45,45,1) 0%, rgba(69,69,69,1) 100%);
+    background: -webkit-linear-gradient(353deg, rgba(45,45,45,1) 0%, rgba(69,69,69,1) 100%);
+    background: linear-gradient(353deg, rgba(45,45,45,1) 0%, rgba(69,69,69,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#2d2d2d",endColorstr="#454545",GradientType=1);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+}
+
+.fullscreen_loader .inf_loader {
+    width: 80%;
+    max-width: 600px;
+    margin-top: calc(50vh - 10px);
+    margin-left: auto;
+    margin-right: auto;
+}

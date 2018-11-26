@@ -8,6 +8,10 @@ project.id = window.location.pathname.split('/')[2];
 
 project.serverRequest = function (url, run_callback, fail_callback, isJson, type, body, timeout) {
     url = "https://api.webpebble.get-rpws.com/project/" + project.id + "/" + url;
+    project.anyServerRequest(url, run_callback, fail_callback, isJson, type, body, timeout);
+};
+
+project.anyServerRequest = function (url, run_callback, fail_callback, isJson, type, body, timeout) {
     //This is the main server request function. Please change all other ones to use this.
     if (isJson == null) { isJson = true; }
 
@@ -17,7 +21,7 @@ project.serverRequest = function (url, run_callback, fail_callback, isJson, type
 
     if (fail_callback == null) {
         fail_callback = function () {
-            project.showDialog("Error", "Failed to connect. Please check your internet and try again later.", ["Close"], [function () { }]);
+            project.showDialog("Error", "Failed to connect. Please check your internet and try again later.", ["Retry"], [function () { project.anyServerRequest(url, run_callback, fail_callback, isJson, type, body, timeout);  }]);
         }
     }
     var xmlhttp = new XMLHttpRequest();
@@ -55,7 +59,7 @@ project.serverRequest = function (url, run_callback, fail_callback, isJson, type
             }
             else {
                 //Unknown error.
-                project.showDialog("Unknown Error", errorData.message, ["Reload"], [function () { window.reload; }]);
+                project.showDialog("Unknown Server Error", errorData.message, ["Reload"], [function () { window.location.reload(); }]);
             }
         }
     }
@@ -123,40 +127,45 @@ project.hideDialog = function () {
 }
 
 project.init = function () {
-    //Get assets from server.
-    project.serverRequest("media_list/", function (data) {
-        //Set assets and add tabs.
-        project.assets = {};
-        for (var i = 0; i < data.length; i += 1) {
-            var d = data[i];
-            //Add only source files right now.
-            if (d.type == 0) {
-                project.addExistingFileToSidebar(d);
+    //Get the user info
+    project.anyServerRequest("https://api.webpebble.get-rpws.com/users/@me/", function(userdata) {
+        user.settings = userdata.settings;
+        document.getElementById('theme_style').href = "/static/ide/themes/" + user.settings.theme;
+        //Get assets from server.
+        project.serverRequest("media_list/", function (data) {
+            //Set assets and add tabs.
+            project.assets = {};
+            for (var i = 0; i < data.length; i += 1) {
+                var d = data[i];
+                //Add only source files right now.
+                if (d.type == 0) {
+                    project.addExistingFileToSidebar(d);
+                }
+                if (d.type == 1) {
+                    project.addResourceToSidebar(d);
+                }
             }
-            if (d.type == 1) {
-                project.addResourceToSidebar(d);
-            }
-        }
-        //Fetch project data.
-        project.serverRequest("settings/", function (sett) {
-            project.settings = sett;
-            var n = document.getElementById('project_name');
-            n.innerText = sett.name;
-            n.className = "btn btn_active";
-            //Fetch appinfo.json
-            project.refreshAppInfo(function () {
-                //Log into the websocket.
-                phoneconn.init(function () {
-                    project.started = false;
-                    //Allow the user to use this.
-                    ycmd.subscribe();
-                    project.hideDialog();
+            //Fetch project data.
+            project.serverRequest("settings/", function (sett) {
+                project.settings = sett;
+                var n = document.getElementById('project_name');
+                n.innerText = sett.name;
+                n.className = "btn btn_active";
+                //Fetch appinfo.json
+                project.refreshAppInfo(function () {
+                    //Log into the websocket.
+                    phoneconn.init(function () {
+                        project.started = false;
+                        //Allow the user to use this.
+                        ycmd.subscribe();
+                        project.hideDialog();
+                        document.getElementById('fullscreen_loader').parentNode.removeChild(document.getElementById('fullscreen_loader'));
+                    });
                 });
-            });
-
+            }, null, true);
         }, null, true);
-
-    }, null, true);
+    }, null, true, "GET");
+    
 };
 
 project.refreshAppInfo = function (callback) {

@@ -17,6 +17,16 @@
         "source":"/login",
         "destination":"https://api.webpebble.get-rpws.com/login",
         "type":301
+      },
+      {
+        "source":"/docs",
+        "destination":"https://developer.get-rpws.com",
+        "type":301
+      },
+      {
+        "source":"/logout",
+        "destination":"https://api.webpebble.get-rpws.com/logout",
+        "type":301
       }
     ]
   }
