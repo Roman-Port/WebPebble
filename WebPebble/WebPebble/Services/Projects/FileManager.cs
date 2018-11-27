@@ -159,10 +159,29 @@ namespace WebPebble.Services.Projects
             string filename = e.Request.Query["filename"];
             AssetType type = Enum.Parse<AssetType>(e.Request.Query["major_type"]);
             InnerAssetType inner = Enum.Parse<InnerAssetType>(e.Request.Query["minor_type"]);
+            //Check if we have any templates that match.
+            byte[] templateData = new byte[] { };
+            if(e.Request.Query.ContainsKey("template"))
+            {
+                if(Enum.TryParse<PebbleTemplates>(e.Request.Query["template"].ToString().Replace('.','_'), out PebbleTemplates template))
+                {
+                    string path = $"{Program.config.media_dir}Services/Projects/FileTemplates/{template.ToString().Replace('_', '.')}";
+                    templateData = File.ReadAllBytes(path);
+                } else
+                {
+                    //Invalid template
+                    throw new Exception("Invalid template.");
+                }
+            }
             //Create
-            var file = proj.CreateSafeAsset(filename, type, inner, new byte[] { });
+            var file = proj.CreateSafeAsset(filename, type, inner, templateData);
             //Respond with JSON string.
             await Program.QuickWriteJsonToDoc(e, file);
+        }
+
+        enum PebbleTemplates
+        {
+            pkjs_js
         }
 
         public static async Task AppInfoJson(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)

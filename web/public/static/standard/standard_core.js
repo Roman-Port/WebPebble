@@ -10,7 +10,7 @@ standard.serverRequest = function (url, run_callback, fail_callback, isJson, typ
 
     if (fail_callback == null) {
         fail_callback = function () {
-            project.showDialog("Error", "Failed to connect. Please check your internet and try again later.", ["Retry"], [function () { project.anyServerRequest(url, run_callback, fail_callback, isJson, type, body, timeout);  }]);
+            standard.showDialog("Error", "Failed to connect. Please check your internet and try again later.", ["Retry"], [function () { standard.serverRequest(url, run_callback, fail_callback, isJson, type, body, timeout);  }]);
         }
     }
     var xmlhttp = new XMLHttpRequest();
@@ -60,7 +60,7 @@ standard.serverRequest = function (url, run_callback, fail_callback, isJson, typ
 };
 
 standard.showLoader = function (title) {
-    project.showDialog(title, '<div class="inf_loader"></div>', [], [], null, false);
+    standard.showDialog(title, '<div class="inf_loader"></div>', [], [], null, false);
 };
 
 standard.showDialog = function (title, text, buttonTextArray, buttonCallbackArray, data, treatAsDom) {
@@ -88,7 +88,7 @@ standard.showDialog = function (title, text, buttonTextArray, buttonCallbackArra
         e.x_callback_data = data;
         e.addEventListener('click', function () {
             //Hide
-            project.hideDialog();
+            standard.hideDialog();
             //Call
             this.x_callback(this.x_callback_data, this);
         });

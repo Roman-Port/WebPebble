@@ -407,6 +407,14 @@ project.showAddAssetDialog = function () {
     var onTypeChange = function () {
         //Hide elements depending on the type.
         console.log(this.value);
+
+        if(this.value == "js") {
+            document.getElementById('popup_text').childNodes[2].style.display = "none";
+            document.getElementById('popup_text').childNodes[3].style.display = "none";
+        } else {
+            document.getElementById('popup_text').childNodes[2].style.display = "inline-block";
+            document.getElementById('popup_text').childNodes[3].style.display = "inline-block";
+        }
     }
 
     project.displayForm("Add File", [
@@ -419,6 +427,29 @@ project.showAddAssetDialog = function () {
         var name = data[1];
         if (type == "c") {
             var url = "create_empty_media/?filename=" + encodeURIComponent(name) + "&major_type=src&minor_type=c";
+            project.serverRequest(url, function (data) {
+                project.addExistingFileToSidebar(data);
+            }, null, true);
+        }
+        if(type == "js") {
+            //Check to see if we alrady have a js file
+            var keys = Object.keys(filemanager.loadedFiles)
+            for(var i = 0; i<keys.length; i+=1) {
+                var da = filemanager.loadedFiles[keys[i]];
+                if(da.innerType == 4) {
+                    //Jump to this file on the sidebar
+
+                    //Deactive old items
+                    if (sidebarmanager.activeItem != null) {
+                        sidebarmanager.hide_content(sidebarmanager.activeItem);
+                    }
+
+                    //Switch to this
+                    sidebarmanager.show_content(sidebarmanager.items[da.internalId]);
+                }
+            }
+            //Create a new file
+            var url = "create_empty_media/?filename=" + encodeURIComponent("index.js") + "&major_type=src&minor_type=pkjs&template=pkjs.js";
             project.serverRequest(url, function (data) {
                 project.addExistingFileToSidebar(data);
             }, null, true);

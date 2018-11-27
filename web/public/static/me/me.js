@@ -22,7 +22,7 @@ function AddProject(img, name, url) {
 
 
 function CreateProjBtn() {
-    if (confirm("IMPORTANT! Your project may be wiped at any time, without warning, before the release of WebPebble in late 2018. YOU ARE USING ALPHA SOFTWARE. By creating a project now, you agree that RPWS or WebPebble has NO GUARANTEE OF STORAGE OR WARRAMTY.")) {
+    if (confirm("IMPORTANT! Your project may be wiped at any time, without warning, before the release of WebPebble in late 2018. YOU ARE USING ALPHA SOFTWARE. By creating a project now, you agree that RPWS or WebPebble have NO GUARANTEE OF STORAGE OR WARRANTY.")) {
         standard.displayForm("Create Project", [
             {"title":"Name", "type":"text"},
             {"title":"Type", "type":"select", "options":[
@@ -30,7 +30,7 @@ function CreateProjBtn() {
                 {"title":"Watchface", "value":"true"}
             ]}
         ], function(data){
-            standard.showLoader();
+            standard.showLoader("Creating Project...");
             standard.serverRequest("https://api.webpebble.get-rpws.com/create?title="+encodeURIComponent(data[0])+"&watchface="+encodeURIComponent(data[1]), function(data) {
                 if(data.ok) {
                     //Redirect here.
@@ -49,7 +49,7 @@ function CreateProjBtn() {
                     //Unknown error.
                     project.showDialog("Unknown Server Error", errorData.message, ["Reload"], [function () { window.location.reload(); }]);
                 }
-            });
+            }, true);
 
 
         }, function(){});

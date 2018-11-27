@@ -22,6 +22,9 @@
     <None Update="Services\CreateProject\form_template.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Services\Projects\FileTemplates\pkjs.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Services\Projects\Manage\main_template.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
