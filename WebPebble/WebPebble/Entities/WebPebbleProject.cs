@@ -85,9 +85,14 @@ namespace WebPebble.Entities
             if (filename.StartsWith('.'))
                 throw new Exception("Rejected pathname.");
             //Create a relative pathname now.
-            string relPath = type.ToString() + "/" + inner.ToString() + "/" + filename;
+            string relPath = type.ToString() + "/" + inner.ToString()+"/";
             //Save the file here.
             string absolutePath = Program.config.user_project_dir + projectId + "/"+relPath;
+            //Create directory
+            Directory.CreateDirectory(relPath);
+            //Append filename
+            relPath += filename;
+            absolutePath += filename;
             //Check if it already exists.
             if(File.Exists(absolutePath))
             {
