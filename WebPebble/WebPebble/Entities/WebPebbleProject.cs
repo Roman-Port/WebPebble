@@ -89,7 +89,7 @@ namespace WebPebble.Entities
             //Save the file here.
             string absolutePath = Program.config.user_project_dir + projectId + "/"+relPath;
             //Create directory
-            Directory.CreateDirectory(relPath);
+            Directory.CreateDirectory(absolutePath);
             //Append filename
             relPath += filename;
             absolutePath += filename;
