@@ -79,8 +79,9 @@ namespace WebPebble
             Console.WriteLine("Starting QEMU controller...");
             qemuControllerProcess = Process.Start(new ProcessStartInfo
             {
+                Arguments = config.qemu_controller_command_line,
                 UseShellExecute = true,
-                FileName = config.qemu_controller_comand_line,
+                FileName = "/usr/bin/dotnet",
             });
             //Start
             MainAsync().GetAwaiter().GetResult();
