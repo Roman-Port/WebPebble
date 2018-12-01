@@ -14,6 +14,8 @@ namespace WebPebble
         public string media_dir; //Root of the binary data.
         public string ssl_cert;
 
+        public string qemu_controller_comand_line; //Command to run to begin the QEMU controller.
+
         public string ycmd_binary;
         public string temp_files;
     }

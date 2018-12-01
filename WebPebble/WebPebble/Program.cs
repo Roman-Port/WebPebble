@@ -14,6 +14,7 @@ using System.IO;
 using System.Reflection;
 using WebPebble.WebSockets;
 using System.Net.WebSockets;
+using System.Diagnostics;
 
 namespace WebPebble
 {
@@ -32,6 +33,8 @@ namespace WebPebble
         public static WebPebbleConfig config;
 
         private static List<HttpService> services = new List<HttpService>();
+
+        private static Process qemuControllerProcess;
 
         public static LiteDatabase database;
 
@@ -72,6 +75,14 @@ namespace WebPebble
             WebSocketServer.StartServer();
             //Start YCMDs.
             WebPebble.WebSockets.ycmd.YcmdProcess.StartServer( WebSockets.ycmd.YcmdProcesses.Any, "ycm_extra_conf_sdk3.py");
+            //Start QEMU
+            Console.WriteLine("Starting QEMU controller...");
+            qemuControllerProcess = Process.Start(new ProcessStartInfo
+            {
+                Arguments = config.qemu_controller_comand_line,
+                UseShellExecute = true,
+                FileName = "/usr/bin/dotnet",
+            });
             //Start
             MainAsync().GetAwaiter().GetResult();
         }
@@ -303,6 +314,10 @@ namespace WebPebble
             //WebSockets.WebSocketServer.wssv.Stop();
             //Console.WriteLine("Shutting down WS server...");
             WebPebble.WebSockets.ycmd.YcmdProcess.KillAll();
+
+            //Shut down QEMU process.
+            Console.WriteLine("Shutting down QEMU...");
+            qemuControllerProcess.CloseMainWindow();
         }
 
         public static async Task QuickWriteToDoc(Microsoft.AspNetCore.Http.HttpContext context, string content, string type = "text/html", int code = 200)

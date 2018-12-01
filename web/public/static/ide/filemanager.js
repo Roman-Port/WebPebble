@@ -90,6 +90,10 @@ filemanager.PromptDeleteResourceFile = function () {
 };
 
 filemanager.DownloadUrl = function (url) {
+    //Check if this is legacy from the old days
+    if(url.startsWith('/')) {
+        url = "https://api.webpebble.get-rpws.com"+url;
+    }
     //Open an iframe to download this file.
     var ifg = document.createElement('iframe');
     ifg.src = url;

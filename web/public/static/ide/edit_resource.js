@@ -105,7 +105,7 @@ edit_resource.onSelectExisting = function (context) {
         preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", inner));
     } else {
         //This is some sort of bitmap image.
-        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="' + resrc_url + "image_png/" +'"> </td> </tr> </table>'));
+        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="https://api.webpebble.get-rpws.com' + resrc_url + "image_png/" +'"> </td> </tr> </table>'));
     }
 };
 
@@ -388,7 +388,7 @@ edit_resource.uploadFile = function (type, sub_type, name, callback, failedCallb
     //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
     var form_ele = document.getElementById('add_resrc_uploader');
     var form = jQuery(form_ele);
-    var url = "/project/" + project.id + "/upload_media/?type=" + encodeURIComponent(type) + "&sub_type=" + encodeURIComponent(sub_type) + "&nickname=" + encodeURIComponent(name);
+    var url = "https://api.webpebble.get-rpws.com/project/" + project.id + "/upload_media/?type=" + encodeURIComponent(type) + "&sub_type=" + encodeURIComponent(sub_type) + "&nickname=" + encodeURIComponent(name);
     jQuery.ajax({
         url: url,
         type: "POST",
@@ -403,6 +403,9 @@ edit_resource.uploadFile = function (type, sub_type, name, callback, failedCallb
         },
         error: function () {
             failedCallback();
-        }
+        },
+        xhrFields: {
+            withCredentials: true
+       }
     });
 }
