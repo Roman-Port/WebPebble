@@ -73,7 +73,7 @@ namespace WebPebble.Entities
             a.filename = filename;
             //Save to disk
             if(data != null)
-                File.WriteAllBytes(a.filename, data);
+                File.WriteAllBytes(a.GetAbsolutePath(this.projectId), data);
             //Save
             a.id = id;
             media.Add(a.id, a);
