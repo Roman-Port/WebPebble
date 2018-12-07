@@ -38,7 +38,7 @@ namespace WebPebble.Entities
             };
             wpp._id = collect.Insert(wpp);
             //Now, add the asset.
-            wpp.AddAsset("src/c/main.c", AssetType.src, InnerAssetType.c, "main.c", File.ReadAllBytes(Program.config.media_dir+"Templates/main.c"));
+            wpp.AddAsset("main.c", AssetType.src, InnerAssetType.c, "main.c", File.ReadAllBytes(Program.config.media_dir+"Templates/main.c"));
             //Return the end product.
             return wpp;
         }
@@ -57,6 +57,8 @@ namespace WebPebble.Entities
         
         public WebPebbleProjectAsset AddAsset(string filename, AssetType type, InnerAssetType inner, string nickname, byte[] data)
         {
+            if (filename.Contains("/"))
+                throw new Exception("Filename cannot go deeper than the current directory.");
             WebPebbleProjectAsset a = new WebPebbleProjectAsset();
             a.type = type;
             a.innerType = inner;
