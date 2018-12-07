@@ -244,6 +244,7 @@ namespace WebPebble
                 } catch (Exception ex)
                 {
                     //Error.
+                    Console.WriteLine($"Error! {ex.Message} @ {ex.StackTrace}");
                     await WriteErrorText(e, "error "+ex.Message+" @ "+ex.StackTrace, ErrorHttpCode.Unknown, 500);
                     return;
                 }
