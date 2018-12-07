@@ -170,6 +170,7 @@ namespace WebPebble.Services.Projects
             //Handle object downloading
             if(method == RequestHttpMethod.get)
             {
+                Console.WriteLine("get");
                 //Check if the file has been created yet
                 string path = media.GetAbsolutePath(proj.projectId);
                 if(!File.Exists(path))
@@ -194,6 +195,8 @@ namespace WebPebble.Services.Projects
                 }
                 return;
             }
+            //Unknown.
+            await ThrowError(e, $"Invalid method for requesting media '{media.id}'.", 5);
         } 
 
         private enum FileUploadType
