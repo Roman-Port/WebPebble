@@ -113,6 +113,8 @@ namespace WebPebble.Services.Projects
             RequestHttpMethod method = Program.FindRequestMethod(e);
             //Get the params
             string[] urlParams = Program.GetUrlPathRequestFromInsideProject(e);
+            await Program.QuickWriteJsonToDoc(e,urlParams);
+            return;
             string id = urlParams[0];
             //If the ID is create, pass this request to the creation.
             if(id == "create")
