@@ -68,6 +68,8 @@ namespace WebPebble.Services.Projects
             }
             //Generate a unique ID
             string id = LibRpws.LibRpwsCore.GenerateRandomString(16);
+            if (proj.media == null)
+                proj.media = new Dictionary<string, WebPebbleProjectAsset>();
             while(proj.media.ContainsKey(id))
                 id = LibRpws.LibRpwsCore.GenerateRandomString(16);
             //Create the object to save to disk.
