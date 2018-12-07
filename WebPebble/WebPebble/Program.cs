@@ -87,6 +87,7 @@ namespace WebPebble
         {
             /* Main code happens here! */
             e.Response.Headers.Add("Access-Control-Allow-Origin", "https://webpebble.get-rpws.com");
+            e.Response.Headers.Add("Server", "WebPebble API - Version 12/7/18a");
 
             if(e.Request.Headers.ContainsKey("origin"))
             {
