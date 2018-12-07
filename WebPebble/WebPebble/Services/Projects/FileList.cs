@@ -11,7 +11,7 @@ namespace WebPebble.Services.Projects
     {
         public static async Task ListFiles(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
-            await Program.QuickWriteJsonToDoc(e, proj.assets);
+            await Program.QuickWriteJsonToDoc(e, proj.media.Values);
         }
     }
 }

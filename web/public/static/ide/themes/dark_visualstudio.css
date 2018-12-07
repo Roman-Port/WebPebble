@@ -3,7 +3,15 @@
 }
 
 .header .big_button {
-    background-color: unset;
+    background-color: #353535;
+}
+
+.playbtn_more_frame {
+    background-color: #353535;
+}
+
+.playbtn_more_frame_triangle {
+    border-bottom: 10px solid #353535;
 }
 
 .header .line {

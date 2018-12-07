@@ -26,7 +26,7 @@ namespace WebPebble.WebSockets
             if (proj == null)
                 return;
             //Now, find the asset inside the project.
-            var asset = proj.assets.Find(x => x.id == assetId);
+            var asset = proj.media[assetId];
             if (asset == null)
                 return;
             //Now that we have the pathname, prompt the proxy.

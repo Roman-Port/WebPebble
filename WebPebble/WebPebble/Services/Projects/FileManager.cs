@@ -13,92 +13,6 @@ namespace WebPebble.Services.Projects
 {
     public static class FileManager
     {
-        public static async Task OnRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
-        {
-            string[] split = e.Request.Path.ToString().Split('/');
-            string fileId = split[4];
-            string action = split[5];
-            //Get the Pebble project
-            PebbleProject pp = new PebbleProject(proj.projectId);
-            //Get the asset.
-            var asset = proj.assets.Find(x => x.id == fileId);
-            if(asset == null)
-            {
-                await Program.QuickWriteToDoc(e, "Not Found", "text/plain", 500);
-                return;
-            }
-            string fileName = asset.filename;
-            //Console.WriteLine(fileName);
-            if (action == "get")
-            {
-                string mimeType = split[6].Replace('_', '/');
-                //Fetch the file
-                //Serialize this, if json.
-                if(mimeType == "application/json")
-                {
-                    //Use JSON.
-                    FileReply reply = new FileReply();
-                    reply.type = "c_cpp";
-                    string content = pp.ReadFile(fileName);
-                    string proto = "http";
-                    if (e.Request.IsHttps)
-                        proto = "https";
-                    reply.saveUrl = proto + "://" + e.Request.Host + "/project/" + proj.projectId + "/media/" + fileId + "/put/";
-                    reply.content = content;
-                    reply.id = fileId;
-                    //Respond with JSON string.
-                    await Program.QuickWriteJsonToDoc(e, reply);
-                } else
-                {
-                    //Write the contents of the file only.
-                    byte[] content = pp.ReadFileBytes(fileName);
-                    await Program.QuickWriteBytesToDoc(e, content, mimeType);
-                }
-
-            } else if(action == "put")
-            {
-                //Get the bytes.
-                byte[] data = new byte[(int)e.Request.ContentLength];
-                e.Request.Body.Read(data, 0, data.Length);
-                //Save
-                pp.WriteFile(fileName, data);
-                await Program.QuickWriteToDoc(e, "OK");
-            }
-            else if (action == "rename")
-            {
-                //We are just renaming an existing one.
-                asset.nickname = e.Request.Query["name"];
-                proj.SaveProject();
-                await Program.QuickWriteToDoc(e, "OK");
-            }
-            else if (action == "delete")
-            {
-                //Get the challenge bytes.
-                byte[] data = new byte[(int)e.Request.ContentLength];
-                e.Request.Body.Read(data, 0, data.Length);
-                //Compare challenge.
-                if(e.Request.Query["challenge"] == Encoding.UTF8.GetString(data))
-                {
-                    //Nuke the files
-                    File.Delete(pp.pathnane + fileName);
-                    //Nuke in the assets of the project.
-                    proj.assets.Remove(asset);
-                    proj.SaveProject();
-                    await Program.QuickWriteToDoc(e, "OK");
-                } else
-                {
-                    //Verification failed.
-                    throw new Exception("Challenge failed.");
-                }
-                
-            }
-            else
-            {
-                await Program.QuickWriteToDoc(e, "Invalid action get/put.", "text/html", 500);
-                
-            }
-        }
-
         public static async Task DeleteProject(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Confirm the challenge
@@ -118,70 +32,145 @@ namespace WebPebble.Services.Projects
             });
         }
 
-        public static async Task ZipProjectDownload(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        private static async Task ThrowError(Microsoft.AspNetCore.Http.HttpContext e, string error, int errorCode, int httpErrorCode = 500)
         {
-            //Zip all of the project content and send it to the client encoded in base 64.
-            using(MemoryStream ms = new MemoryStream())
+            await Program.QuickWriteJsonToDoc(e, new ErrorReply
             {
-                using(ZipArchive zip = new ZipArchive(ms, ZipArchiveMode.Create, true))
-                {
-                    //Loop through every file in the data.
-                    string root = proj.GetAbsolutePathname();
-                    ZipEntireDirectory(zip, root, root.Length);
-                }
-                //Copy this stream to create base64 data.
-                byte[] buf = new byte[ms.Length];
-                ms.Position = 0;
-                ms.Read(buf, 0, buf.Length);
-                await Program.QuickWriteToDoc(e, Convert.ToBase64String(buf), "text/plain", 200);
+                ok = false,
+                message = error,
+                code = errorCode
+            }, httpErrorCode);
+        }
+
+        private class ErrorReply
+        {
+            public bool ok;
+            public string message;
+            public int code;
+        }
+
+        public static async Task OnMediaCreateRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            //Validate that the request method is indeed POST.
+            RequestHttpMethod method = Program.FindRequestMethod(e);
+            if(method != RequestHttpMethod.post)
+            {
+                await ThrowError(e, "Unknown method.", 2);
+                return;
             }
-        }
-
-        private static void ZipEntireDirectory(ZipArchive zip, string directory, int subStr)
-        {
-            //Add all files in this path first.
-            foreach (string file in Directory.GetFiles(directory))
-                ZipEntireFile(zip, file, subStr);
-            //Add all directories
-            foreach (string dir in Directory.GetDirectories(directory))
-                ZipEntireDirectory(zip, dir, subStr);
-        }
-
-        private static void ZipEntireFile(ZipArchive zip, string path, int subStr)
-        {
-            //Add this as an entry
-            zip.CreateEntryFromFile(path, path.Substring(subStr));
-        }
-
-        public static async Task CreateFileRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
-        {
-            //Determine where to place these files.
-            string filename = e.Request.Query["filename"];
-            AssetType type = Enum.Parse<AssetType>(e.Request.Query["major_type"]);
-            InnerAssetType inner = Enum.Parse<InnerAssetType>(e.Request.Query["minor_type"]);
-            //Check if we have any templates that match.
-            byte[] templateData = new byte[] { };
-            if(e.Request.Query.ContainsKey("template"))
+            //Read the JSON data from the stream.
+            MediaCreateRequestBody request = Program.GetPostBodyJson<MediaCreateRequestBody>(e);
+            //Validate
+            if(request.filename == null || request.name == null || request.sub_type == null || request.type == null)
             {
-                if(Enum.TryParse<PebbleTemplates>(e.Request.Query["template"].ToString().Replace('.','_'), out PebbleTemplates template))
+                await ThrowError(e, "Missing one or more required values in the JSON payload.", 3);
+                return;
+            }
+            //Generate a unique ID
+            string id = LibRpws.LibRpwsCore.GenerateRandomString(16);
+            while(proj.media.ContainsKey(id))
+                id = LibRpws.LibRpwsCore.GenerateRandomString(16);
+            //Create the object to save to disk.
+            var media = new WebPebbleProjectAsset();
+            //Find types from URL.
+            media.type = request.type;
+            media.innerType = request.sub_type;
+            media.nickname = request.name;
+            media.id = id;
+            //Ensure directory is created.
+            media.filename = "";
+            Directory.CreateDirectory(media.GetAbsolutePath(proj.projectId));
+            //Append filename
+            media.filename = request.filename; //We'll need to validate this later. TODO!!!
+            //Save
+            proj.media.Add(id, media);
+            proj.SaveProject();
+            //Write to user
+            await Program.QuickWriteJsonToDoc(e, media);
+        }
+
+        private class MediaCreateRequestBody
+        {
+            public AssetType type;
+            public InnerAssetType sub_type;
+            public string name;
+            public string filename;
+        }
+
+        private static async Task WriteOkReply(Microsoft.AspNetCore.Http.HttpContext e)
+        {
+            await Program.QuickWriteJsonToDoc(e, new Dictionary<string, bool>
+            {
+                {"ok", true }
+            });
+        }
+
+        public static async Task OnMediaRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
+        {
+            //Get the request method
+            RequestHttpMethod method = Program.FindRequestMethod(e);
+            //Get the params
+            string[] urlParams = Program.GetUrlPathRequestFromInsideProject(e);
+            string id = urlParams[0];
+            //If the ID is create, pass this request to the creation.
+            if(id == "create")
+            {
+                await OnMediaCreateRequest(e, user, proj);
+                return;
+            }
+            //Try to find the asset. It's ok if it doesn't exist.
+            WebPebbleProjectAsset media = null;
+            if (proj.media.ContainsKey(id))
+                media = proj.media[id];
+            //Decide what to do.
+            //If it doesn't exist.
+            if(media == null)
+            {
+                //Requesting a non-existing asset.
+                await ThrowError(e, "This asset ID does not exist.", 1);
+                return;
+            }
+            //Handle object name editing (POST).
+            if(method == RequestHttpMethod.post)
+            {
+                //Get new name from URL.
+                media.nickname = e.Request.Query["name"];
+                proj.media[id] = media;
+                proj.SaveProject();
+                await WriteOkReply(e);
+                return;
+            }
+            //Handle object uploading.
+            if(method == RequestHttpMethod.put)
+            {
+                //Check the upload type in the query. 
+                FileUploadType uploadType = Enum.Parse<FileUploadType>(e.Request.Query["upload_method"]);
+                byte[] buf;
+                if(uploadType == FileUploadType.Binary)
                 {
-                    string path = $"{Program.config.media_dir}Services/Projects/FileTemplates/{template.ToString().Replace('_', '.')}";
-                    templateData = File.ReadAllBytes(path);
+                    //Read body
+                    buf = new byte[(int)e.Request.ContentLength];
+                    e.Request.Body.Read(buf, 0, buf.Length);
                 } else
                 {
-                    //Invalid template
-                    throw new Exception("Invalid template.");
+                    //TODO
+                    throw new NotImplementedException();
                 }
+                //Remove an existing file if it exists.
+                if (File.Exists(media.GetAbsolutePath(proj.projectId)))
+                    File.Delete(media.GetAbsolutePath(proj.projectId));
+                //Save
+                File.WriteAllBytes(media.GetAbsolutePath(proj.projectId), buf);
+                //Tell the user it is ok
+                await WriteOkReply(e);
+                return;
             }
-            //Create
-            var file = proj.CreateSafeAsset(filename, type, inner, templateData);
-            //Respond with JSON string.
-            await Program.QuickWriteJsonToDoc(e, file);
-        }
+        } 
 
-        enum PebbleTemplates
+        private enum FileUploadType
         {
-            pkjs_js
+            Binary, //Just directly read from the input strema.
+            Form //Read the body as form data.
         }
 
         public static async Task AppInfoJson(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
@@ -196,65 +185,6 @@ namespace WebPebble.Services.Projects
             {
                 await Program.QuickWriteToDoc(e, "The put endpoint has been disabled due to a security hole.", "text/plain", 404);
             }
-        }
-
-        public static async Task AppInfoJson_DeleteResource(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
-        {
-            PebbleProject pp = new PebbleProject(proj.projectId);
-            //Find the resource.
-            if(!e.Request.Query.ContainsKey("id"))
-            {
-                await Program.QuickWriteToDoc(e, "No resource ID specified.", "text/html", 404);
-                return;
-            }
-            string resourceId = e.Request.Query["id"];
-            var item = pp.package.pebble.resources.media.Find(x => x.x_webpebble_pebble_media_id == resourceId);
-            if (item == null)
-            {
-                await Program.QuickWriteToDoc(e, "That item didn't exist.", "text/html", 404);
-                return;
-            }
-            //Remove and save.
-            pp.package.pebble.resources.media.Remove(item);
-            pp.SavePackage();
-            await Program.QuickWriteToDoc(e, "OK");
-        }
-
-        public static async Task AppInfoJson_AddResource(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
-        {
-            PebbleProject pp = new PebbleProject(proj.projectId);
-            //Open the body.
-            byte[] data = new byte[(int)e.Request.ContentLength];
-            e.Request.Body.Read(data, 0, data.Length);
-            Medium medium = JsonConvert.DeserializeObject<Medium>(Encoding.UTF8.GetString(data));
-            //Get the asset that is specified.
-            WebPebbleProjectAsset asset = proj.assets.Find(x => x.id == medium.x_webpebble_media_id);
-            //Check to see if the asset is valid.
-            if(asset == null)
-            {
-                await Program.QuickWriteToDoc(e, "Invalid x_webpebble_media_id.", "text/html", 404);
-                return;
-            }
-            //Set the filename in a secure matter. Remove the "resources/" at the beginning.
-            medium.file = asset.filename.Substring("resources/".Length);
-            //Check if the Pebble media id was sent. If not, generate it. If it was, we use that and replace.
-            if(medium.x_webpebble_pebble_media_id == null)
-            {
-                medium.x_webpebble_pebble_media_id = LibRpws.LibRpwsCore.GenerateRandomString(8);
-                while (pp.package.pebble.resources.media.Find(x => x.x_webpebble_pebble_media_id == medium.x_webpebble_pebble_media_id) != null)
-                    medium.x_webpebble_pebble_media_id = LibRpws.LibRpwsCore.GenerateRandomString(8);
-            }
-            //Check to see if the package already has this data.
-            if (pp.package.pebble.resources.media.Find( x => x.x_webpebble_pebble_media_id == medium.x_webpebble_pebble_media_id) != null)
-            {
-                //Remove this from the package.
-                pp.package.pebble.resources.media.Remove(pp.package.pebble.resources.media.Find(x => x.x_webpebble_media_id == medium.x_webpebble_media_id));
-            }
-            //Write this to the package and save it.
-            pp.package.pebble.resources.media.Add(medium);
-            pp.SavePackage();
-            //Respond with OK.
-            await Program.QuickWriteJsonToDoc(e,medium);
         }
 
         public static async Task CheckIfIdentifierExists(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
@@ -314,39 +244,6 @@ namespace WebPebble.Services.Projects
                 f.OpenReadStream().CopyTo(fs);
             //Create a response.
             await Program.QuickWriteJsonToDoc(e, asset);
-        }
-
-        /*public static void DeleteUploadedFile(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
-        {
-            //Take in the ID to the media and see if exists.
-            if (!e.Request.Query.ContainsKey("id"))
-            {
-                Program.QuickWriteToDoc(e, "Invalid ID.", "text/html", 404);
-                return;
-            }
-            var asset = proj.assets.Find(x => x.id == e.Request.Query["id"]);
-            if (asset == null)
-            {
-                Program.QuickWriteToDoc(e, "Invalid ID.", "text/html", 404);
-                return;
-            }
-            //Delete the file for this media.
-            string absolutePath = proj.GetAbsolutePathname() + asset.filename;
-            File.Delete(absolutePath);
-            //Remove the asset from the database.
-            proj.assets.Remove(asset);
-            proj.SaveProject();
-            //Respond with the OK.
-            Program.QuickWriteToDoc(e, "OK");
-        }*/
-        //I made the above and then realized that it already exisited.
-
-        private class FileReply
-        {
-            public string type;
-            public string content;
-            public string saveUrl;
-            public string id;
         }
     }
 }

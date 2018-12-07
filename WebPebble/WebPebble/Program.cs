@@ -57,19 +57,16 @@ namespace WebPebble
             AddService(false, Services.LoginService.BeginLogin, "/login", false);
             AddService(false, Services.LoginService.FinishLogin, "/complete_login", false);
             //Add services that are in the project.
-            AddService(true, Services.Projects.FileManager.OnRequest, "/media/", true);
+            AddService(true, Services.Projects.FileManager.OnMediaCreateRequest, "/media/", true);
             AddService(true, Services.Projects.FileManager.UploadFile, "/upload_media/", true);
-            AddService(true, Services.Projects.FileManager.CreateFileRequest, "/create_empty_media/", true);
             AddService(true, Services.Projects.FileManager.AppInfoJson, "/appinfo.json", true);
-            AddService(true, Services.Projects.FileManager.AppInfoJson_DeleteResource, "/appinfo.json/delete_resource", true);
-            AddService(true, Services.Projects.FileManager.AppInfoJson_AddResource, "/appinfo.json/add_resource", true);
             AddService(true, Services.Projects.FileManager.OnProjSettingsRequest, "/settings/", true);
             AddService(true, Services.Projects.FileList.ListFiles, "/media_list/", true);
             AddService(true, Services.Projects.Compile.DoCompile, "/build/", true);
             AddService(true, Services.Projects.History.OnRequest, "/build_history/", true);
             AddService(true, Services.Projects.PbwMedia.OnRequest, "/pbw_media/", true);
             AddService(true, Services.Projects.FileManager.CheckIfIdentifierExists, "/check_identifier", true);
-            AddService(true, Services.Projects.FileManager.ZipProjectDownload, "/zip", true);
+            AddService(true, Services.Projects.ProjectZipper.ZipProjectDownload, "/zip", true);
             AddService(true, Services.Projects.FileManager.DeleteProject, "/delete_project", true);
             //Start the WebSocket server.
             WebSocketServer.StartServer();
@@ -384,5 +381,43 @@ namespace WebPebble
 
             return host.RunAsync();
         }
+
+        public static RequestHttpMethod FindRequestMethod(Microsoft.AspNetCore.Http.HttpContext context)
+        {
+            return Enum.Parse<RequestHttpMethod>(context.Request.Method.ToLower());
+        }
+
+        public static T GetPostBodyJson<T>(Microsoft.AspNetCore.Http.HttpContext context)
+        {
+            //Read stream.
+            byte[] buf = new byte[(int)context.Request.ContentLength];
+            context.Request.Body.Read(buf, 0, buf.Length);
+            //Convert to string
+            string textData = Encoding.UTF8.GetString(buf);
+            //Finally, parse JSON
+            return JsonConvert.DeserializeObject<T>(textData);
+        }
+
+        public static string[] GetUrlPathRequestFromInsideProject(Microsoft.AspNetCore.Http.HttpContext context)
+        {
+            //Split
+            string[] raw = context.Request.Path.ToString().Split('/');
+            //0: Blank
+            //1: project
+            //2: project id
+            //3: action type
+            //4+ data
+            string[] output = new string[raw.Length - 4];
+            Array.Copy(raw, 4, output, 0, output.Length);
+            return output;
+        }
+    }
+
+    public enum RequestHttpMethod
+    {
+        get,
+        post,
+        put,
+        delete
     }
 }

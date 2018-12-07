@@ -16,7 +16,7 @@ namespace WebPebble.Entities
 
         public string name { get; set; }
 
-        public List<WebPebbleProjectAsset> assets { get; set; }
+        public Dictionary<string, WebPebbleProjectAsset> media { get; set; }
         public List<WebPebbleProjectBuild> builds { get; set; }
 
         //Functions for creation.
@@ -66,9 +66,9 @@ namespace WebPebble.Entities
             string id = LibRpws.LibRpwsCore.GenerateRandomHexString(8);
             //Save
             a.id = id;
-            if (assets == null)
-                assets = new List<WebPebbleProjectAsset>();
-            assets.Add(a);
+            if (media == null)
+                media = new Dictionary<string, WebPebbleProjectAsset>();
+            media.Add(a.id, a);
 
             SaveProject();
             return a;
@@ -116,7 +116,12 @@ namespace WebPebble.Entities
 
         public string GetAbsolutePath(string projectId)
         {
-            return Program.config.user_project_dir + projectId + "/"+ filename; 
+            return Program.config.user_project_dir + projectId + "/" + GetRelativePath();
+        }
+
+        public string GetRelativePath()
+        {
+            return type.ToString() + "/" + innerType.ToString() + "/" + filename;
         }
     }
 
