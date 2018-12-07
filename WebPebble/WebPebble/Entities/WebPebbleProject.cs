@@ -63,7 +63,9 @@ namespace WebPebble.Entities
             a.nickname = nickname;
             //Generate an ID.
             string id = LibRpws.LibRpwsCore.GenerateRandomHexString(8);
-            while(media.ContainsKey(id))
+            if (media == null)
+                media = new Dictionary<string, WebPebbleProjectAsset>();
+            while (media.ContainsKey(id))
                 id = LibRpws.LibRpwsCore.GenerateRandomHexString(8);
             //Make sure the folder is created
             Directory.CreateDirectory(a.GetAbsolutePath(this.projectId));
@@ -74,8 +76,6 @@ namespace WebPebble.Entities
                 File.WriteAllBytes(a.filename, data);
             //Save
             a.id = id;
-            if (media == null)
-                media = new Dictionary<string, WebPebbleProjectAsset>();
             media.Add(a.id, a);
 
             SaveProject();
