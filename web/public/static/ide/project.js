@@ -224,7 +224,7 @@ project.addExistingFileToSidebar = function (d) {
         d.loaded = false;
         filemanager.loadedFiles[d.id] = d;
         //Start the loading process for this file.
-        project.serverRequest("media/" + d.id + "/?type=text%2Fplain", function (file_data) {
+        project.serverRequest("media/" + d.id + "/?mime=text%2Fplain", function (file_data) {
             //Set the contents of the session.
             var dd = filemanager.loadedFiles[d.id];
             dd.save_url = "media/"+dd.id+"/";
@@ -241,7 +241,7 @@ project.addExistingFileToSidebar = function (d) {
             });
             //Hide the loader symbol.
             sidebarmanager.updateSuffixOfTab(dd.tab);
-        }, null, true);
+        }, null, false);
     }
 }
 
@@ -389,6 +389,23 @@ project.displayForm = function (name, options, confirmAction, cancelAction) {
     ],null,true);
 }
 
+project.forceCreateAssetMedia = function(callback, majorType, minorType, name, filename, template) {
+    //Generate payload.
+    payload = {
+        "type":majorType,
+        "sub_type":minorType,
+        "name":name,
+        "filename":filename,
+        "template":template
+    };
+    project.serverRequest("media/create/", function(itemData) {
+        //Call callback
+        callback(itemData);
+        //Add to sidebar
+        project.addExistingFileToSidebar(itemData);
+    }, null, true, "POST", JSON.stringify(payload));
+}
+
 project.showAddAssetDialog = function () {
     /*project.showDialog("Add File", "Source Type<select style=\"padding:8px;\"><option value=\"c\">C File</option><option value=\"c_worker\">C Worker File</option></select><br>File Name<input style=\"margin-left:10px; padding:8px;\" id=\"form_filename\" type=\"text\">", ["Create", "Cancel"], [
         function () {
@@ -425,10 +442,7 @@ project.showAddAssetDialog = function () {
         var type = data[0];
         var name = data[1];
         if (type == "c") {
-            var url = "create_empty_media/?filename=" + encodeURIComponent(name) + "&major_type=src&minor_type=c";
-            project.serverRequest(url, function (data) {
-                project.addExistingFileToSidebar(data);
-            }, null, true);
+            project.forceCreateAssetMedia(function(){}, 0, 0, name, name, "blank");
         }
         if(type == "js") {
             //Check to see if we alrady have a js file
@@ -448,10 +462,7 @@ project.showAddAssetDialog = function () {
                 }
             }
             //Create a new file
-            var url = "create_empty_media/?filename=" + encodeURIComponent("index.js") + "&major_type=src&minor_type=pkjs&template=pkjs.js";
-            project.serverRequest(url, function (data) {
-                project.addExistingFileToSidebar(data);
-            }, null, true);
+            project.forceCreateAssetMedia(function(){}, 0, 4, "index.js", "index.js", "pkjs");
         }
     }, function () {
 

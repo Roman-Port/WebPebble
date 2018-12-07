@@ -22,7 +22,7 @@
     <None Update="Services\CreateProject\form_template.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Services\Projects\FileTemplates\pkjs.js">
+    <None Update="Templates\pkjs.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Services\Projects\Manage\main_template.html">
@@ -67,6 +67,9 @@
     <None Update="static\img\dropdown.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Templates\blank.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Templates\main.c">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -76,6 +79,10 @@
     <None Update="WebSockets\ycmd\YcmdConfig\ycm_extra_conf_sdk3.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\Projects\FileTemplates\" />
   </ItemGroup>
 
 </Project>

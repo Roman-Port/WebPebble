@@ -13,6 +13,16 @@ namespace WebPebble.Services.Projects
 {
     public static class FileManager
     {
+        /// <summary>
+        /// List of templates. Key is the name, value is the path.
+        /// </summary>
+        private static readonly Dictionary<string, string> templateMap = new Dictionary<string, string>
+        {
+            {"blank", "blank.txt" },
+            {"default_c", "main.c" },
+            {"pkjs", "pkjs.js" }
+        };
+
         public static async Task DeleteProject(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Confirm the challenge
@@ -84,6 +94,21 @@ namespace WebPebble.Services.Projects
             Directory.CreateDirectory(media.GetAbsolutePath(proj.projectId));
             //Append filename
             media.filename = WebPebbleProject.CreateSafeFilename(request.filename);
+            //If this was a template, load it.
+            if(request.template != null)
+            {
+                //Try to find the template ID.
+                if(templateMap.ContainsKey(request.template))
+                {
+                    //Write this template to the location.
+                    File.Copy(Program.config.media_dir + "Templates/" + templateMap[request.template], media.GetAbsolutePath(proj.projectId));
+                } else
+                {
+                    //Invalid template!
+                    await ThrowError(e, "Invalid template name.", 6);
+                    return;
+                }
+            }
             //Save
             proj.media.Add(id, media);
             proj.SaveProject();
@@ -97,6 +122,10 @@ namespace WebPebble.Services.Projects
             public InnerAssetType sub_type;
             public string name;
             public string filename;
+
+            //Optional
+
+            public string template;
         }
 
         private static async Task WriteOkReply(Microsoft.AspNetCore.Http.HttpContext e)
