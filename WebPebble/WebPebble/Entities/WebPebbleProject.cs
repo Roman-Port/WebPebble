@@ -38,7 +38,7 @@ namespace WebPebble.Entities
             };
             wpp._id = collect.Insert(wpp);
             //Now, add the asset.
-            wpp.AddAsset("src/c/main.c", AssetType.src, InnerAssetType.c);
+            wpp.AddAsset("src/c/main.c", AssetType.src, InnerAssetType.c, "main.c", File.ReadAllBytes(Program.config.media_dir+"Templates/main.c"));
             //Return the end product.
             return wpp;
         }
@@ -55,15 +55,23 @@ namespace WebPebble.Entities
 
         //Assets
         
-        public WebPebbleProjectAsset AddAsset(string filename, AssetType type, InnerAssetType inner, string nickname = null)
+        public WebPebbleProjectAsset AddAsset(string filename, AssetType type, InnerAssetType inner, string nickname, byte[] data)
         {
             WebPebbleProjectAsset a = new WebPebbleProjectAsset();
-            a.filename = filename;
             a.type = type;
             a.innerType = inner;
             a.nickname = nickname;
             //Generate an ID.
             string id = LibRpws.LibRpwsCore.GenerateRandomHexString(8);
+            while(media.ContainsKey(id))
+                id = LibRpws.LibRpwsCore.GenerateRandomHexString(8);
+            //Make sure the folder is created
+            Directory.CreateDirectory(a.GetAbsolutePath(this.projectId));
+            //Set the filename now
+            a.filename = filename;
+            //Save to disk
+            if(data != null)
+                File.WriteAllBytes(a.filename, data);
             //Save
             a.id = id;
             if (media == null)
@@ -74,7 +82,20 @@ namespace WebPebble.Entities
             return a;
         }
 
-        public WebPebbleProjectAsset CreateSafeAsset(string filename, AssetType type, InnerAssetType inner, byte[] data)
+        public static string CreateSafeFilename(string filename)
+        {
+            //Safely store a file somewhere. Protect the name against injection attacks.
+            foreach (char invalidC in System.IO.Path.GetInvalidFileNameChars())
+            {
+                filename = filename.Replace(invalidC, '_');
+            }
+            //If it starts with a period, stop.
+            if (filename.StartsWith('.'))
+                throw new Exception("Rejected pathname.");
+            return filename;
+        }
+
+        /*public WebPebbleProjectAsset CreateSafeAsset(string filename, AssetType type, InnerAssetType inner, byte[] data)
         {
             //Safely store a file somewhere. Protect the name against injection attacks.
             foreach(char invalidC in System.IO.Path.GetInvalidFileNameChars())
@@ -101,7 +122,7 @@ namespace WebPebble.Entities
             File.WriteAllBytes(absolutePath, data);
             //Add it as an asset.
             return AddAsset(relPath, type, inner);
-        }
+        }*/
     }
 
     public class WebPebbleProjectAsset

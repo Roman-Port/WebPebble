@@ -11,6 +11,9 @@ namespace WebPebble
         public string user_project_build_dir;
         public string static_files_dir;
         public string pebble_sdk_dir;
+        /// <summary>
+        /// Root directory of the binary output.
+        /// </summary>
         public string media_dir; //Root of the binary data.
         public string ssl_cert;
 

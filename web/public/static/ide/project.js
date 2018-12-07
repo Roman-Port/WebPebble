@@ -199,8 +199,7 @@ project.zipProject = function() {
 
 project.addExistingFileToSidebar = function (d) {
     if (d.type == 0) {
-        var name = d.filename.split('/');
-        name = name[name.length - 1];
+        var name = d.nickname;
         var actionsHtml = "";
         if (d.type == 0) {
             //This file is deletable from the sidebar. Add the HTML for that.
@@ -225,14 +224,14 @@ project.addExistingFileToSidebar = function (d) {
         d.loaded = false;
         filemanager.loadedFiles[d.id] = d;
         //Start the loading process for this file.
-        project.serverRequest("media/" + d.id + "/get/application_json", function (file_data) {
+        project.serverRequest("media/" + d.id + "/?type=text%2Fplain", function (file_data) {
             //Set the contents of the session.
-            var dd = filemanager.loadedFiles[file_data.id];
-            dd.save_url = file_data.save_url;
+            var dd = filemanager.loadedFiles[d.id];
+            dd.save_url = "media/"+dd.id+"/";
             dd.loaded = true;
             //Update the IDE.
-            dd.session.setMode("ace/mode/" + file_data.type);
-            dd.session.setValue(file_data.content);
+            dd.session.setMode("ace/mode/" + "c");
+            dd.session.setValue(file_data);
             //Add an event listener to the IDE to update this when it is edited.
             dd.session.on("change", function () {
                 //Not exactly sure how the scope works in this lamda function. We'll hope it is correct.

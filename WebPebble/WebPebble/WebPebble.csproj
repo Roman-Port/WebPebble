@@ -67,6 +67,9 @@
     <None Update="static\img\dropdown.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Templates\main.c">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="WebSockets\ycmd\DefaultYcmdSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

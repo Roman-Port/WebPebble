@@ -83,7 +83,7 @@ namespace WebPebble.Services.Projects
             media.filename = "";
             Directory.CreateDirectory(media.GetAbsolutePath(proj.projectId));
             //Append filename
-            media.filename = request.filename; //We'll need to validate this later. TODO!!!
+            media.filename = WebPebbleProject.CreateSafeFilename(request.filename);
             //Save
             proj.media.Add(id, media);
             proj.SaveProject();
@@ -246,6 +246,7 @@ namespace WebPebble.Services.Projects
             await Program.QuickWriteJsonToDoc(e, proj);
         }
 
+        /*
         public static async Task UploadFile(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Get the file uploaded.
@@ -276,6 +277,6 @@ namespace WebPebble.Services.Projects
                 f.OpenReadStream().CopyTo(fs);
             //Create a response.
             await Program.QuickWriteJsonToDoc(e, asset);
-        }
+        }*/
     }
 }
