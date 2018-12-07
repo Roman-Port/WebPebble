@@ -167,6 +167,33 @@ namespace WebPebble.Services.Projects
                 await WriteOkReply(e);
                 return;
             }
+            //Handle object downloading
+            if(method == RequestHttpMethod.get)
+            {
+                //Check if the file has been created yet
+                string path = media.GetAbsolutePath(proj.projectId);
+                if(!File.Exists(path))
+                {
+                    await ThrowError(e, "This asset exists, but has not been uploaded yet.", 4);
+                    return;
+                }
+                //Get the MIME type from the query.
+                if(!e.Request.Query.ContainsKey("mime"))
+                {
+                    await ThrowError(e, "No MIME type sent in query.", 5);
+                    return;
+                }
+                //Set content type.
+                e.Response.ContentType = e.Request.Query["mime"];
+                //Just load the data and copy it to the output stream.
+                using (FileStream fs = new FileStream(path, FileMode.Open)) {
+                    e.Response.ContentLength = fs.Length;
+                    e.Response.StatusCode = 200;
+                    Console.WriteLine(fs.Length);
+                    await fs.CopyToAsync(e.Response.Body);
+                }
+                return;
+            }
         } 
 
         private enum FileUploadType
