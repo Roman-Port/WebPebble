@@ -34,24 +34,24 @@ filemanager.CloseFile = function (id) {
 filemanager.SaveFile = function (id, callback) {
     var data = filemanager.loadedFiles[id];
     //Send to the server.
-    project.serverRequest("media/" + data.id + "/put/", function () {
+    project.serverRequest("media/" + data.id + "/?upload_method=Binary", function () {
         //Update the tab info.
         var dd = filemanager.loadedFiles[id];
         sidebarmanager.updateSuffixOfTab(dd.tab);
         //Run callback
         callback();
-    }, null, false, "POST", data.session.getValue());
+    }, null, false, "PUT", data.session.getValue());
 }
 
 filemanager.PromptDeleteFile = function (file) {
     project.showDialog("Delete file \"" + file.shortName + "\"?", "This cannot be undone, and will happen immediately.", ["Confirm", "Cancel"], [
         function () {
-            project.serverRequest("media/" + file.id + "/delete/?challenge=chal123", function () {
+            project.serverRequest("media/" + file.id + "/", function () {
                 //Switch away from tab.
                 sidebarmanager.hide_content(sidebarmanager.activeItem);
                 //Update the tab info.
                 sidebarmanager.activeItem.tab_ele.parentNode.removeChild(sidebarmanager.activeItem.tab_ele);
-            }, null, false, "POST", "chal123");
+            }, null, false, "DELETE", null);
         }, function () {
 
         }

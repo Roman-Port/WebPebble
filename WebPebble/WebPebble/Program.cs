@@ -126,7 +126,7 @@ namespace WebPebble
             if (e.Request.Method.ToLower() == "options")
             {
                 e.Response.Headers.Add("Access-Control-Allow-Headers", "*");
-                e.Response.Headers.Add("Access-Control-Allow-Methods", "GET, PUT, POST");
+                e.Response.Headers.Add("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
                 await QuickWriteToDoc(e, "Preflight OK");
                 return;
             }

@@ -199,7 +199,6 @@ namespace WebPebble.Services.Projects
             //Handle object downloading
             if(method == RequestHttpMethod.get)
             {
-                Console.WriteLine("get");
                 //Check if the file has been created yet
                 string path = media.GetAbsolutePath(proj.projectId);
                 if(!File.Exists(path))
@@ -219,9 +218,22 @@ namespace WebPebble.Services.Projects
                 using (FileStream fs = new FileStream(path, FileMode.Open)) {
                     e.Response.ContentLength = fs.Length;
                     e.Response.StatusCode = 200;
-                    Console.WriteLine(fs.Length);
                     await fs.CopyToAsync(e.Response.Body);
                 }
+                return;
+            }
+            //Handle object deleting
+            if(method == RequestHttpMethod.delete)
+            {
+                //Delete the file if it exists.
+                string path = media.GetAbsolutePath(proj.projectId);
+                if (File.Exists(path))
+                    File.Delete(path);
+                //Delete
+                proj.media.Remove(media.id);
+                proj.SaveProject();
+                //Tell the user it is ok
+                await WriteOkReply(e);
                 return;
             }
             //Unknown.
