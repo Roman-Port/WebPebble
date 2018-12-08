@@ -402,7 +402,7 @@ edit_resource.uploadFile = function (id, callback, failedCallback) {
     //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
     var form_ele = document.getElementById('add_resrc_uploader');
     var form = jQuery(form_ele);
-    var url = "https://api.webpebble.get-rpws.com/project/" + project.id + "/media/";
+    var url = "https://api.webpebble.get-rpws.com/project/" + project.id + "/media/"+id+"/?upload_method=1";
     jQuery.ajax({
         url: url,
         type: "PUT",

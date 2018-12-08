@@ -178,22 +178,35 @@ namespace WebPebble.Services.Projects
             {
                 //Check the upload type in the query. 
                 FileUploadType uploadType = Enum.Parse<FileUploadType>(e.Request.Query["upload_method"]);
-                byte[] buf;
+                Stream source;
+                int length;
                 if(uploadType == FileUploadType.Binary)
                 {
-                    //Read body
-                    buf = new byte[(int)e.Request.ContentLength];
-                    e.Request.Body.Read(buf, 0, buf.Length);
+                    //Read body directly
+                    length = (int)e.Request.ContentLength;
+                    source = e.Request.Body;
                 } else
                 {
-                    //TODO
-                    throw new NotImplementedException();
+                    //This is sent from the uploader in the interface.
+                    //Get the file uploaded.
+                    var f = e.Request.Form.Files["data"];
+                    //Check if the file is valid.
+                    if (f.Length == 0 || f.OpenReadStream() == null)
+                    {
+                        //No file uploaded.
+                        await Program.QuickWriteToDoc(e, "No file was uploaded.", "text/plain", 400);
+                        return;
+                    }
+                    //Set
+                    source = f.OpenReadStream();
+                    length = (int)f.Length;
                 }
                 //Remove an existing file if it exists.
                 if (File.Exists(media.GetAbsolutePath(proj.projectId)))
                     File.Delete(media.GetAbsolutePath(proj.projectId));
                 //Save
-                File.WriteAllBytes(media.GetAbsolutePath(proj.projectId), buf);
+                using (FileStream fs = new FileStream(media.GetAbsolutePath(proj.projectId), FileMode.CreateNew))
+                    await source.CopyToAsync(fs);
                 //Tell the user it is ok
                 await WriteOkReply(e);
                 return;
