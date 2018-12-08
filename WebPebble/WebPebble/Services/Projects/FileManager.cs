@@ -199,6 +199,27 @@ namespace WebPebble.Services.Projects
             pproj.SavePackage();
         }
 
+        private static void DeleteOutsideAppinfoJsonOnAsset(string id, WebPebbleProject proj)
+        {
+            PebbleProject pproj = new PebbleProject(proj.projectId);
+            //Make sure it is not null.
+            if (pproj.package.pebble.resources == null)
+                pproj.package.pebble.resources = new Resources();
+            if (pproj.package.pebble.resources.media == null)
+                pproj.package.pebble.resources.media = new List<Medium>();
+            //Find it if it exists.
+            for (int i = 0; i < pproj.package.pebble.resources.media.Count; i++)
+            {
+                if (pproj.package.pebble.resources.media[i].x_webpebble_media_id == id)
+                {
+                    pproj.package.pebble.resources.media.RemoveAt(i);
+                    i--;
+                }
+            }
+            //Save
+            pproj.SavePackage();
+        }
+
         public static async Task OnMediaRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
         {
             //Get the request method
@@ -339,6 +360,8 @@ namespace WebPebble.Services.Projects
                 string path = media.GetAbsolutePath(proj.projectId);
                 if (File.Exists(path))
                     File.Delete(path);
+                //Delete in appinfo.json.
+                DeleteOutsideAppinfoJsonOnAsset(media.id, proj);
                 //Delete
                 proj.media.Remove(media.id);
                 proj.SaveProject();
