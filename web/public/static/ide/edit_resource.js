@@ -81,7 +81,7 @@ edit_resource.onSelectExisting = function (context) {
     //Show the preview. 
     var preview_window = document.getElementById('resource_preview');
     preview_window.style.display = "block";
-    var resrc_url = "/project/" + project.id + "/media/" + media_data.id + "/get/";
+    var resrc_url = "/project/" + project.id + "/media/" + media_data.id + "/";
     if (pebble_data.type == "raw") {
         //Show the button to download this resource again.
         preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", '<div class="med_button" onclick="edit_resource.onDownloadRawBtnClicked(this);">Download Raw Resource</div>'));
@@ -98,14 +98,14 @@ edit_resource.onSelectExisting = function (context) {
         }
         //Create the CSS.
         var e = document.createElement('style');
-        e.innerHTML = '@font-face { font-family: "temporary_resrc_font"; src: url("' + resrc_url + 'font_ttf") format("truetype");}';
+        e.innerHTML = '@font-face { font-family: "temporary_resrc_font"; src: url("' + resrc_url + '?mime=font%2Fttf") format("truetype");}';
         preview_window.appendChild(e);
         //Append an actual preview of the font. Display the standard ones.
         var inner = '<textarea style="line-height:' + (font_size2 + 6).toString() + 'px; font-size:' + font_size2.toString() + 'px; background-color:white; font-family: &quot;temporary_resrc_font&quot;, serif; width:100%;" type="text" rows="4">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopwxyz 123456789</textarea>';
         preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", inner));
     } else {
         //This is some sort of bitmap image.
-        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="https://api.webpebble.get-rpws.com' + resrc_url + "image_png/" +'"> </td> </tr> </table>'));
+        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="https://api.webpebble.get-rpws.com' + resrc_url + "?mime=image%2Fpng" +'"> </td> </tr> </table>'));
     }
 };
 
@@ -162,7 +162,7 @@ edit_resource.onFontSizeChange = function () {
     document.getElementById('typeselect_font_id').innerText = document.getElementById('addresrc_entry_id').value + "_" + document.getElementById('addresrc_entry_font_size').value;
 }
 
-edit_resource.getUpdatedPebbleMedia = function (fileData) {
+edit_resource.getUpdatedPebbleMedia = function () {
     //Get the package.json/pebble/resources/media data for this.
     //fileData is the WebPebble media data.
     var o = {};
@@ -202,9 +202,6 @@ edit_resource.getUpdatedPebbleMedia = function (fileData) {
             o.storageFormat = store;
         }
     }
-
-    //Add the uploaded id.
-    o.x_webpebble_media_id = fileData.id;
 
     return o;
 }
@@ -257,37 +254,33 @@ edit_resource.createDataNow = function (callback) {
     if (document.getElementById('addresrc_entry_type').value == "font") { type = 2; /*Fonts*/ }
     if (document.getElementById('addresrc_entry_type').value == "raw") { type = 3; /*Binary data*/ }
     //Create the object creation payload.
+    var pbl_data = edit_resource.getUpdatedPebbleMedia();
     var payload = {
         "type":1,
         "sub_type":type,
-        "name":document.getElementById('addresrc_entry_filename').value
+        "name":document.getElementById('addresrc_entry_filename').value,
+        "appInfoJson": pbl_data
     };
     //Create the object.
     project.serverRequest("media/create/", function(object_data) {
         var newId = object_data.id;
         //Do the upload.
         edit_resource.uploadFile(newId, function (uploaded_file) {
-            //Generate the Pebble resource file.
-            var pbl_data = edit_resource.getUpdatedPebbleMedia(object_data);
-            edit_resource.removeWarning('add_resrc_uploader_frame');
-            //Save that file.
-            project.serverRequest("appinfo.json/add_resource", function (updated_data) {
-                //Update the local data.
-                project.refreshAppInfo(function () {
-                    pbl_data = updated_data;
-                    //Add this file to the sidebar.
-                    project.addResourceToSidebar(object_data);
-                    //Hide the loader.
-                    project.hideDialog();
-                    //Switch to this. This pretty much just allows us to save to it.
-                    edit_resource.onSelectExisting(pbl_data.x_webpebble_media_id);
-                    //Call the callback, if there is one.
-                    if (callback != null) {
-                        callback(object_data, pbl_data);
-                    }
-                });
-            }, null, true, "POST", JSON.stringify(pbl_data));
-
+            //We've already updated the appinfo data.
+            //Update the local data.
+            project.refreshAppInfo(function () {
+                pbl_data.x_webpebble_media_id = newId;
+                //Add this file to the sidebar.
+                project.addResourceToSidebar(object_data);
+                //Hide the loader.
+                project.hideDialog();
+                //Switch to this. This pretty much just allows us to save to it.
+                edit_resource.onSelectExisting(newId);
+                //Call the callback, if there is one.
+                if (callback != null) {
+                    callback(object_data, pbl_data);
+                }
+            });
         }, function () {
             //File upload failed.
             edit_resource.addWarning('add_resrc_uploader_frame', "Please attach a file.");

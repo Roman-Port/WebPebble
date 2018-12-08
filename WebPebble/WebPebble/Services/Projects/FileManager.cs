@@ -111,6 +111,11 @@ namespace WebPebble.Services.Projects
                     return;
                 }
             }
+            //If this requested that we use appinfo.json, apply it.
+            if(request.appInfoJson != null)
+            {
+                SaveOutsideAppinfoJsonOnAsset(media, request.appInfoJson, proj);
+            }
             //Save
             proj.media.Add(id, media);
             proj.SaveProject();
@@ -123,11 +128,12 @@ namespace WebPebble.Services.Projects
             public AssetType type;
             public InnerAssetType sub_type;
             public string name;
-            public string filename;
 
             //Optional
 
             public string template;
+            public string filename;
+            public Medium appInfoJson;
         }
 
         private static async Task WriteOkReply(Microsoft.AspNetCore.Http.HttpContext e)
@@ -136,6 +142,61 @@ namespace WebPebble.Services.Projects
             {
                 {"ok", true }
             });
+        }
+
+        /// <summary>
+        /// The request data that can be sent with a POST request to the existing media.
+        /// </summary>
+        private class MediaRequestPostPayload
+        {
+            public string name;
+            public Medium appinfoData;
+            public string filename;
+
+            public AssetType? type; //AssetType
+            public InnerAssetType? sub_type; //InnerAssetType
+        }
+
+        private delegate void ModificationCode(ref WebPebbleProjectAsset media);
+        private static void RelocateAsset(ref WebPebbleProjectAsset media, ModificationCode code, WebPebbleProject proj)
+        {
+            //Relocate
+            string originalPath = media.GetAbsolutePath(proj.projectId);
+            //Run modification code
+            code(ref media);
+            //Move
+            string newPath = media.GetAbsolutePath(proj.projectId);
+            if (originalPath != newPath)
+                File.Move(originalPath, newPath);
+        }
+
+        /// <summary>
+        /// Save the appinfo.json resource data on an asset. This data could come from outside so we must validate it.
+        /// </summary>
+        /// <param name="proj"></param>
+        private static void SaveOutsideAppinfoJsonOnAsset(WebPebbleProjectAsset media, Medium r, WebPebbleProject proj)
+        {
+            PebbleProject pproj = new PebbleProject(proj.projectId);
+            //Make sure it is not null.
+            if (pproj.package.pebble.resources == null)
+                pproj.package.pebble.resources = new Resources();
+            if (pproj.package.pebble.resources.media == null)
+                pproj.package.pebble.resources.media = new List<Medium>();
+            //Find it if it already exists.
+            for (int i = 0; i < pproj.package.pebble.resources.media.Count; i++)
+            {
+                if (pproj.package.pebble.resources.media[i].x_webpebble_media_id == media.id)
+                {
+                    pproj.package.pebble.resources.media.RemoveAt(i);
+                    i--;
+                }
+            }
+            //Modify.
+            r.file = media.GetRelativePath();
+            r.x_webpebble_media_id = media.id;
+            //Save
+            pproj.package.pebble.resources.media.Add(r);
+            pproj.SavePackage();
         }
 
         public static async Task OnMediaRequest(Microsoft.AspNetCore.Http.HttpContext e, E_RPWS_User user, WebPebbleProject proj)
@@ -163,14 +224,47 @@ namespace WebPebble.Services.Projects
                 await ThrowError(e, "This asset ID does not exist.", 1);
                 return;
             }
-            //Handle object name editing (POST).
+            //Handle object editing (POST).
             if(method == RequestHttpMethod.post)
             {
-                //Get new name from URL.
-                media.nickname = e.Request.Query["name"];
+                //Get the payload.
+                MediaRequestPostPayload payload = Program.GetPostBodyJson<MediaRequestPostPayload>(e);
+                //If a value isn't null, apply it.
+                if (payload.name != null)
+                    media.nickname = payload.name;
+                if(payload.type != null)
+                {
+                    //Relocate
+                    RelocateAsset(ref media, (ref WebPebbleProjectAsset m) =>
+                    {
+                        m.type = (AssetType)payload.type;
+                    }, proj);
+                }
+                if (payload.sub_type != null)
+                {
+                    //Relocate
+                    RelocateAsset(ref media, (ref WebPebbleProjectAsset m) =>
+                    {
+                        m.innerType = (InnerAssetType)payload.sub_type;
+                    }, proj);
+                }
+                if (payload.filename != null)
+                {
+                    //Relocate
+                    RelocateAsset(ref media, (ref WebPebbleProjectAsset m) =>
+                    {
+                        m.filename = WebPebbleProject.CreateSafeFilename(payload.filename);
+                    }, proj);
+                }
+                if(payload.appinfoData != null)
+                {
+                    //Modify the appinfo data and set it on the PebbleProject.
+                    SaveOutsideAppinfoJsonOnAsset(media, payload.appinfoData, proj);
+                }
+                //Save
                 proj.media[id] = media;
                 proj.SaveProject();
-                await WriteOkReply(e);
+                await Program.QuickWriteJsonToDoc(e, media);
                 return;
             }
             //Handle object uploading.
@@ -224,7 +318,8 @@ namespace WebPebble.Services.Projects
                 //Get the MIME type from the query.
                 if(!e.Request.Query.ContainsKey("mime"))
                 {
-                    await ThrowError(e, "No MIME type sent in query.", 5);
+                    //Assume we are querying the information.
+                    await Program.QuickWriteJsonToDoc(e, media);
                     return;
                 }
                 //Set content type.

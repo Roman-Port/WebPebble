@@ -63,25 +63,12 @@ filemanager.PromptDeleteResourceFile = function () {
     project.showDialog("Delete file \"" + file.media_data.nickname + "\"?", "This cannot be undone, and will happen immediately.", ["Confirm", "Cancel"], [
         function () {
             project.showLoader("Removing File...");
-            //Remove it from the app data.
-            //Find it first.
-            for (var i = 0; i < project.appInfo.pebble.resources.media.length; i += 1) {
-                var dd = project.appInfo.pebble.resources.media[i];
-                if (dd.x_webpebble_media_id == file.id) {
-                    //Remove at position and break.
-                    project.appInfo.pebble.resources.media.splice(dd, 1);
-                    break;
-                }
-            }
-            //Save the app info.
-            project.serverRequest("appinfo.json/delete_resource?id="+file.pebble_data.x_webpebble_pebble_media_id, function (app) {
-                //Delete the actual media.
-                project.serverRequest("media/" + file.id + "/delete/?challenge=chal123", function () {
-                    sidebarmanager.close_active_tab();
-                    //Hide the loader.
-                    project.hideDialog();
-                }, null, false, "POST", "chal123");
-            }, null, false);
+            //Delete the actual media. This will also delete any appinfo.json data associated with this.
+            project.serverRequest("media/" + file.id + "/", function () {
+                sidebarmanager.close_active_tab();
+                //Hide the loader.
+                project.hideDialog();
+            }, null, false, "DELETE");
             
         }, function () {
 

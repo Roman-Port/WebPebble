@@ -24,7 +24,6 @@ namespace WebPebble.Entities.PebbleProject
 
         //Internal.
         public string x_webpebble_media_id { get; set; }
-        public string x_webpebble_pebble_media_id { get; set; } //Used to identify these.
     }
 
     public class Resources
