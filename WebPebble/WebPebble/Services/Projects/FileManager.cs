@@ -71,7 +71,7 @@ namespace WebPebble.Services.Projects
             //Read the JSON data from the stream.
             MediaCreateRequestBody request = Program.GetPostBodyJson<MediaCreateRequestBody>(e);
             //Validate
-            if(request.filename == null || request.name == null || request.sub_type == null || request.type == null)
+            if(request.name == null || request.sub_type == null || request.type == null)
             {
                 await ThrowError(e, "Missing one or more required values in the JSON payload.", 3);
                 return;
@@ -89,6 +89,8 @@ namespace WebPebble.Services.Projects
             media.innerType = request.sub_type;
             media.nickname = request.name;
             media.id = id;
+            if (request.filename == null)
+                request.filename = media.id;
             //Ensure directory is created.
             media.filename = "";
             Directory.CreateDirectory(media.GetAbsolutePath(proj.projectId));

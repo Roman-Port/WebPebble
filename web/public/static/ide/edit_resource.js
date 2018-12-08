@@ -253,37 +253,51 @@ edit_resource.createDataNow = function (callback) {
     //First, upload the new file. A check should be done to see if one was actually sent.
     project.showDialog("Creating Resource...", '<div class="inf_loader"></div>', [], [], null, false);
     //Determine the type of file.
-    var type = "images";
-    if (document.getElementById('addresrc_entry_type').value == "font") { type = "fonts"; }
-    if (document.getElementById('addresrc_entry_type').value == "raw") { type = "data"; }
-    //Do the upload.
-    edit_resource.uploadFile("resources", type, document.getElementById('addresrc_entry_filename').value, function (uploaded_file) {
-        //Generate the Pebble resource file.
-        var pbl_data = edit_resource.getUpdatedPebbleMedia(uploaded_file);
-        edit_resource.removeWarning('add_resrc_uploader_frame');
-        //Save that file.
-        project.serverRequest("appinfo.json/add_resource", function (updated_data) {
-            //Update the local data.
-            project.refreshAppInfo(function () {
-                pbl_data = updated_data;
-                //Add this file to the sidebar.
-                project.addResourceToSidebar(uploaded_file);
-                //Hide the loader.
-                project.hideDialog();
-                //Switch to this. This pretty much just allows us to save to it.
-                edit_resource.onSelectExisting(pbl_data.x_webpebble_media_id);
-                //Call the callback, if there is one.
-                if (callback != null) {
-                    callback(uploaded_file, pbl_data);
-                }
-            });
-        }, null, true, "POST", JSON.stringify(pbl_data));
+    var type = 1; //Images
+    if (document.getElementById('addresrc_entry_type').value == "font") { type = 2; /*Fonts*/ }
+    if (document.getElementById('addresrc_entry_type').value == "raw") { type = 3; /*Binary data*/ }
+    //Create the object creation payload.
+    var payload = {
+        "type":1,
+        "sub_type":type,
+        "name":document.getElementById('addresrc_entry_filename').value
+    };
+    //Create the object.
+    project.serverRequest("media/create/", function(object_data) {
+        var newId = object_data.id;
+        //Do the upload.
+        edit_resource.uploadFile(newId, function (uploaded_file) {
+            //Generate the Pebble resource file.
+            var pbl_data = edit_resource.getUpdatedPebbleMedia(object_data);
+            edit_resource.removeWarning('add_resrc_uploader_frame');
+            //Save that file.
+            project.serverRequest("appinfo.json/add_resource", function (updated_data) {
+                //Update the local data.
+                project.refreshAppInfo(function () {
+                    pbl_data = updated_data;
+                    //Add this file to the sidebar.
+                    project.addResourceToSidebar(object_data);
+                    //Hide the loader.
+                    project.hideDialog();
+                    //Switch to this. This pretty much just allows us to save to it.
+                    edit_resource.onSelectExisting(pbl_data.x_webpebble_media_id);
+                    //Call the callback, if there is one.
+                    if (callback != null) {
+                        callback(object_data, pbl_data);
+                    }
+                });
+            }, null, true, "POST", JSON.stringify(pbl_data));
 
-    }, function () {
-        //File upload failed.
-        edit_resource.addWarning('add_resrc_uploader_frame', "Please attach a file.");
-        project.hideDialog();
-    });
+        }, function () {
+            //File upload failed.
+            edit_resource.addWarning('add_resrc_uploader_frame', "Please attach a file.");
+            project.hideDialog();
+            //Quietly delete the asset.
+            project.serverRequest("media/"+newId+"/", function(object_data) {
+
+            }, null, true, "DELETE");
+        });
+    }, null, true, "POST", JSON.stringify(payload));  
 };
 
 edit_resource.updateDataNow = function (callback) {
@@ -384,14 +398,14 @@ edit_resource.check_identifier = function (id) {
     }, null, true);
 }
 
-edit_resource.uploadFile = function (type, sub_type, name, callback, failedCallback) {
+edit_resource.uploadFile = function (id, callback, failedCallback) {
     //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
     var form_ele = document.getElementById('add_resrc_uploader');
     var form = jQuery(form_ele);
-    var url = "https://api.webpebble.get-rpws.com/project/" + project.id + "/upload_media/?type=" + encodeURIComponent(type) + "&sub_type=" + encodeURIComponent(sub_type) + "&nickname=" + encodeURIComponent(name);
+    var url = "https://api.webpebble.get-rpws.com/project/" + project.id + "/media/";
     jQuery.ajax({
         url: url,
-        type: "POST",
+        type: "PUT",
         data: new FormData(form_ele),
         processData: false,
         contentType: false,

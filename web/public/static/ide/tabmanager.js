@@ -5,7 +5,7 @@ sidebarmanager.items = [];
 
 sidebarmanager.unsaved = {}; //Unsaved data.
 
-sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction, closeAction, htmlDom, internalId, showNow, actionsHtml, clickActionAfter) {
+sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction, closeAction, htmlDom, internalId, showNow, actionsHtml, clickActionAfter, renameCallback) {
     //Name: Name dislpayed
     //sectionIndex: The index of the section to insert this into.
     //buttonType: If this is true, this is displayed as a button. A button cannot be closed, and cannot use a text entry area.
@@ -14,6 +14,8 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     //htmlDom: The DOM object to clone. If this is null, the text entry area will be used instead.
     //internalId: The ID to use internally.
     //showNow: If true, this tab will be switched to the moment it is added.
+    //renameCallback: Callback when the item is renamed. Null to disable.
+    renameCallback = null;
 
     //First, create the dom element to use.
     var tab = document.createElement('div');
@@ -43,7 +45,7 @@ sidebarmanager.addButton = function (name, sectionIndex, buttonType, clickAction
     }
 
     //Add to our internal array.
-    var t = { "name": name, "sectionIndex": sectionIndex, "buttonType": buttonType, "clickAction": clickAction, "closeAction": closeAction, "dom_template": htmlDom, "internalId": internalId, "tab_ele": tab, "is_dom_ele": htmlDom != null, "edit_session": editsession, "actions_html": actionsHtml, "clickActionAfter": clickActionAfter };
+    var t = { "name": name, "sectionIndex": sectionIndex, "buttonType": buttonType, "clickAction": clickAction, "closeAction": closeAction, "dom_template": htmlDom, "internalId": internalId, "tab_ele": tab, "is_dom_ele": htmlDom != null, "edit_session": editsession, "actions_html": actionsHtml, "clickActionAfter": clickActionAfter, "renameEnabled":renameCallback != null, "renameCallback":renameCallback };
     sidebarmanager.items[internalId] = t;
 
     //Add an event listener to this object.
@@ -121,14 +123,36 @@ sidebarmanager.checkIfCurrentFileIsUnsaved = function (onlyTabSwitch, id) {
 
 sidebarmanager.updateSuffixOfTab = function (tab, suffix) {
     if (suffix == null) { suffix = ""; }
+
+    var nameEle;
+    if(tab.renameEnabled) {
+        //Renamable input
+        nameEle = document.createElement('input');
+        nameEle.type = "text";
+        if (tab.tab_ele != null) {
+            nameEle.value = sidebarmanager.items[tab.tab_ele.x_id].name;
+        } else {
+            nameEle.value = sidebarmanager.items[tab.x_id].name;
+        } 
+    } else {
+        //Static name
+        nameEle = document.createElement('span');
+        if (tab.tab_ele != null) {
+            nameEle.innerText = sidebarmanager.items[tab.tab_ele.x_id].name;
+        } else {
+            nameEle.innerText = sidebarmanager.items[tab.x_id].name;
+        }
+    }
+
     if (tab.tab_ele != null) {
         var shortName = sidebarmanager.items[tab.tab_ele.x_id].name;
-        tab.tab_ele.firstChild.innerHTML = shortName + suffix + sidebarmanager.items[tab.tab_ele.x_id].actions_html;
+        tab.tab_ele.firstChild.innerHTML = suffix + sidebarmanager.items[tab.tab_ele.x_id].actions_html;
+        tab.tab_ele.firstChild.insertBefore(nameEle, tab.tab_ele.firstChild.firstChild);
     } else {
         var shortName = sidebarmanager.items[tab.x_id].name;
-        tab.firstChild.innerHTML = shortName + suffix + sidebarmanager.items[tab.x_id].actions_html;
+        tab.firstChild.innerHTML = suffix + sidebarmanager.items[tab.x_id].actions_html;
+        tab.firstChild.insertBefore(nameEle, tab.firstChild.firstChild);
     }
-    
 }
 
 sidebarmanager.private_click = function () {

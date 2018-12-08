@@ -213,7 +213,9 @@ project.addExistingFileToSidebar = function (d) {
             return dd.loaded;
         }, function () {
             //Show the save/cancel dialog.
-        }, null, d.id, false, actionsHtml);
+        }, null, d.id, false, actionsHtml, null, function() {
+            console.log("renamed");
+        });
         //Add a loading symbol to the tab.
         tab.tab_ele.firstChild.innerHTML = name + "<img src=\"https://romanport.com/static/icons/loader.svg\" height=\"18\" style=\"vertical-align: top; margin-left: 8px;\">";
         //Add to list of filemanager.loadedFiles
