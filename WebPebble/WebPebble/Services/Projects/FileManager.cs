@@ -345,6 +345,8 @@ namespace WebPebble.Services.Projects
                 }
                 //Set content type.
                 e.Response.ContentType = e.Request.Query["mime"];
+                //Set no-cache headers
+                e.Response.Headers.Add("Cache-Control", "no-cache, no-store, must-revalidate");
                 //Just load the data and copy it to the output stream.
                 using (FileStream fs = new FileStream(path, FileMode.Open)) {
                     e.Response.ContentLength = fs.Length;
