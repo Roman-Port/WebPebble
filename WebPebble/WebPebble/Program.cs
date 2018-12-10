@@ -53,6 +53,7 @@ namespace WebPebble
             //Add services that are out of the project.
             AddService(false, Services.CreateProject.CreateProject.OnRequest, "/create", true);
             AddService(false, Services.Me.MeService.PollUserData, "/users/@me/", true);
+            AddService(false, Services.Me.OneTimeRequestTokens.CreateOneTimeRequestToken, "/users/@me/create_asset_token/", true);
 
             AddService(false, Services.LoginService.BeginLogin, "/login", false);
             AddService(false, Services.LoginService.FinishLogin, "/complete_login", false);
@@ -183,6 +184,19 @@ namespace WebPebble
                 if(e.Request.Headers.ContainsKey("Authorization") && user == null)
                 {
                     user = Oauth.RpwsAuth.AuthenticateUser(e.Request.Headers["Authorization"]);
+                }
+                if(e.Request.Query.ContainsKey("one_time_token") && user == null)
+                {
+                    string token = e.Request.Query["one_time_token"];
+                    //Find
+                    if(Services.Me.OneTimeRequestTokens.oneTimeRequestTokens.ContainsKey(token))
+                    {
+                        string userToken = Services.Me.OneTimeRequestTokens.oneTimeRequestTokens[token];
+                        //Remove
+                        Services.Me.OneTimeRequestTokens.oneTimeRequestTokens.Remove(token);
+                        //Authenticate
+                        user = Oauth.RpwsAuth.AuthenticateUser(userToken);
+                    }
                 }
                 //If the user was authorized, get the WebPebble data.
                 if(user != null)

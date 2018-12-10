@@ -79,19 +79,29 @@ edit_resource.onSelectExisting = function (context) {
     edit_resource.onFontSizeChange();
     document.getElementById('add_resrc_delete').style.display = "inline-block";
     //Show the preview. 
+    edit_resource.refreshPreviewWindow(pebble_data);
+};
+
+edit_resource.refreshPreviewWindow = function(pebble_data) {
+    //Destroy old window
+    var oldNode = document.getElementById('preview_window_node');
+    if(oldNode != null) {
+        oldNode.parentElement.removeChild(oldNode);
+    }
+    //Create new
     var preview_window = document.getElementById('resource_preview');
     preview_window.style.display = "block";
-    var resrc_url = "/project/" + project.id + "/media/" + media_data.id + "/";
+    var resrc_url = "https://api.webpebble.get-rpws.com/project/" + project.id + "/media/" + pebble_data.x_webpebble_media_id + "/";
     if (pebble_data.type == "raw") {
         //Show the button to download this resource again.
-        preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", '<div class="med_button" onclick="edit_resource.onDownloadRawBtnClicked(this);">Download Raw Resource</div>'));
+        preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", '<div class="med_button" onclick="edit_resource.onDownloadRawBtnClicked(this);">Download Raw Resource</div>', 'preview_window_node'));
         //Set URL.
         preview_window.x_download_url = resrc_url + "application_octet-stream/" + pebble_data.name;
     } else if (pebble_data.type == "font") {
         //Preview the font.
         //Get the font size.
         var name_split2 = pebble_data.name.split('_');
-        var font_size2 = name_split[name_split2.length - 1];
+        var font_size2 = name_split2[name_split2.length - 1];
         font_size2 = parseInt(font_size2);
         if (font_size2 > 40) {
             font_size2 = 40;
@@ -102,12 +112,12 @@ edit_resource.onSelectExisting = function (context) {
         preview_window.appendChild(e);
         //Append an actual preview of the font. Display the standard ones.
         var inner = '<textarea style="line-height:' + (font_size2 + 6).toString() + 'px; font-size:' + font_size2.toString() + 'px; background-color:white; font-family: &quot;temporary_resrc_font&quot;, serif; width:100%;" type="text" rows="4">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopwxyz 123456789</textarea>';
-        preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", inner));
+        preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", inner, 'preview_window_node'));
     } else {
         //This is some sort of bitmap image.
-        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="https://api.webpebble.get-rpws.com' + resrc_url + "?mime=image%2Fpng" +'"> </td> </tr> </table>'));
+        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="https://api.webpebble.get-rpws.com' + resrc_url + "?mime=image%2Fpng" +'"> </td> </tr> </table>', 'preview_window_node'));
     }
-};
+}
 
 edit_resource.onChange = function () {
     //Check if this is a file that already exists.
@@ -128,7 +138,7 @@ edit_resource.onDownloadRawBtnClicked = function (context) {
     filemanager.DownloadUrl(e.x_download_url);
 }
 
-edit_resource.createControlItemNode = function (left, right) {
+edit_resource.createControlItemNode = function (left, right, id) {
     var bm = document.createElement('div');
     bm.className = "control_item";
     var label_node = document.createElement('div');
@@ -140,6 +150,10 @@ edit_resource.createControlItemNode = function (left, right) {
     right_node.className = "control_normal";
     right_node.innerHTML = right;
     bm.appendChild(right_node);
+
+    if(id != null) {
+        bm.id = id;
+    }
 
     return bm;
 }
@@ -308,6 +322,7 @@ edit_resource.updateDataNow = function (callback) {
         var uploaded_file = edit_resource.openFile.media_data;
         //Generate the request payload.
         var pbl_data = edit_resource.getUpdatedPebbleMedia();
+        pbl_data.x_webpebble_media_id = id;
         var payload = {
             "name":document.getElementById('addresrc_entry_filename').value,
             "appinfoData":pbl_data,
@@ -321,6 +336,8 @@ edit_resource.updateDataNow = function (callback) {
                 sidebarmanager.items[edit_resource.openFile.id].tab_ele.firstChild.innerText = document.getElementById('addresrc_entry_filename').value;
                 //Hide the loader.
                 project.hideDialog();
+                //Refresh preview window.
+                edit_resource.refreshPreviewWindow(pbl_data);
                 //Call the callback, if there is one.
                 if (callback != null) {
                     callback(uploaded_file, pbl_data);

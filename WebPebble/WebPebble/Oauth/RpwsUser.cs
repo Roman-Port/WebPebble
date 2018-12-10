@@ -19,6 +19,7 @@ namespace WebPebble.Oauth
         public string appDevName { get; set; }
         public string name { get; set; }
 
-        public WebPebbleUserData webpebble_data; 
+        public WebPebbleUserData webpebble_data;
+        public string token;
     }
 }

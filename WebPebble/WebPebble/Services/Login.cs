@@ -19,7 +19,7 @@ namespace WebPebble.Services
             else
                 returnUri += $"?return={System.Web.HttpUtility.UrlEncode("https://webpebble.get-rpws.com/")}";
 
-            string redir = $"https://blue.api.get-rpws.com/v1/oauth2/?returnuri={System.Web.HttpUtility.UrlEncode(returnUri)}";
+            string redir = $"https://blue.api.get-rpws.com/v1/oauth2/?returnuri={System.Web.HttpUtility.UrlEncode(returnUri)}&permissions=1-3-4&name=WebPebble+Web+IDE";
             e.Response.Headers.Add("Location", redir);
             await Program.QuickWriteToDoc(e, $"You should've been redirected to {redir}.", "text/html", 302);
         }

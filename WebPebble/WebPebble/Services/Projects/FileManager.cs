@@ -42,6 +42,8 @@ namespace WebPebble.Services.Projects
             });
         }
 
+       
+
         private static async Task ThrowError(Microsoft.AspNetCore.Http.HttpContext e, string error, int errorCode, int httpErrorCode = 500)
         {
             await Program.QuickWriteJsonToDoc(e, new ErrorReply

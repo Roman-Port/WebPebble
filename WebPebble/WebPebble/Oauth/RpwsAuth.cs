@@ -11,7 +11,10 @@ namespace WebPebble.Oauth
             //Request the API.
             try
             {
-                return LibRpws.LibRpwsCore.GetObjectHttp<RpwsMeReply>("https://blue.api.get-rpws.com/v1/rpws_me/", token).user;
+                var u = LibRpws.LibRpwsCore.GetObjectHttp<RpwsMeReply>("https://blue.api.get-rpws.com/v1/rpws_me/", token).user;
+                if (u != null)
+                    u.token = token;
+                return u;
             } catch
             {
                 return null;
