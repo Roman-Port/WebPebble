@@ -22,6 +22,7 @@ body {
 
 .open_sans {
     font-family: 'Open Sans', sans-serif;
+    font-family: 'Roboto', sans-serif;
     color: white;
 }
 
@@ -520,31 +521,8 @@ body {
     margin-top: 0px;
     font-size: 14px;
     color: #ffa6a6;
-    animation-name: control_item_warning;
-    animation-duration: 0.65s;
-    animation-iteration-count: 1;
-    animation-timing-function: ease-in-out;
 }
 
-@keyframes control_item_warning {
-    0% {
-        padding-left: 5px;
-        padding-right: 5px;
-        color: #ffa6a6;
-    }
-
-    50% {
-        padding-left: 10px;
-        padding-right: 0px;
-        color: #ffa6a6;
-    }
-
-    100% {
-        padding-left: 5px;
-        padding-right: 5px;
-        color: #ffa6a6;
-    }
-}
 
 .control_item .control {
     background-color:white;
@@ -746,4 +724,43 @@ body {
     margin-top: calc(50vh - 10px);
     margin-left: auto;
     margin-right: auto;
+}
+
+
+.bottom_modal {
+	position:fixed;
+	left:20px;
+	right:20px;
+	bottom:-150px;
+	color:black;
+	-webkit-box-shadow: 0px 5px 24px 0px rgba(0,0,0,0.27);
+	-moz-box-shadow: 0px 5px 24px 0px rgba(0,0,0,0.27);
+	box-shadow: 0px 5px 24px 0px rgba(0,0,0,0.27);
+	padding:10px;
+	text-align: left;
+	background-color:white;
+	border-radius: 5px;
+	transition:bottom 300ms;
+	transition-timing-function: cubic-bezier(0.51, 0.62, 0.23, 0.96);
+    z-index:99999;
+    font-size:15px;
+}
+
+.bottom_modal_active {
+	bottom:20px;
+}
+
+.bottom_modal_error {
+	border-left:5px solid red;
+}
+
+.bottom_modal_good {
+	border-left:5px solid #4286f4;
+}
+
+.bottom_modal {
+	right:unset;
+	left:20px;
+	right:unset;
+	padding-right:60px;
 }

@@ -106,16 +106,22 @@ edit_resource.refreshPreviewWindow = function(pebble_data) {
         if (font_size2 > 40) {
             font_size2 = 40;
         }
-        //Create the CSS.
+        //Create the CSS. We'll need to get a one time token to do this.
         var e = document.createElement('style');
-        e.innerHTML = '@font-face { font-family: "temporary_resrc_font"; src: url("' + resrc_url + '?mime=font%2Fttf") format("truetype");}';
+        e.innerHTML = '';
         preview_window.appendChild(e);
+        project.anyServerRequest("https://api.webpebble.get-rpws.com/users/@me/create_asset_token/", function(token) {
+            e.innerHTML = '@font-face { font-family: "temporary_resrc_font"; src: url("' + resrc_url + '?mime=font%2Fttf&one_time_token='+token.token+'") format("truetype");}';
+        }, function() {
+            project.reportError("Failed to load font preview; Couldn't get one-time access token.");
+        });
+        
         //Append an actual preview of the font. Display the standard ones.
         var inner = '<textarea style="line-height:' + (font_size2 + 6).toString() + 'px; font-size:' + font_size2.toString() + 'px; background-color:white; font-family: &quot;temporary_resrc_font&quot;, serif; width:100%;" type="text" rows="4">ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopwxyz 123456789</textarea>';
         preview_window.appendChild(edit_resource.createControlItemNode("Font Preview", inner, 'preview_window_node'));
     } else {
         //This is some sort of bitmap image.
-        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="https://api.webpebble.get-rpws.com' + resrc_url + "?mime=image%2Fpng" +'"> </td> </tr> </table>', 'preview_window_node'));
+        preview_window.appendChild(edit_resource.createControlItemNode("Image Preview", '<table style="min-width: 144px; min-height: 168px; background-color: #c1c1c1; border-radius: 5px;"> <tr> <td style="text-align: center; vertical-align: middle;"> <img src="' + resrc_url + "?mime=image%2Fpng" +'"> </td> </tr> </table>', 'preview_window_node'));
     }
 }
 
@@ -394,27 +400,32 @@ edit_resource.check_identifier = function (id) {
 }
 
 edit_resource.uploadFile = function (id, callback, failedCallback) {
-    //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
-    var form_ele = document.getElementById('add_resrc_uploader');
-    var form = jQuery(form_ele);
-    var url = "https://api.webpebble.get-rpws.com/project/" + project.id + "/media/"+id+"/?upload_method=1";
-    jQuery.ajax({
-        url: url,
-        type: "PUT",
-        data: new FormData(form_ele),
-        processData: false,
-        contentType: false,
-        async: true,
-        success: function (response) {
-            if (response) {
-                callback(response);
-            }
-        },
-        error: function () {
-            failedCallback();
-        },
-        xhrFields: {
-            withCredentials: true
-       }
+    project.showLoaderBottom("Uploading file...", function(c) {
+        //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
+        var form_ele = document.getElementById('add_resrc_uploader');
+        var form = jQuery(form_ele);
+        var url = "https://api.webpebble.get-rpws.com/project/" + project.id + "/media/"+id+"/?upload_method=1";
+        jQuery.ajax({
+            url: url,
+            type: "PUT",
+            data: new FormData(form_ele),
+            processData: false,
+            contentType: false,
+            async: true,
+            success: function (response) {
+                c();
+                if (response) {
+                    callback(response);
+                }
+            },
+            error: function () {
+                c();
+                failedCallback();
+            },
+            xhrFields: {
+                withCredentials: true
+        }
+        });
     });
+    
 }

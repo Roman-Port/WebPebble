@@ -6,6 +6,7 @@
 
     <!-- Imports -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" rel="stylesheet">
 
     <!-- Main CSS -->
     <link href="/static/ide/style.css" rel="stylesheet" />
@@ -19,8 +20,13 @@
 
     </div>
 
+    <!-- Bottom modal. Shown while loading first. -->
+    <div class="bottom_modal bottom_modal_active open_sans" id="bottom_modal">
+        WebPebble is loading...
+    </div>
+
     <!-- Fullscreen loader to hide everything while the user's settings load. We need this because the user will choose the theme they use. -->
-    <div class="fullscreen_loader" id="fullscreen_loader"><div class="inf_loader"></div></div>
+    <div class="fullscreen_loader" id="fullscreen_loader"><!--<div class="inf_loader"></div>--></div>
 
     <!-- Popup window for important messages -->
     <div class="popup_background hide" id="popup_window_bg"></div>

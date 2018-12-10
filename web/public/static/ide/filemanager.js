@@ -51,6 +51,8 @@ filemanager.PromptDeleteFile = function (file) {
                 sidebarmanager.hide_content(sidebarmanager.activeItem);
                 //Update the tab info.
                 sidebarmanager.activeItem.tab_ele.parentNode.removeChild(sidebarmanager.activeItem.tab_ele);
+                //Show toast
+                project.reportDone("File deleted.");
             }, null, false, "DELETE", null);
         }, function () {
 
@@ -68,6 +70,8 @@ filemanager.PromptDeleteResourceFile = function () {
                 sidebarmanager.close_active_tab();
                 //Hide the loader.
                 project.hideDialog();
+                //Show message.
+                project.reportDone("File deleted.");
             }, null, false, "DELETE");
             
         }, function () {
@@ -94,38 +98,50 @@ filemanager.DownloadUrl = function (url) {
 
 filemanager.SaveAll = function (totalCallback) {
     //This could take a bit, so show a dialog.
-    project.showDialog("Saving...", "One moment, please.", [], []);
-    var saveCount = 0;
-    //Count how many need saving.
-    var keys = Object.keys(filemanager.loadedFiles);
-    var toSave = [];
-    for (var i = 0; i < keys.length; i++) {
-        var d = filemanager.loadedFiles[keys[i]];
-        if (d.saved == false) {
-            //Set it to saved and update the dom, then add it to the save pile.
-            d.saved = true;
-            toSave.push(d);
+    //project.showDialog("Saving...", "One moment, please.", [], []);
+    project.showLoaderBottom("Saving files...", function(c) {
+        var saveCount = 0;
+        //Count how many need saving.
+        var keys = Object.keys(filemanager.loadedFiles);
+        var toSave = [];
+        for (var i = 0; i < keys.length; i++) {
+            var d = filemanager.loadedFiles[keys[i]];
+            if (d.saved == false) {
+                //Set it to saved and update the dom, then add it to the save pile.
+                d.saved = true;
+                toSave.push(d);
+            }
         }
-    }
-    var closeCallback = function () {
-        //Let auto cleanup do it.
-    };
-    //Check if any need saving.
-    if (toSave.length == 0) {
-        project.showDialog("Saved", "No files needed saving.", ["Close"], [closeCallback]);
-        if (totalCallback != null) { totalCallback(); }
-    } else {
-        //Save all.
-        for (var i = 0; i < toSave.length; i++) {
-            filemanager.SaveFile(toSave[i].id, function () {
-                //Increment the value and check if all are saved.
-                saveCount += 1;
-                if (toSave.length == saveCount) {
-                    //Done.
-                    project.showDialog("Saved", "Saved " + toSave.length + " files.", ["Close"], [closeCallback]);
-                    if (totalCallback != null) { totalCallback(); }
-                }
-            });
+        var closeCallback = function () {
+            //Let auto cleanup do it.
+        };
+        //Check if any need saving.
+        if (toSave.length == 0) {
+            c();
+            //project.reportDone("All files are already saved.");
+            project.hideDialog();
+            if (totalCallback != null) { totalCallback(); }
+        } else {
+            //Save all.
+            for (var i = 0; i < toSave.length; i++) {
+                filemanager.SaveFile(toSave[i].id, function () {
+                    //Increment the value and check if all are saved.
+                    saveCount += 1;
+                    if (toSave.length == saveCount) {
+                        //Done.
+                        c();
+                        if(toSave.length != 1) {
+                            project.reportDone("Saved all " + toSave.length + " files.");
+                        } else {
+                            project.reportDone("Saved 1 file.");
+                        }
+                        
+                        project.hideDialog();
+                        if (totalCallback != null) { totalCallback(); }
+                    }
+                });
+            }
         }
-    }
+    });
+    
 }

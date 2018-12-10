@@ -13,6 +13,9 @@ namespace WebPebble.Services.Projects
 {
     public static class FileManager
     {
+        public const long MAXIMUM_UPLOADED_SIZE = 5242880;
+        public const string MAXIMUM_UPLOADED_SIZE_NAME = "5 MB";
+
         /// <summary>
         /// List of templates. Key is the name, value is the path.
         /// </summary>
@@ -159,6 +162,13 @@ namespace WebPebble.Services.Projects
             public InnerAssetType? sub_type; //InnerAssetType
         }
 
+        private class PutRequestReply
+        {
+            public bool ok;
+            public string uploader_error;
+            public int size;
+        }
+
         private delegate void ModificationCode(ref WebPebbleProjectAsset media);
         private static void RelocateAsset(ref WebPebbleProjectAsset media, ModificationCode code, WebPebbleProject proj)
         {
@@ -300,7 +310,7 @@ namespace WebPebble.Services.Projects
                 if(uploadType == FileUploadType.Binary)
                 {
                     //Read body directly
-                    length = (int)e.Request.ContentLength;
+                    length = (int)e.Request.Body.Length;
                     source = e.Request.Body;
                 } else
                 {
@@ -316,7 +326,19 @@ namespace WebPebble.Services.Projects
                     }
                     //Set
                     source = f.OpenReadStream();
-                    length = (int)f.Length;
+                    length = (int)source.Length;
+                }
+                //Check if a file is too large.
+                if(length > MAXIMUM_UPLOADED_SIZE)
+                {
+                    //Yup. Stop.
+                    source.Close();
+                    await Program.QuickWriteJsonToDoc(e, new PutRequestReply
+                    {
+                        ok = false,
+                        size = length,
+                        uploader_error = $"Your file is too powerful! The maximum filesize is {MAXIMUM_UPLOADED_SIZE_NAME} ({MAXIMUM_UPLOADED_SIZE.ToString()} bytes)."
+                    });
                 }
                 //Remove an existing file if it exists.
                 if (File.Exists(media.GetAbsolutePath(proj.projectId)))
@@ -325,7 +347,12 @@ namespace WebPebble.Services.Projects
                 using (FileStream fs = new FileStream(media.GetAbsolutePath(proj.projectId), FileMode.CreateNew))
                     await source.CopyToAsync(fs);
                 //Tell the user it is ok
-                await WriteOkReply(e);
+                await Program.QuickWriteJsonToDoc(e, new PutRequestReply
+                {
+                    ok = true,
+                    size = length,
+                    uploader_error = null
+                });
                 return;
             }
             //Handle object downloading

@@ -160,6 +160,7 @@ project.init = function () {
                         ycmd.subscribe();
                         project.hideDialog();
                         document.getElementById('fullscreen_loader').parentNode.removeChild(document.getElementById('fullscreen_loader'));
+                        project.forceHideBottomModalNoArgs();
                     });
                 });
             }, null, true);
@@ -500,4 +501,107 @@ project.addResourceToSidebar = function (data) {
     );
     //Set the data on the DOM.
     tab.tab_ele.x_data = data;
+}
+
+project.bottomModalQueue = [];
+project.bottomModalActive = false;
+
+project.showBottomModal = function(text, callback, className) {
+    var i = {};
+    i.type = 0;
+    i.callback = callback;
+    i.text = text;
+    i.className = className;
+	//If it's already active, push it the the queue.
+	if(project.bottomModalActive) {
+		project.bottomModalQueue.unshift(i);
+	} else {
+		//Display now.
+		project.forceShowBottomModal(i);
+	}
+};
+
+project.showLoaderBottom = function(text, onBeginLoad, className, onDismissCallback) {
+    var i = {};
+    i.type = 1;
+    i.callback = onDismissCallback;
+    i.onBeginLoad = onBeginLoad;
+    i.text = text;
+    i.className = className;
+	//If it's already active, push it the the queue.
+	if(project.bottomModalActive) {
+		project.bottomModalQueue.unshift(i);
+	} else {
+		//Display now.
+		project.forceShowBottomModal(i);
+	}
+}
+
+project.reportError = function(text) {
+	project.showBottomModal(text, null, "bottom_modal_error");
+}
+
+project.reportDone = function(text) {
+    project.showBottomModal(text, null, "bottom_modal_good");
+}
+
+project.forceHideBottomModalNoArgs = function() {
+    project.forceHideBottomModal({
+        "callback":null,
+        "className":""
+    });
+}
+
+project.forceHideBottomModal = function(request) {
+    var node = document.getElementById('bottom_modal');
+    //Hide.
+    node.className = "bottom_modal open_sans "+request.className;
+    window.setTimeout(function() {
+        //Call callback
+        if(request.callback != null) {
+            request.callback();
+        }
+        //Completely hide the classname
+        node.className = "bottom_modal open_sans ";
+        //Toggle flag
+        project.bottomModalActive = false;
+        //If there is an item in the queue, show it.
+        if(project.bottomModalQueue.length >= 1) {
+            var o = project.bottomModalQueue.pop();
+            project.forceShowBottomModal(o);
+        }
+    }, 300);
+}
+
+project.forceShowBottomModal = function(request) {
+	var node = document.getElementById('bottom_modal');
+	node.innerHTML = request.text;
+	node.className = "bottom_modal bottom_modal_active open_sans "+request.className;
+    project.bottomModalActive = true;
+    
+    //Called when it is time to dismiss this.
+    var onDoneShowCallback = function() {
+        project.forceHideBottomModal(request);
+    };
+
+	if(request.type == 0) {
+        //Standard wait. 
+        window.setTimeout(onDoneShowCallback, 300 + ((request.text.length / 6) * 1000));
+    } else if(request.type == 1) {
+        //Record current time. This'll be used when we come back.
+        var startTime = new Date().getTime();
+        //Load callback. Call the callback and expect a ping back shortly.
+        request.onBeginLoad(function() {
+            //Check if we've elapsed the time required to show the modal.
+            var remainingTime = 300 - (new Date().getTime() - startTime);
+            if(remainingTime > 0) {
+                //Wait.
+                window.setTimeout(onDoneShowCallback, remainingTime);
+            } else {
+                //Do it now. 
+                onDoneShowCallback();
+            }
+        });
+        
+    }
 }
