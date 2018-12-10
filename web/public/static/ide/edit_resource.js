@@ -306,14 +306,16 @@ edit_resource.createDataNow = function (callback) {
                     callback(object_data, pbl_data);
                 }
             });
-        }, function () {
-            //File upload failed.
-            edit_resource.addWarning('add_resrc_uploader_frame', "Please attach a file.");
+        }, function() {
             project.hideDialog();
             //Quietly delete the asset.
             project.serverRequest("media/"+newId+"/", function(object_data) {
 
             }, null, true, "DELETE");
+        }, function () {
+            //File upload failed.
+            edit_resource.addWarning('add_resrc_uploader_frame', "Please attach a file.");
+            
         });
     }, null, true, "POST", JSON.stringify(payload));  
 };
@@ -358,6 +360,11 @@ edit_resource.updateDataNow = function (callback) {
         edit_resource.uploadFile(id, function () {
             //Call the main code now.
             afterFileUpdate();
+        }, function() {
+            //Stop.
+            project.hideDialog();
+        }, function() {
+            //No file was uploaded.
         });
     } else {
         //Go forward and keep old file.
@@ -399,7 +406,7 @@ edit_resource.check_identifier = function (id) {
     }, null, true);
 }
 
-edit_resource.uploadFile = function (id, callback, failedCallback) {
+edit_resource.uploadFile = function (id, callback, failedCallback, noFileCallback) {
     project.showLoaderBottom("Uploading file...", function(c) {
         //Thanks to https://stackoverflow.com/questions/39053413/how-to-submit-the-file-on-the-same-page-without-reloading for telling me how to do this without a reload.
         var form_ele = document.getElementById('add_resrc_uploader');
@@ -414,14 +421,31 @@ edit_resource.uploadFile = function (id, callback, failedCallback) {
             async: true,
             success: function (response) {
                 c();
+                
                 if (response) {
-                    callback(response);
+                    if(response.ok == false) {
+                        if(response.size == -1) {
+                            //No file uploaded
+                            project.reportError("No file was attached!");
+                            noFileCallback();
+                            failedCallback(response);
+                        } else {
+                            project.reportError("Failed to upload file; "+response.uploader_error);
+                            failedCallback(response);
+                        }
+                    } else {
+                        callback(response);
+                    }
+                } else {
+                    
                 }
             },
             error: function () {
                 c();
+                project.reportError("Failed to upload file; The server was unable to handle the request. Is the file too big?");
                 failedCallback();
             },
+            
             xhrFields: {
                 withCredentials: true
         }

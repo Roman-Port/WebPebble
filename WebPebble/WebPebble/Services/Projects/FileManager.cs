@@ -318,10 +318,15 @@ namespace WebPebble.Services.Projects
                     //Get the file uploaded.
                     var f = e.Request.Form.Files["data"];
                     //Check if the file is valid.
-                    if (f.Length == 0 || f.OpenReadStream() == null)
+                    if (f == null)
                     {
                         //No file uploaded.
-                        await Program.QuickWriteToDoc(e, "No file was uploaded.", "text/plain", 400);
+                        await Program.QuickWriteJsonToDoc(e, new PutRequestReply
+                        {
+                            ok = false,
+                            size = -1,
+                            uploader_error = $"No file was uploaded."
+                        });
                         return;
                     }
                     //Set
