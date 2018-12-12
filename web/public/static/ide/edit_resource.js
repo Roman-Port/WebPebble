@@ -266,6 +266,17 @@ edit_resource.removeWarning = function (elementId) {
     }
 }
 
+edit_resource.findAllErrors = function() {
+    var errorCount = 0;
+    if(document.getElementById('addresrc_entry_id').value == "") {
+        errorCount++;
+        edit_resource.addWarning("add_resrc_id_frame","Please type an identifier.");
+    }
+    if(document.getElementById('addresrc_entry_filename').value == "") {
+        
+    }
+}
+
 edit_resource.getTypeId = function() {
     var type = 1; //Images
     if (document.getElementById('addresrc_entry_type').value == "font") { type = 2; /*Fonts*/ }

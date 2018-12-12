@@ -310,7 +310,7 @@ namespace WebPebble.Services.Projects
                 if(uploadType == FileUploadType.Binary)
                 {
                     //Read body directly
-                    length = (int)e.Request.Body.Length;
+                    length = (int)e.Request.ContentLength;
                     source = e.Request.Body;
                 } else
                 {
@@ -331,7 +331,7 @@ namespace WebPebble.Services.Projects
                     }
                     //Set
                     source = f.OpenReadStream();
-                    length = (int)source.Length;
+                    length = (int)f.Length;
                 }
                 //Check if a file is too large.
                 if(length > MAXIMUM_UPLOADED_SIZE)
